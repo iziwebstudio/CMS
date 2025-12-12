@@ -105,10 +105,6 @@
                 class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
                 <i class="fas fa-chart-line w-6"></i> Google Analytics
             </button>
-            <button onclick="showView('agents')"
-                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
-                <i class="fas fa-robot w-6"></i> Agents IA
-            </button>
 
             <div class="border-t border-slate-100 dark:border-slate-700 my-2"></div>
 
@@ -596,32 +592,6 @@
                                 </div>
                             </div>
                         </div>
-                    </div>
-                </div>
-            </div>
-
-            <!-- VIEW: AGENTS -->
-            <div id="view-agents" class="view-section hidden space-y-6">
-                <!-- Header / Actions -->
-                <div
-                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 flex justify-between items-center transition-colors duration-300">
-                    <div>
-                        <h3 class="font-bold text-lg text-slate-800 dark:text-white">Vos Agents IA</h3>
-                        <p class="text-slate-500 dark:text-slate-400 text-sm">Automatisez vos tâches avec des scripts
-                            intelligents.</p>
-                    </div>
-                    <button onclick="openAgentModal()"
-                        class="bg-purple-600 hover:bg-purple-700 text-white px-4 py-2 rounded-lg text-sm font-medium transition shadow-sm hover:shadow flex items-center gap-2">
-                        <i class="fas fa-plus"></i> Nouvel Agent
-                    </button>
-                </div>
-
-                <!-- Agents List -->
-                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" id="agents-grid">
-                    <!-- Cards will be injected here -->
-                    <div class="col-span-full text-center py-12 text-slate-500 dark:text-slate-400">
-                        <i class="fas fa-circle-notch fa-spin text-2xl mb-3"></i>
-                        <p>Chargement des agents...</p>
                     </div>
                 </div>
             </div>

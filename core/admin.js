@@ -23,7 +23,6 @@ const appState = {
     posts: [],
     videos: [],
     podcasts: [],
-    agents: [], // New Agents State
     metadata: {},
     config: {}
 };
@@ -141,7 +140,6 @@ function showView(viewName) {
         'builder': 'Frontend Builder',
         'analytics': 'Google Analytics',
         'podcasts': 'Podcasts',
-        'agents': 'Agents IA', // New Title
         'config': 'Configuration',
         'help': 'Aide & Support'
     };
@@ -230,11 +228,7 @@ async function loadData() {
         renderDashboard();
         renderContentTable();
         renderVideos();
-        renderDashboard();
-        renderContentTable();
-        renderVideos();
-        renderPodcasts();
-        loadAgents(); // Load Agents on init (will check for token)
+        renderPodcasts(); // Call renderPodcasts here
 
     } catch (e) {
         console.error("Erreur de chargement:", e);
@@ -768,136 +762,3 @@ async function clearCache() {
 }
 
 
-// ==========================================
-// AGENTS STUDIO LOGIC
-// ==========================================
-
-async function loadAgents() {
-    const grid = document.getElementById('agents-grid');
-    if (!grid) return;
-
-    // Check for GitHub Token
-    const ghToken = localStorage.getItem('gh_token');
-    const ghRepo = localStorage.getItem('gh_repo'); // e.g. "username/repo"
-
-    if (!ghToken || !ghRepo) {
-        grid.innerHTML = `
-            <div class="col-span-full bg-yellow-50 dark:bg-yellow-900/30 p-6 rounded-xl border border-yellow-200 dark:border-yellow-700 text-center">
-                <i class="fab fa-github text-4xl text-yellow-600 dark:text-yellow-400 mb-3"></i>
-                <h3 class="text-lg font-bold text-yellow-800 dark:text-yellow-200">Configuration GitHub requise</h3>
-                <p class="text-sm text-yellow-700 dark:text-yellow-300 mb-4">Pour gérer vos agents, le CMS a besoin d'accéder à votre dépôt via l'API GitHub.</p>
-                <button onclick="promptGitHubConfig()" class="bg-yellow-600 text-white px-4 py-2 rounded-lg hover:bg-yellow-700 transition">Configurer maintenant</button>
-            </div>
-        `;
-        return;
-    }
-
-    try {
-        // Fetch files from functions/agents path
-        const apiUrl = `https://api.github.com/repos/${ghRepo}/contents/functions/agents`;
-        const res = await fetch(apiUrl, {
-            headers: {
-                'Authorization': `token ${ghToken}`,
-                'Accept': 'application/vnd.github.v3+json'
-            }
-        });
-
-        if (!res.ok) {
-            if (res.status === 404) {
-                // Folder might not exist yet, that's fine
-                appState.agents = [];
-            } else {
-                throw new Error(`GitHub API Error: ${res.status}`);
-            }
-        } else {
-            const files = await res.json();
-            // Filter only .js files
-            appState.agents = files.filter(f => f.name.endsWith('.js'));
-        }
-
-        renderAgents();
-
-    } catch (e) {
-        console.error("Agents Load Error:", e);
-        grid.innerHTML = `<div class="col-span-full text-center text-red-500">Erreur chargement: ${e.message}</div>`;
-    }
-}
-
-function renderAgents() {
-    const grid = document.getElementById('agents-grid');
-    if (!grid) return;
-
-    if (appState.agents.length === 0) {
-        grid.innerHTML = `
-            <div class="col-span-full text-center py-12 border-2 border-dashed border-slate-300 dark:border-slate-700 rounded-xl">
-                <p class="text-slate-500 dark:text-slate-400">Aucun agent trouvé.</p>
-                <button onclick="openAgentModal()" class="text-purple-600 font-medium mt-2">Créer votre premier agent</button>
-            </div>
-        `;
-        return;
-    }
-
-    grid.innerHTML = appState.agents.map(agent => `
-        <div class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 hover:shadow-md transition">
-            <div class="flex justify-between items-start mb-4">
-                <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400">
-                    <i class="fas fa-robot text-xl"></i>
-                </div>
-                <div class="flex gap-2">
-                    <button onclick="editAgent('${agent.name}')" class="text-slate-400 hover:text-purple-600 transition" title="Éditer">
-                        <i class="fas fa-edit"></i>
-                    </button>
-                    <a href="${agent.html_url}" target="_blank" class="text-slate-400 hover:text-slate-600 transition" title="Voir sur GitHub">
-                        <i class="fab fa-github"></i>
-                    </a>
-                </div>
-            </div>
-            <h4 class="font-bold text-slate-800 dark:text-white mb-1">${agent.name.replace('.js', '')}</h4>
-            <div class="text-xs text-slate-500 dark:text-slate-400 font-mono bg-slate-50 dark:bg-slate-900/50 p-1 rounded mb-4 truncate">
-                /agents/${agent.name.replace('.js', '')}
-            </div>
-            
-            <div class="flex gap-2 mt-auto">
-                <button onclick="runAgent('${agent.name}')" class="flex-1 bg-purple-50 dark:bg-purple-900/20 text-purple-700 dark:text-purple-300 py-2 rounded-lg text-sm font-medium hover:bg-purple-100 dark:hover:bg-purple-900/40 transition">
-                    <i class="fas fa-play mr-2"></i> Exécuter
-                </button>
-            </div>
-        </div>
-    `).join('');
-}
-
-function promptGitHubConfig() {
-    const token = prompt("Entrez votre GitHub Personal Access Token (avec droits 'repo') :");
-    if (!token) return;
-    const repo = prompt("Entrez le nom du repo (ex: mon-user/mon-repo) :");
-    if (!repo) return;
-
-    localStorage.setItem('gh_token', token);
-    localStorage.setItem('gh_repo', repo);
-    loadAgents();
-}
-
-async function runAgent(filename) {
-    const name = filename.replace('.js', '');
-    const btn = event.currentTarget;
-    const originalContent = btn.innerHTML;
-
-    btn.disabled = true;
-    btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
-
-    try {
-        const res = await fetch(buildApiUrl(`/agents/${name}`));
-        const data = await res.json();
-        alert(`Résultat de l'agent :\n${JSON.stringify(data, null, 2)}`);
-    } catch (e) {
-        alert("Erreur lors de l'exécution : " + e.message);
-    } finally {
-        btn.disabled = false;
-        btn.innerHTML = originalContent;
-    }
-}
-
-// Stub for Modal
-function openAgentModal() {
-    alert("Fonctionnalité 'Créer Agent' arrive dans l'étape suivante !");
-}
