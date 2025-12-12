@@ -210,6 +210,9 @@ async function loadConfig() {
         if (document.getElementById('conf-podcast')) {
             document.getElementById('conf-podcast').value = config.podcastFeedUrl || 'Non configuré';
         }
+        if (document.getElementById('conf-wstd-staging')) {
+            document.getElementById('conf-wstd-staging').value = config.wstdStagingUrl || 'Non configuré (fichiers locaux)';
+        }
         if (config.seo) {
             document.getElementById('conf-metaTitle').value = config.seo.metaTitle || '';
             document.getElementById('conf-metaDesc').value = config.seo.metaDescription || '';

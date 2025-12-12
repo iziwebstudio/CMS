@@ -15,6 +15,7 @@ export async function onRequestGet(context) {
         youtubeRssUrl: env.YOUTUBE_FEED_URL || "",
         frontendBuilderUrl: env.FRONTEND_BUILDER_URL || "",
         podcastFeedUrl: env.PODCAST_FEED_URL || "",
+        wstdStagingUrl: env.WSTD_STAGING_URL || "",
         seo: {
             metaTitle: env.META_TITLE || "",
             metaDescription: env.META_DESCRIPTION || "",
