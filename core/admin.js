@@ -100,12 +100,12 @@ function showView(viewName) {
 
     // Update Nav State
     document.querySelectorAll('.nav-item').forEach(el => {
-        el.classList.remove('bg-orange-50', 'text-orange-600');
+        el.classList.remove('bg-purple-50', 'text-purple-600');
         el.classList.add('text-slate-600');
     });
     const activeBtn = document.querySelector(`button[onclick="showView('${viewName}')"]`);
     if (activeBtn) {
-        activeBtn.classList.add('bg-orange-50', 'text-orange-600');
+        activeBtn.classList.add('bg-purple-50', 'text-purple-600');
         activeBtn.classList.remove('text-slate-600');
     }
 }
@@ -259,7 +259,7 @@ function renderDashboard() {
                     <td class="px-6 py-4 font-medium text-slate-800 truncate max-w-xs" title="${post.title}">${post.title}</td>
                     <td class="px-6 py-4 text-slate-500">${new Date(post.pubDate).toLocaleDateString('fr-FR')}</td>
                     <td class="px-6 py-4 text-right">
-                        <button onclick="openPreview('${post.slug}')" class="text-orange-500 hover:text-orange-700 font-medium text-xs uppercase tracking-wide">Voir</button>
+                        <button onclick="openPreview('${post.slug}')" class="text-orange-500 hover:text-purple-700 font-medium text-xs uppercase tracking-wide">Voir</button>
                     </td>
                 </tr>
             `).join('');
@@ -335,7 +335,7 @@ function renderContentTable() {
             </td>
             <td class="px-6 py-4 text-slate-500 text-xs">${new Date(post.pubDate).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openPreview('${post.slug}')" class="bg-white border border-slate-200 hover:border-orange-500 text-slate-600 hover:text-orange-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
+                <button onclick="openPreview('${post.slug}')" class="bg-white border border-slate-200 hover:border-purple-500 text-slate-600 hover:text-purple-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
                     <i class="fas fa-eye mr-1"></i> Aperçu
                 </button>
             </td>
@@ -405,7 +405,7 @@ function renderVideos() {
             </td>
             <td class="px-6 py-4 text-slate-500 text-xs">${new Date(video.published).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openVideoPreview('${video.link}')" class="bg-white border border-slate-200 hover:border-orange-500 text-slate-600 hover:text-orange-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
+                <button onclick="openVideoPreview('${video.link}')" class="bg-white border border-slate-200 hover:border-purple-500 text-slate-600 hover:text-purple-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
                     <i class="fas fa-eye mr-1"></i> Aperçu
                 </button>
             </td>
@@ -450,7 +450,7 @@ function renderPodcasts() {
             </td>
             <td class="px-6 py-4 text-slate-500 text-xs">${new Date(podcast.pubDate).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openPodcastPreview('${podcast.link}')" class="bg-white border border-slate-200 hover:border-orange-500 text-slate-600 hover:text-orange-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
+                <button onclick="openPodcastPreview('${podcast.link}')" class="bg-white border border-slate-200 hover:border-purple-500 text-slate-600 hover:text-purple-600 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
                     <i class="fas fa-play mr-1"></i> Ouvrir
                 </button>
             </td>
