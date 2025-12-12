@@ -407,8 +407,8 @@ function renderContentTable() {
             </td>
             <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(post.pubDate).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openPreview('${post.slug}')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
-                    <i class="fas fa-eye mr-1"></i> Aperçu
+                <button onclick="openPreview('${post.slug}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
+                    <i class="fas fa-eye"></i> Aperçu
                 </button>
             </td>
         </tr>
@@ -477,8 +477,8 @@ function renderVideos() {
             </td>
             <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(video.published).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openVideoPreview('${video.link}')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
-                    <i class="fas fa-eye mr-1"></i> Aperçu
+                <button onclick="openVideoPreview('${video.link}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
+                    <i class="fas fa-eye"></i> Aperçu
                 </button>
             </td>
         </tr>
@@ -501,7 +501,7 @@ function renderPodcasts() {
     const filtered = appState.podcasts.filter(p => p.title.toLowerCase().includes(search));
 
     if (filtered.length === 0) {
-        tbody.innerHTML = `<tr><td colspan="3" class="text-center py-12 bg-slate-50 rounded-lg border border-dashed border-slate-300"><i class="fas fa-microphone text-4xl text-slate-300 mb-3"></i><p class="text-slate-500">Aucun épisode trouvé</p></td></tr>`;
+        tbody.innerHTML = `<tr><td colspan="4" class="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-700"><i class="fas fa-microphone text-4xl text-slate-300 dark:text-slate-600 mb-3"></i><p class="text-slate-500 dark:text-slate-400">Aucun épisode trouvé</p></td></tr>`;
         document.getElementById('podcast-pagination-info').textContent = `Page 1 sur 1`;
         document.getElementById('prev-podcast-page-btn').disabled = true;
         document.getElementById('next-podcast-page-btn').disabled = true;
@@ -515,15 +515,20 @@ function renderPodcasts() {
     const pagePodcasts = filtered.slice(start, start + PODCASTS_PER_PAGE);
 
     tbody.innerHTML = pagePodcasts.map(podcast => `
-        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group">
-            <td class="px-6 py-4 font-medium text-slate-800">
-                ${podcast.title}
-                <div class="text-xs text-slate-400 mt-0.5 truncate max-w-md">${podcast.description ? podcast.description.replace(/<[^>]*>/g, '').substring(0, 60) + '...' : ''}</div>
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group border-b border-transparent dark:border-slate-700/50 last:border-0">
+            <td class="px-6 py-4">
+                <div class="w-16 h-10 rounded bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                    <div class="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-500"><i class="fas fa-microphone"></i></div>
+                </div>
             </td>
-            <td class="px-6 py-4 text-slate-500 text-xs">${new Date(podcast.pubDate).toLocaleDateString('fr-FR')}</td>
+            <td class="px-6 py-4 font-medium text-slate-800 dark:text-white">
+                ${podcast.title}
+                <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate max-w-md">${podcast.description ? podcast.description.replace(/<[^>]*>/g, '').substring(0, 60) + '...' : ''}</div>
+            </td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(podcast.pubDate).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openPodcastPreview('${podcast.link}')" class="bg-white dark:bg-slate-800 border border-slate-200 dark:border-slate-600 hover:border-purple-500 dark:hover:border-purple-400 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 px-3 py-1.5 rounded-md text-sm transition shadow-sm">
-                    <i class="fas fa-play mr-1"></i> Ouvrir
+                <button onclick="openPodcastPreview('${podcast.link}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
+                    <i class="fas fa-play"></i> Ouvrir
                 </button>
             </td>
         </tr>
