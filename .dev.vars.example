@@ -19,8 +19,12 @@ YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxx
 # Podcast : URL du flux RSS (Anchor, Spotify, Apple Podcasts, etc.)
 PODCAST_FEED_URL=https://anchor.fm/s/xxxxxxx/podcast/rss
 
-# --- FRONTEND BUILDER ---
-# URL de votre projet Webstudio (optionnel)
+# --- FRONTEND WEBSTUDIO ---
+# URL de votre projet Webstudio (staging ou production)
+# Exemple : https://votre-projet.wstd.io
+WSTD_STAGING_URL=https://votre-projet.wstd.io
+
+# URL de votre projet Webstudio dashboard (optionnel)
 FRONTEND_BUILDER_URL=https://apps.webstudio.is/dashboard
 
 # --- SEO & MÉTADONNÉES ---

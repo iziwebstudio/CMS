@@ -1,15 +1,17 @@
 // ====================================================================
-// MIDDLEWARE GLOBAL - Cloudflare Pages
+// MIDDLEWARE GLOBAL - Cloudflare Pages avec Proxy Webstudio
 // ====================================================================
-// Ce middleware gère :
-// - Headers CORS (OPTIONS)
-// - Passthrough des fichiers statiques (non-API)
+// Routing :
+// - /api/*    → Functions locales (API)
+// - /admin/*  → Dashboard admin local
+// - /*        → Proxy vers Webstudio (frontend)
 // ====================================================================
 
 import { corsHeaders } from './shared/utils.js';
 
 export async function onRequest(context) {
     const { request, next, env } = context;
+    const url = new URL(request.url);
 
     // Gérer les requêtes OPTIONS (CORS preflight)
     if (request.method === 'OPTIONS') {
@@ -19,12 +21,69 @@ export async function onRequest(context) {
         });
     }
 
-    // Si ce n'est PAS une route /api/*, laisser Pages servir les fichiers statiques
-    const url = new URL(request.url);
-    if (!url.pathname.startsWith('/api/')) {
+    // Routes locales : /api/* et /admin/*
+    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/')) {
+        // Si /api/* → continuer vers les handlers Functions
+        if (url.pathname.startsWith('/api/')) {
+            return next();
+        }
+
+        // Si /admin/* → servir les fichiers statiques locaux
         return env.ASSETS.fetch(request);
     }
 
-    // Pour les routes /api/*, continuer vers les handlers spécifiques
-    return next();
+    // ====================================================================
+    // PROXY WEBSTUDIO - Frontend
+    // ====================================================================
+    // Toutes les autres routes → proxy vers Webstudio
+
+    const WSTD_STAGING_URL = env.WSTD_STAGING_URL || 'https://votre-projet.wstd.io';
+
+    try {
+        // Construire l'URL Webstudio
+        const webstudioUrl = new URL(url.pathname + url.search, WSTD_STAGING_URL);
+
+        // Créer une nouvelle requête vers Webstudio
+        const webstudioRequest = new Request(webstudioUrl, {
+            method: request.method,
+            headers: request.headers,
+            body: request.body,
+            redirect: 'follow'
+        });
+
+        // Fetch depuis Webstudio
+        const webstudioResponse = await fetch(webstudioRequest);
+
+        // Si c'est du HTML, réécrire les URLs
+        const contentType = webstudioResponse.headers.get('content-type') || '';
+        if (contentType.includes('text/html')) {
+            let html = await webstudioResponse.text();
+
+            // Remplacer les URLs Webstudio par l'URL du worker
+            // Pour que les liens internes fonctionnent
+            const webstudioDomain = new URL(WSTD_STAGING_URL).hostname;
+            const workerDomain = url.hostname;
+
+            html = html.replace(
+                new RegExp(`https?://${webstudioDomain.replace(/\./g, '\\.')}`, 'g'),
+                `https://${workerDomain}`
+            );
+
+            // Retourner le HTML modifié
+            return new Response(html, {
+                status: webstudioResponse.status,
+                statusText: webstudioResponse.statusText,
+                headers: webstudioResponse.headers
+            });
+        }
+
+        // Pour les autres types de contenu (CSS, JS, images), passer tel quel
+        return webstudioResponse;
+
+    } catch (error) {
+        console.error('Erreur proxy Webstudio:', error);
+
+        // Fallback : servir index.html local si erreur
+        return env.ASSETS.fetch(new Request(url.origin + '/index.html'));
+    }
 }
