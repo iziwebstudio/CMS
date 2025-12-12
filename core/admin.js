@@ -232,10 +232,17 @@ async function loadConfig() {
         }
 
         // Update Frontend Builder Button URL
-        if (config.frontendBuilderUrl) {
-            const builderBtn = document.getElementById('builder-tab-btn');
-            if (builderBtn) {
+        const builderBtn = document.getElementById('builder-tab-btn');
+        if (builderBtn) {
+            if (config.frontendBuilderUrl) {
                 builderBtn.href = config.frontendBuilderUrl;
+                builderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+            } else {
+                builderBtn.href = "#";
+                builderBtn.removeAttribute('target');
+                builderBtn.classList.add('opacity-50', 'cursor-not-allowed');
+                builderBtn.querySelector('span').textContent = "Builder non configuré";
+                builderBtn.onclick = (e) => { e.preventDefault(); alert("Veuillez configurer FRONTEND_BUILDER_URL"); };
             }
         }
     } catch (e) {
