@@ -741,43 +741,105 @@
 
             <!-- VIEW: HELP (FAQ Accordion) -->
             <div id="view-help" class="view-section hidden space-y-6">
-                <li><code>/api/posts</code> : Liste des articles</li>
-                <li><code>/api/post/:slug</code> : Détail d'un article</li>
-                <li><code>/api/videos</code> : Liste des vidéos</li>
-                <li><code>/api/video/:id</code> : Détail d'une vidéo (par ID YouTube)</li>
-                <li><code>/api/podcasts</code> : Liste des podcasts</li>
-                <li><code>/api/podcast/:id</code> : Détail d'un podcast (par GUID ou Slug)</li>
-                </ul>
-                </li>
-                <li><strong>Analytics :</strong> Consultez les rapports de trafic Google Analytics intégrés.
-                </li>
-                </ul>
+                <div class="bg-white rounded-xl shadow-sm border border-slate-100 p-8">
+                    <h3 class="font-semibold text-slate-800 mb-6 text-xl">Foire Aux Questions</h3>
+                    <div class="space-y-4">
 
-                <br>
-                <h4>4. Configuration</h4>
-                <p>La configuration de ce site est gérée par des <strong>variables d'environnement</strong> (sur
-                    Cloudflare Workers ou via <code>wrangler.toml</code>). L'onglet Configuration affiche l'état
-                    actuel
-                    de ces variables :</p>
-                <ul class="list-disc pl-5 space-y-1">
-                    <li><strong>SUBSTACK_FEED_URL</strong> : L'URL du flux RSS de votre newsletter Substack.</li>
-                    <li><strong>YOUTUBE_FEED_URL</strong> : L'URL du flux RSS de votre chaîne YouTube.</li>
-                    <li><strong>PODCAST_FEED_URL</strong> : L'URL du flux RSS de votre podcast.</li>
-                    <li><strong>FRONTEND_BUILDER_URL</strong> : L'URL de votre projet Webstudio.</li>
-                    <li><strong>META_TITLE / DESC / KEYWORDS</strong> : Paramètres SEO globaux du site.</li>
-                </ul>
-                <p class="mt-2">Pour modifier ces valeurs, vous devez mettre à jour les variables d'environnement de
-                    votre déploiement Cloudflare.</p>
+                        <!-- Item 1 -->
+                        <details class="group border border-slate-200 rounded-lg open:border-purple-200 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 rounded-lg group-open:bg-purple-50 group-open:text-purple-700 transition">
+                                <span class="font-medium text-slate-700 group-open:text-purple-700">Qu'est-ce que
+                                    iziWebCMS ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 leading-relaxed border-t border-slate-100 group-open:border-purple-100">
+                                iziWebCMS est un CMS Headless moderne qui connecte vos sources de données existantes
+                                (Substack, YouTube, Podcast) à un frontend ultra-rapide. Il vous permet de gérer votre
+                                contenu centralisé sans base de données complexe.
+                            </div>
+                        </details>
 
+                        <!-- Item 2 -->
+                        <details class="group border border-slate-200 rounded-lg open:border-purple-200 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 rounded-lg group-open:bg-purple-50 group-open:text-purple-700 transition">
+                                <span class="font-medium text-slate-700 group-open:text-purple-700">Comment mettre à
+                                    jour mon contenu ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 leading-relaxed border-t border-slate-100 group-open:border-purple-100">
+                                C'est automatique ! iziWebCMS se synchronise avec vos flux RSS (Substack, YouTube,
+                                Anchor). Dès que vous publiez sur ces plateformes, votre site est mis à jour après
+                                expiration du cache (environ 3 minutes). Vous pouvez forcer la mise à jour avec le
+                                bouton "Vider le Cache".
+                            </div>
+                        </details>
 
-                <br>
-                <h4>5. Maintenance</h4>
-                <p>Utilisez le bouton <strong>Vider le Cache</strong> dans l'onglet Configuration si vous ne voyez
-                    pas
-                    vos derniers contenus apparaître immédiatement. Le système met en cache les données pour la
-                    performance (TTL par défaut de 3 minutes).</p>
+                        <!-- Item 3 -->
+                        <details class="group border border-slate-200 rounded-lg open:border-purple-200 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 rounded-lg group-open:bg-purple-50 group-open:text-purple-700 transition">
+                                <span class="font-medium text-slate-700 group-open:text-purple-700">Comment changer le
+                                    nom de mon site ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 leading-relaxed border-t border-slate-100 group-open:border-purple-100">
+                                Le nom de votre site est défini par la variable d'environnement <code>META_TITLE</code>
+                                dans Cloudflare Pages. Vous pouvez le modifier dans les paramètres de votre projet
+                                Cloudflare > Settings > Environment Variables.
+                            </div>
+                        </details>
+
+                        <!-- Item 4 -->
+                        <details class="group border border-slate-200 rounded-lg open:border-purple-200 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 rounded-lg group-open:bg-purple-50 group-open:text-purple-700 transition">
+                                <span class="font-medium text-slate-700 group-open:text-purple-700">Le Frontend Builder
+                                    ne fonctionne pas</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 leading-relaxed border-t border-slate-100 group-open:border-purple-100">
+                                Assurez-vous d'avoir configuré la variable <code>FRONTEND_BUILDER_URL</code> avec le
+                                lien vers votre projet Webstudio. Si ce lien est manquant, le bouton d'accès au
+                                constructeur sera désactivé.
+                            </div>
+                        </details>
+
+                        <!-- Item 5 -->
+                        <details class="group border border-slate-200 rounded-lg open:border-purple-200 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 rounded-lg group-open:bg-purple-50 group-open:text-purple-700 transition">
+                                <span class="font-medium text-slate-700 group-open:text-purple-700">Pourquoi mes images
+                                    ne s'affichent pas ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 leading-relaxed border-t border-slate-100 group-open:border-purple-100">
+                                iziWebCMS utilise un proxy intelligent pour afficher votre site Webstudio sur votre
+                                propre domaine. Si des images manquent, c'est souvent lié à une configuration DNS ou
+                                CSP. Le système gère, cependant, automatiquement la plupart des cas via le proxy
+                                intégré.
+                            </div>
+                        </details>
+
+                    </div>
+                </div>
             </div>
-        </div>
 
         </div>
     </main>
