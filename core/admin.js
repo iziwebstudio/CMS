@@ -245,6 +245,24 @@ async function loadConfig() {
                 builderBtn.onclick = (e) => { e.preventDefault(); alert("Veuillez configurer FRONTEND_BUILDER_URL"); };
             }
         }
+
+        // Configure Analytics View
+        const analyticsContainer = document.getElementById('analytics-container');
+        const analyticsGuide = document.getElementById('analytics-guide');
+        const analyticsFrame = document.getElementById('analytics-frame');
+
+        if (analyticsContainer && analyticsGuide && analyticsFrame) {
+            if (config.analyticsEmbedUrl) {
+                // Show Analytics
+                analyticsFrame.src = config.analyticsEmbedUrl;
+                analyticsContainer.classList.remove('hidden');
+                analyticsGuide.classList.add('hidden');
+            } else {
+                // Show Setup Guide
+                analyticsContainer.classList.add('hidden');
+                analyticsGuide.classList.remove('hidden');
+            }
+        }
     } catch (e) {
         console.error("Erreur chargement config:", e);
     }

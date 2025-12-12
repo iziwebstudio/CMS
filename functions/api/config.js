@@ -16,6 +16,7 @@ export async function onRequestGet(context) {
         frontendBuilderUrl: env.FRONTEND_BUILDER_URL || "",
         podcastFeedUrl: env.PODCAST_FEED_URL || "",
         wstdStagingUrl: env.WSTD_STAGING_URL || "",
+        analyticsEmbedUrl: env.ANALYTICS_EMBED_URL || "",
         seo: {
             metaTitle: env.META_TITLE || "",
             metaDescription: env.META_DESCRIPTION || "",
