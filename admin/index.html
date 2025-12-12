@@ -151,12 +151,16 @@
             btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
 
             // Get API Base URL (if provided)
-            const apiUrlInput = document.getElementById('api-url').value.replace(/\/$/, ''); // Remove trailing slash
-            const baseUrl = apiUrlInput || '';
+            let apiUrlInput = document.getElementById('api-url').value.replace(/\/$/, ''); // Remove trailing slash
+
+            // Auto-detect: If empty, use current origin (for standalone workers)
+            if (!apiUrlInput) {
+                apiUrlInput = window.location.origin;
+            }
 
             try {
-                // Construct URL: use baseUrl if present, otherwise relative path
-                const loginUrl = baseUrl ? `${baseUrl}/api/login` : '/api/login';
+                // Construct URL
+                const loginUrl = `${apiUrlInput}/api/login`;
 
                 const res = await fetch(loginUrl, {
                     method: 'POST',
