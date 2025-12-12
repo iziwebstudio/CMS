@@ -98,9 +98,19 @@ export async function onRequest(context) {
             );
 
             // 2. Réécrire les chemins relatifs simples dans src et href
+            // MAIS ignorer les chemins spéciaux Webstudio (/cgi/, /assets/, /_next/)
             html = html.replace(
                 /(\s(?:src|href)=["'])\/([^"']+)(["'])/gi,
-                `$1https://${workerDomain}/$2$3`
+                (match, prefix, path, suffix) => {
+                    // Ne PAS réécrire les chemins spéciaux Webstudio
+                    if (path.startsWith('cgi/') ||
+                        path.startsWith('assets/') ||
+                        path.startsWith('_next/') ||
+                        path.startsWith('_astro/')) {
+                        return match; // Garder tel quel
+                    }
+                    return `${prefix}https://${workerDomain}/${path}${suffix}`;
+                }
             );
 
             // 3. Réécrire les srcset (format spécial avec virgules et descripteurs)
@@ -123,7 +133,12 @@ export async function onRequest(context) {
                             const [, url, descriptor = ''] = urlMatch;
 
                             // Réécrire seulement les chemins relatifs (commençant par /)
-                            if (url.startsWith('/')) {
+                            // SAUF les chemins spéciaux Webstudio
+                            if (url.startsWith('/') &&
+                                !url.startsWith('/cgi/') &&
+                                !url.startsWith('/assets/') &&
+                                !url.startsWith('/_next/') &&
+                                !url.startsWith('/_astro/')) {
                                 const rewrittenUrl = `https://${workerDomain}${url}`;
                                 return rewrittenUrl + descriptor;
                             }
