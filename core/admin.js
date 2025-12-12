@@ -189,11 +189,18 @@ async function loadData() {
         appState.podcasts = podcasts;
 
         // Update Stats
-        document.getElementById('stat-total-posts').textContent = appState.posts.length;
+        const statPostsEl = document.getElementById('stat-posts-count');
+        if (statPostsEl) statPostsEl.textContent = appState.posts.length;
+
         const lastPostDate = appState.posts.length > 0 ? new Date(appState.posts[0].pubDate).toLocaleDateString('fr-FR') : '-';
-        document.getElementById('stat-last-update').textContent = lastPostDate;
-        document.getElementById('stat-total-videos').textContent = appState.videos.length;
-        document.getElementById('stat-total-podcasts').textContent = appState.podcasts.length;
+        const statLastSyncEl = document.getElementById('stat-last-sync');
+        if (statLastSyncEl) statLastSyncEl.textContent = lastPostDate;
+
+        const statVideosEl = document.getElementById('stat-videos-count');
+        if (statVideosEl) statVideosEl.textContent = appState.videos.length;
+
+        const statPodcastsEl = document.getElementById('stat-podcasts-count');
+        if (statPodcastsEl) statPodcastsEl.textContent = appState.podcasts.length;
 
 
         // Feed status UI (only if element exists)
