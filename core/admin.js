@@ -1,17 +1,14 @@
-// API Base URL Configuration
-// Allows hosting frontend separately from the worker
-const API_BASE_URL = window.STACKPAGES_API_URL || "";
+// ====================================================================
+// CONFIGURATION POUR MODE LOCAL (WORKER LOCAL)
+// ====================================================================
+// Mode simplifié : toutes les requêtes vont directement au worker local
+// La configuration (flux RSS, etc.) est gérée par les env vars du worker
 
-// Get user config (Public Mode)
-const USER_CONFIG = window.STACKPAGES_CONFIG || {};
-
-// Helper function to build URL with config params
+// Helper function to build API URL (mode local simplifié)
 function buildApiUrl(endpoint) {
-    const url = new URL(endpoint, window.location.origin);
-    if (USER_CONFIG.substack) url.searchParams.set('substack_url', USER_CONFIG.substack);
-    if (USER_CONFIG.youtube) url.searchParams.set('youtube_url', USER_CONFIG.youtube);
-    if (USER_CONFIG.podcast) url.searchParams.set('podcast_url', USER_CONFIG.podcast);
-    return API_BASE_URL + url.pathname + url.search;
+    // En mode local, on retourne simplement l'endpoint
+    // Le worker local gère la config via ses env vars
+    return endpoint;
 }
 
 // State

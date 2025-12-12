@@ -742,12 +742,18 @@
         </div>
     </div>
 
-    <!-- CONFIGURATION PUBLIC VERSION -->
-    <!-- Décommenter et configurer pour pointer vers un worker public partagé -->
-    
+    <!-- ====================================================================
+         MODE LOCAL ACTIVÉ (par défaut)
+         ====================================================================
+         Le worker local (_worker.js) gère toute la configuration via ses 
+         variables d'environnement. Aucune config frontend n'est nécessaire.
+         
+         Pour activer le MODE PUBLIC (API partagée), décommenter ci-dessous :
+    -->
+    <!--
     <script>
         // URL de l'API Worker public (ex: https://api.stackpages.dev) 
-        window.STACKPAGES_API_URL = "https://demo.stackpages.workers.dev/"; // Laisser vide si le worker est au même endroit que le frontend
+        window.STACKPAGES_API_URL = "https://demo.stackpages.workers.dev/";
         
         // Configuration des flux RSS (requis pour le mode Public)
         window.STACKPAGES_CONFIG = {
@@ -756,7 +762,8 @@
             podcast: "https://anchor.fm/s/VOTRE_PODCAST_ID/podcast/rss"
         };
     </script>
-    
+    -->
+
     <script src="./../core/admin.js"></script>
     <script>
         // Logout Handler

@@ -1,0 +1,33 @@
+name = "stackpages-cms"
+main = "_worker.js"
+compatibility_date = "2024-12-12"
+
+# Configuration pour le développement local
+[env.development]
+vars = { }
+
+# Variables d'environnement (à configurer selon vos besoins)
+# Méthode 1 : Via wrangler.toml (NON recommandé pour les secrets en production)
+# Méthode 2 : Via Cloudflare Dashboard (Recommandé pour la production)
+# Méthode 3 : Via fichier .dev.vars (Pour le dev local uniquement)
+
+# Pour le développement local, créer un fichier .dev.vars avec :
+# ADMIN_EMAIL=admin@example.com
+# ADMIN_PASSWORD=votre_password_securise
+# SUBSTACK_FEED_URL=https://votre-compte.substack.com/feed
+# YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID
+# PODCAST_FEED_URL=https://anchor.fm/s/VOTRE_ID/podcast/rss
+# FRONTEND_BUILDER_URL=https://apps.webstudio.is/dashboard
+# META_TITLE=Mon Site StackPages
+# META_DESCRIPTION=Description de mon site
+# META_KEYWORDS=mots,clés,seo
+
+# Exemple de variables non sensibles (peuvent rester dans wrangler.toml)
+[vars]
+META_TITLE = "StackPages CMS"
+META_DESCRIPTION = "Portail de gestion de contenu basé sur RSS"
+META_KEYWORDS = "cms,blog,substack,youtube,podcast"
+FRONTEND_BUILDER_URL = "https://apps.webstudio.is/dashboard"
+
+# ⚠️ IMPORTANT : Ne jamais commiter ADMIN_PASSWORD dans wrangler.toml
+# Utiliser .dev.vars pour le dev local ou Cloudflare Dashboard pour la prod
