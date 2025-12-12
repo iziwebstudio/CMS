@@ -21,23 +21,28 @@ export async function onRequest(context) {
         });
     }
 
-    // Routes locales : /api/* et /admin/*
-    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/')) {
+    // Routes locales : /api/*, /admin/*, /core/*
+    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
         // Si /api/* → continuer vers les handlers Functions
         if (url.pathname.startsWith('/api/')) {
             return next();
         }
 
-        // Si /admin/* → servir les fichiers statiques locaux
+        // Si /admin/* ou /core/* → servir les fichiers statiques locaux
         return env.ASSETS.fetch(request);
     }
 
     // ====================================================================
-    // PROXY WEBSTUDIO - Frontend
+    // PROXY WEBSTUDIO - Frontend (seulement si WSTD_STAGING_URL définie)
     // ====================================================================
     // Toutes les autres routes → proxy vers Webstudio
 
-    const WSTD_STAGING_URL = env.WSTD_STAGING_URL || '';
+    const WSTD_STAGING_URL = env.WSTD_STAGING_URL;
+
+    // Si pas de WSTD_STAGING_URL, servir les fichiers locaux (pas de proxy)
+    if (!WSTD_STAGING_URL) {
+        return env.ASSETS.fetch(request);
+    }
 
     try {
         // Construire l'URL Webstudio
