@@ -4,7 +4,7 @@ import { getCachedRSSData } from '../shared/cache.js';
 
 export async function onRequestGet(context) {
     const { env } = context;
-    const feedUrl = env.SUBSTACK_FEED_URL;
+    const feedUrl = env.BLOG_FEED_URL;
 
     if (!feedUrl) {
         return jsonResponse([]);

@@ -9,8 +9,13 @@ ADMIN_EMAIL=admin@example.com
 ADMIN_PASSWORD=changeme123
 
 # --- FLUX RSS CONTENUS ---
-# Substack : https://VOTRE_COMPTE.substack.com/feed
-SUBSTACK_FEED_URL=https://example.substack.com/feed
+# Blog : RSS de votre blog (Substack, WordPress, Ghost, Medium, etc.)
+# Exemples:
+# - Substack: https://VOTRE_COMPTE.substack.com/feed
+# - WordPress: https://votreblog.com/feed
+# - Ghost: https://votreblog.com/rss
+# - Medium: https://medium.com/feed/@username
+BLOG_FEED_URL=https://example.substack.com/feed
 
 # YouTube : https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
 # Pour trouver votre CHANNEL_ID : https://commentpicker.com/youtube-channel-id.php

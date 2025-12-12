@@ -37,7 +37,7 @@ export async function onRequest(context) {
     // ====================================================================
     // Toutes les autres routes → proxy vers Webstudio
 
-    const WSTD_STAGING_URL = env.WSTD_STAGING_URL || 'https://votre-projet.wstd.io';
+    const WSTD_STAGING_URL = env.WSTD_STAGING_URL || '';
 
     try {
         // Construire l'URL Webstudio

@@ -5,7 +5,7 @@ import { getCachedRSSData } from '../../shared/cache.js';
 export async function onRequestGet(context) {
     const { params, env } = context;
     const slug = params.slug;
-    const feedUrl = env.SUBSTACK_FEED_URL;
+    const feedUrl = env.BLOG_FEED_URL;
 
     if (!feedUrl) {
         return errorResponse("No Substack URL configured", 404);
