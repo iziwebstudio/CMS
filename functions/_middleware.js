@@ -21,10 +21,14 @@ export async function onRequest(context) {
         });
     }
 
-    // Routes locales : /api/*, /admin/*, /core/*
-    if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
-        // Si /api/* → continuer vers les handlers Functions
-        if (url.pathname.startsWith('/api/')) {
+    // Routes locales : /api/*, /admin/*, /core/*, /agents/*
+    if (url.pathname.startsWith('/api/') ||
+        url.pathname.startsWith('/admin/') ||
+        url.pathname.startsWith('/core/') ||
+        url.pathname.startsWith('/agents/')) {
+
+        // Si /api/* ou /agents/* → continuer vers les handlers Functions
+        if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/agents/')) {
             return next();
         }
 
