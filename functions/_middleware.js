@@ -104,20 +104,30 @@ export async function onRequest(context) {
             );
 
             // 3. Réécrire les srcset (format spécial avec virgules et descripteurs)
-            // Exemple: srcset="/img1.jpg 480w, /img2.jpg 800w, /img3.jpg 1200w"
+            // Format: srcset="/img1.jpg 480w, /img2.jpg 800w" OU srcset="/img.png 1x, /img@2x.png 2x"
             html = html.replace(
                 /srcset=["']([^"']+)["']/gi,
                 (match, srcsetContent) => {
-                    // Séparer par virgule, réécrire chaque URL, rejoindre
+                    // Séparer par virgule chaque entrée
                     const rewritten = srcsetContent
                         .split(',')
                         .map(part => {
-                            // Chaque part = "URL descripteur" (ex: "/image.jpg 480w")
                             const trimmed = part.trim();
-                            // Réécrire seulement si commence par /
-                            if (trimmed.startsWith('/')) {
-                                return trimmed.replace(/^\//, `https://${workerDomain}/`);
+
+                            // Format: "URL descripteur" où descripteur = "1x", "2x", "480w", etc.
+                            // Utiliser regex pour séparer URL et descripteur
+                            const urlMatch = trimmed.match(/^(\S+)(\s+.+)?$/);
+
+                            if (!urlMatch) return trimmed;
+
+                            const [, url, descriptor = ''] = urlMatch;
+
+                            // Réécrire seulement les chemins relatifs (commençant par /)
+                            if (url.startsWith('/')) {
+                                const rewrittenUrl = `https://${workerDomain}${url}`;
+                                return rewrittenUrl + descriptor;
                             }
+
                             return trimmed;
                         })
                         .join(', ');
