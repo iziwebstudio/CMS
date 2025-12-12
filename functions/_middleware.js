@@ -67,19 +67,42 @@ export async function onRequest(context) {
         newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
         newHeaders.set('Access-Control-Allow-Headers', 'Content-Type, X-Auth-Key');
 
+        // Content Security Policy : autoriser images de TOUTES sources
+        newHeaders.set('Content-Security-Policy',
+            "default-src 'self'; " +
+            "img-src * data: blob: 'unsafe-inline'; " +  // Toutes les images OK
+            "media-src * data: blob:; " +                 // Toutes les vidéos OK
+            "font-src * data:; " +                        // Toutes les polices OK
+            "style-src 'self' 'unsafe-inline' *; " +     // Tous les styles OK
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' *; " + // Scripts OK
+            "connect-src *; " +                           // Fetch/XHR vers toutes sources
+            "frame-src *;"                                // iframes OK
+        );
+
+        // Supprimer le CSP restrictif existant si présent
+        newHeaders.delete('X-Content-Security-Policy');
+        newHeaders.delete('X-WebKit-CSP');
+
         // Si c'est du HTML, réécrire les URLs
         const contentType = webstudioResponse.headers.get('content-type') || '';
         if (contentType.includes('text/html')) {
             let html = await webstudioResponse.text();
 
             // Remplacer les URLs Webstudio par l'URL du worker
-            // Pour que les liens internes fonctionnent
             const webstudioDomain = new URL(WSTD_STAGING_URL).hostname;
             const workerDomain = url.hostname;
 
+            // Réécrire toutes les URLs absolues Webstudio
             html = html.replace(
                 new RegExp(`https?://${webstudioDomain.replace(/\./g, '\\.')}`, 'g'),
                 `https://${workerDomain}`
+            );
+
+            // Réécrire les chemins relatifs dans les attributs src, href, srcset
+            // Pour que les assets locaux de Webstudio soient proxiés
+            html = html.replace(
+                /(\s(?:src|href|srcset)=["'])\/([^"']+)(["'])/gi,
+                `$1https://${workerDomain}/$2$3`
             );
 
             // Retourner le HTML modifié avec headers CORS
