@@ -160,6 +160,10 @@ function showView(viewName) {
 
     // Special handlers per view
     if (viewName === 'agents') loadAgents();
+    if (viewName === 'agent-create') {
+        currentWizardStep = 1;
+        updateWizardUI();
+    }
 }
 
 // Data Loading
