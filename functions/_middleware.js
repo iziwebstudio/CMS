@@ -115,9 +115,64 @@ export async function onRequest(context) {
     
     // Route spéciale : /admin/dashboard/ide → servir admin/ide.html
     if (url.pathname === '/admin/dashboard/ide' || url.pathname === '/admin/dashboard/ide/') {
-        const ideRequest = new Request(new URL('/admin/ide.html', request.url), request);
-        const ideResponse = await env.ASSETS.fetch(ideRequest);
-        return ideResponse;
+        console.log(`[IDE Route] Handling /admin/dashboard/ide request`);
+        
+        // Essayer plusieurs chemins possibles pour ide.html
+        const idePaths = [
+            '/admin/ide.html',
+            '/admin/IDE.html',
+            'admin/ide.html',
+            'admin/IDE.html'
+        ];
+        
+        for (const idePath of idePaths) {
+            let ideUrl;
+            if (idePath.startsWith('/')) {
+                ideUrl = new URL(idePath, request.url);
+            } else {
+                ideUrl = new URL('/' + idePath, request.url);
+            }
+            
+            const ideRequest = new Request(ideUrl.toString(), {
+                method: 'GET',
+                headers: request.headers
+            });
+            
+            console.log(`[IDE Route] Trying to fetch: ${ideUrl.toString()}`);
+            let ideResponse = await env.ASSETS.fetch(ideRequest);
+            
+            // Suivre les redirections si nécessaire
+            let redirectCount = 0;
+            while ((ideResponse.status === 308 || ideResponse.status === 301 || ideResponse.status === 302) && redirectCount < 5) {
+                const location = ideResponse.headers.get('Location');
+                if (location) {
+                    const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
+                    console.log(`[IDE Route] Following redirect to: ${redirectUrl.toString()}`);
+                    ideResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), {
+                        method: 'GET',
+                        headers: request.headers
+                    }));
+                    redirectCount++;
+                } else {
+                    break;
+                }
+            }
+            
+            if (ideResponse.status === 200) {
+                console.log(`[IDE Route] ✓ Successfully loaded IDE from: ${idePath}`);
+                return ideResponse;
+            } else {
+                console.log(`[IDE Route] ✗ Failed to load from ${idePath}, status: ${ideResponse.status}`);
+            }
+        }
+        
+        // Si aucun chemin n'a fonctionné, retourner une erreur explicite
+        console.error(`[IDE Route] ERROR: Could not load IDE from any path. Tried: ${idePaths.join(', ')}`);
+        return new Response(
+            `IDE not found. Tried paths: ${idePaths.join(', ')}\n` +
+            `Please ensure admin/ide.html exists in the project.`,
+            { status: 404, headers: { 'Content-Type': 'text/plain' } }
+        );
     }
     
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
@@ -129,11 +184,12 @@ export async function onRequest(context) {
         // Si /admin/* ou /core/* → servir les fichiers statiques locaux
         // Important : retourner directement la réponse, même si 404
         // Cela évite que ces routes passent par la logique SSR
+        console.log(`[Admin/Core Route] Serving static asset: ${url.pathname}`);
         const assetResponse = await env.ASSETS.fetch(request);
         
         // Log pour débogage
         if (assetResponse.status !== 200) {
-            console.log(`Asset fetch for ${url.pathname}: Status ${assetResponse.status}`);
+            console.log(`[Admin/Core Route] Asset fetch for ${url.pathname}: Status ${assetResponse.status}`);
         }
         
         return assetResponse;
