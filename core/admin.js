@@ -160,6 +160,10 @@ function showView(viewName) {
 
     // Special handlers per view
     if (viewName === 'agents') loadAgents();
+    if (viewName === 'agent-create') {
+        currentWizardStep = 1;
+        updateWizardUI();
+    }
 }
 
 // Data Loading
@@ -931,7 +935,7 @@ async function wizardNext() {
         updateWizardUI();
     } else {
         // Final Step: Create / Save
-        const createBtn = document.getElementById('btn-wizard-next');
+        const createBtn = document.getElementById('btn-next');
         const originalBtnText = createBtn.innerHTML;
 
         // Determine Schedule
