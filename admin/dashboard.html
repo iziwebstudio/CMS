@@ -90,6 +90,10 @@
                 class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
                 <i class="fas fa-microphone w-6"></i> Podcasts
             </button>
+            <button onclick="showView('agents')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-robot w-6"></i> Agents IA (Auto)
+            </button>
 
             <div class="border-t border-slate-100 dark:border-slate-700 my-2"></div>
 
@@ -640,6 +644,247 @@
                                 class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Précédent</button>
                             <button id="next-podcast-page-btn" onclick="nextPodcastPage()"
                                 class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Suivant</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AGENTS (LIST) -->
+            <div id="view-agents" class="view-section hidden space-y-6">
+                <!-- Header / Intro -->
+                <div
+                    class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10 max-w-2xl">
+                        <h3 class="text-2xl font-bold mb-2"><i class="fas fa-robot mr-2"></i> Agents IA & Automatisation
+                        </h3>
+                        <p class="text-emerald-100 text-lg mb-4">Créez des workflows automatisés intelligents propulsés
+                            par Gemini.</p>
+                        <div class="flex flex-wrap gap-3">
+                            <a href="https://cron-job.org" target="_blank"
+                                class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium backdrop-blur-sm transition flex items-center gap-2">
+                                <i class="fas fa-clock"></i> Configurer CronJob.org
+                            </a>
+                            <button onclick="showView('agent-create')"
+                                class="px-4 py-2 bg-white text-emerald-700 hover:bg-emerald-50 rounded-lg text-sm font-bold shadow transition flex items-center gap-2">
+                                <i class="fas fa-plus"></i> Créer un Agent
+                            </button>
+                        </div>
+                    </div>
+                    <div class="hidden md:block absolute right-0 bottom-0 h-full w-1/3 opacity-20">
+                        <i class="fas fa-network-wired text-[150px] absolute bottom-[-30px] right-10"></i>
+                    </div>
+                </div>
+
+                <!-- Agents List -->
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 transition-colors duration-300">
+                        <h3 class="font-semibold text-slate-800 dark:text-white">Mes Agents</h3>
+                        <button onclick="loadAgents()" class="text-slate-400 hover:text-emerald-500 transition"
+                            title="Actualiser">
+                            <i class="fas fa-sync-alt"></i>
+                        </button>
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-6 py-3">Statut</th>
+                                    <th class="px-6 py-3">Nom de l'Agent</th>
+                                    <th class="px-6 py-3">Dernière exécution</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="agents-table" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AGENT CREATE (WIZARD) -->
+            <div id="view-agent-create" class="view-section hidden space-y-6">
+                <!-- Wizard Progress -->
+                <div class="max-w-4xl mx-auto mb-8">
+                    <div class="flex items-center justify-between relative">
+                        <div
+                            class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 dark:bg-slate-700 -z-10">
+                        </div>
+
+                        <!-- Step 1 -->
+                        <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                            <div id="step-marker-1"
+                                class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-lg ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                1</div>
+                            <span class="text-sm font-medium text-emerald-600 dark:text-emerald-400">Déclencheur</span>
+                        </div>
+
+                        <!-- Step 2 -->
+                        <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                            <div id="step-marker-2"
+                                class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                2</div>
+                            <span class="text-sm font-medium text-slate-500">Intelligence</span>
+                        </div>
+
+                        <!-- Step 3 -->
+                        <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                            <div id="step-marker-3"
+                                class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                3</div>
+                            <span class="text-sm font-medium text-slate-500">Validation</span>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Wizard Content -->
+                <div
+                    class="max-w-3xl mx-auto bg-white dark:bg-slate-800 rounded-2xl shadow-xl border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+
+                    <!-- STEP 1: TRIGGER -->
+                    <div id="wizard-step-1" class="p-8">
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Comment déclencher cet agent
+                            ?</h2>
+                        <p class="text-slate-500 dark:text-slate-400 mb-8">Choisissez la méthode d'activation de votre
+                            workflow.</p>
+
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                            <!-- Option: CRON -->
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="triggerType" value="cron" class="peer hidden" checked>
+                                <div
+                                    class="h-full p-6 rounded-xl border-2 border-slate-100 dark:border-slate-700 peer-checked:border-emerald-500 peer-checked:bg-emerald-50/50 dark:peer-checked:bg-emerald-900/20 hover:border-emerald-200 transition-all text-center">
+                                    <div
+                                        class="w-14 h-14 mx-auto bg-blue-100 text-blue-600 rounded-full flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-clock"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 dark:text-white mb-2">Planifié (Cron)</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">S'exécute à intervalles réguliers
+                                        (ex: tous les jours à 9h00).</p>
+                                </div>
+                            </label>
+
+                            <!-- Option: WEBHOOK -->
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="triggerType" value="webhook" class="peer hidden">
+                                <div
+                                    class="h-full p-6 rounded-xl border-2 border-slate-100 dark:border-slate-700 peer-checked:border-emerald-500 peer-checked:bg-emerald-50/50 dark:peer-checked:bg-emerald-900/20 hover:border-emerald-200 transition-all text-center">
+                                    <div
+                                        class="w-14 h-14 mx-auto bg-purple-100 text-purple-600 rounded-full flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-bolt"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 dark:text-white mb-2">Webhook</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">Déclenché par une application
+                                        externe (Zapier, N8N, IFTTT).</p>
+                                </div>
+                            </label>
+
+                            <!-- Option: MANUAL -->
+                            <label class="cursor-pointer group">
+                                <input type="radio" name="triggerType" value="manual" class="peer hidden">
+                                <div
+                                    class="h-full p-6 rounded-xl border-2 border-slate-100 dark:border-slate-700 peer-checked:border-emerald-500 peer-checked:bg-emerald-50/50 dark:peer-checked:bg-emerald-900/20 hover:border-emerald-200 transition-all text-center">
+                                    <div
+                                        class="w-14 h-14 mx-auto bg-orange-100 text-orange-600 rounded-full flex items-center justify-center mb-4 text-2xl group-hover:scale-110 transition-transform">
+                                        <i class="fas fa-hand-pointer"></i>
+                                    </div>
+                                    <h3 class="font-bold text-slate-800 dark:text-white mb-2">Manuel</h3>
+                                    <p class="text-xs text-slate-500 leading-relaxed">Déclenché uniquement quand vous
+                                        cliquez sur un bouton.</p>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- STEP 2: INSTRUCTIONS -->
+                    <div id="wizard-step-2" class="p-8 hidden">
+                        <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Que doit faire cet agent ?
+                        </h2>
+                        <p class="text-slate-500 dark:text-slate-400 mb-6">Décrivez la tâche en langage naturel. Gemini
+                            générera le code pour vous.</p>
+
+                        <div class="space-y-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nom de
+                                    l'Agent</label>
+                                <input type="text" id="agent-name" placeholder="ex: LinkedIn Auto-Post"
+                                    class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition">
+                            </div>
+
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Instructions
+                                    pour l'IA</label>
+                                <div class="relative">
+                                    <textarea id="agent-prompt" rows="6"
+                                        class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition resize-none"
+                                        placeholder="Ex: Récupère le dernier article de mon blog via le flux RSS, résume-le en 3 phrases accrocheuses, et prépare un post au format JSON pour LinkedIn..."></textarea>
+                                    <div class="absolute bottom-3 right-3 text-emerald-600 dark:text-emerald-400">
+                                        <i class="fas fa-magic"></i>
+                                    </div>
+                                </div>
+                                <p class="text-xs text-slate-500 mt-2"><i class="fas fa-info-circle mr-1"></i> Soyez
+                                    précis sur les entrées (RSS, API) et les sorties désirées.</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- STEP 3: REVIEW & CODE -->
+                    <div id="wizard-step-3" class="p-8 hidden">
+                        <div class="text-center mb-8">
+                            <div
+                                class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl animate-pulse">
+                                <i class="fas fa-check"></i>
+                            </div>
+                            <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Prêt à créer !</h2>
+                            <p class="text-slate-500 dark:text-slate-400">Voici un aperçu de ce qui sera généré.</p>
+                        </div>
+
+                        <div class="bg-slate-900 rounded-xl p-4 overflow-hidden mb-6 relative group">
+                            <div class="absolute top-2 right-4 text-xs text-slate-500 font-mono">virtual-agent.js</div>
+                            <pre class="text-xs font-mono text-emerald-400 overflow-x-auto p-2">
+<span class="text-purple-400">export default</span> {
+  <span class="text-yellow-400">async</span> <span class="text-blue-400">fetch</span>(request, env) {
+    <span class="text-slate-400">// Code généré par Gemini...</span>
+    <span class="text-purple-400">const</span> tasks = <span class="text-blue-400">await</span> ai.generate(...);
+    <span class="text-purple-400">return</span> Response.json(tasks);
+  }
+}</pre>
+                            <div
+                                class="absolute inset-0 bg-slate-900/50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition-opacity backdrop-blur-sm">
+                                <span class="text-white font-medium"><i class="fas fa-lock mr-2"></i>Le code sera généré
+                                    côté serveur</span>
+                            </div>
+                        </div>
+
+                        <div
+                            class="bg-blue-50 dark:bg-blue-900/20 p-4 rounded-lg flex gap-3 text-sm text-blue-800 dark:text-blue-200">
+                            <i class="fas fa-shield-alt mt-0.5"></i>
+                            <p>Un secret <code>CRON_SECRET</code> sera automatiquement appliqué pour sécuriser cet
+                                endpoint.</p>
+                        </div>
+                    </div>
+
+                    <!-- Footer / Navigation -->
+                    <div
+                        class="px-8 py-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                        <button id="btn-back" onclick="wizardBack()"
+                            class="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium transition hidden">
+                            Retour
+                        </button>
+                        <div class="ml-auto">
+                            <button id="btn-cancel" onclick="showView('agents')"
+                                class="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium transition mr-2">
+                                Annuler
+                            </button>
+                            <button id="btn-next" onclick="wizardNext()"
+                                class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-lg shadow-emerald-500/30 transition transform hover:scale-105">
+                                Suivant <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
                         </div>
                     </div>
                 </div>

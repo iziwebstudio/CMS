@@ -140,6 +140,8 @@ function showView(viewName) {
         'builder': 'Frontend Builder',
         'analytics': 'Google Analytics',
         'podcasts': 'Podcasts',
+        'agents': 'Agents IA & Automatisations',
+        'agent-create': 'Nouveau Worker IA',
         'config': 'Configuration',
         'help': 'Aide & Support'
     };
@@ -762,3 +764,159 @@ async function clearCache() {
 }
 
 
+
+// ====================================================================
+// AGENTS LOGIC
+// ====================================================================
+
+// Mock Data for agents (until backend is ready)
+const mockAgents = [
+    {
+        name: "Démo: Hello World",
+        id: "demo",
+        status: "active",
+        trigger: "cron",
+        schedule: "0 9 * * *",
+        lastRun: new Date(Date.now() - 86400000).toISOString()
+    },
+    {
+        name: "LinkedIn Auto-Post",
+        id: "linkedin",
+        status: "inactive",
+        trigger: "webhook",
+        schedule: "On Demand",
+        lastRun: null
+    }
+];
+
+function loadAgents() {
+    const tbody = document.getElementById('agents-table');
+    if (!tbody) return;
+
+    // TODO: Fetch from /api/agents
+
+    if (mockAgents.length === 0) {
+        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500">Aucun agent configuré.</td></tr>';
+        return;
+    }
+
+    tbody.innerHTML = mockAgents.map(agent => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-transparent dark:border-slate-700/50 last:border-0">
+            <td class="px-6 py-4">
+                <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${agent.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
+                    <span class="w-1.5 h-1.5 rounded-full ${agent.status === 'active' ? 'bg-emerald-500' : 'bg-slate-400'}"></span>
+                    ${agent.status === 'active' ? 'Actif' : 'Inactif'}
+                </span>
+            </td>
+            <td class="px-6 py-4 font-medium text-slate-800 dark:text-white">
+                <div class="flex items-center gap-3">
+                    <div class="w-8 h-8 rounded-lg ${agent.trigger === 'cron' ? 'bg-blue-50 text-blue-500' : 'bg-purple-50 text-purple-500'} dark:bg-slate-700 flex items-center justify-center">
+                        <i class="fas ${agent.trigger === 'cron' ? 'fa-clock' : 'fa-bolt'}"></i>
+                    </div>
+                    <div>
+                        ${agent.name}
+                        <div class="text-xs text-slate-400 mt-0.5">${agent.schedule}</div>
+                    </div>
+                </div>
+            </td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs text-right">
+                ${agent.lastRun ? new Date(agent.lastRun).toLocaleString('fr-FR') : 'Jamais'}
+            </td>
+            <td class="px-6 py-4 text-right">
+                <button onclick="alert('Simulation: Exécution de l\\'agent...')" class="text-slate-400 hover:text-emerald-500 transition mx-1" title="Lancer manuellement">
+                    <i class="fas fa-play"></i>
+                </button>
+                <button class="text-slate-400 hover:text-blue-500 transition mx-1" title="Logs & Détails">
+                   <i class="fas fa-file-alt"></i>
+                </button>
+            </td>
+        </tr>
+    `).join('');
+}
+
+
+// ====================================================================
+// WIZARD LOGIC
+// ====================================================================
+let currentWizardStep = 1;
+
+function wizardNext() {
+    if (currentWizardStep < 3) {
+        // Validation simple
+        if (currentWizardStep === 1) {
+            // Check if radio selected (default is checked so ok)
+        }
+        if (currentWizardStep === 2) {
+            const prompt = document.getElementById('agent-prompt').value;
+            if (!prompt.trim()) {
+                alert("Veuillez décrire ce que l'agent doit faire.");
+                return;
+            }
+        }
+
+        currentWizardStep++;
+        updateWizardUI();
+    } else {
+        // Final Step: Create
+        alert("Création de l'agent en cours... (Simulation)");
+        // TODO: Call API to generate code
+        showView('agents');
+        currentWizardStep = 1; // Reset
+        updateWizardUI();
+    }
+}
+
+function wizardBack() {
+    if (currentWizardStep > 1) {
+        currentWizardStep--;
+        updateWizardUI();
+    }
+}
+
+function updateWizardUI() {
+    // Hide all steps
+    document.getElementById('wizard-step-1').classList.add('hidden');
+    document.getElementById('wizard-step-2').classList.add('hidden');
+    document.getElementById('wizard-step-3').classList.add('hidden');
+
+    // Show current step
+    document.getElementById(`wizard-step-${currentWizardStep}`).classList.remove('hidden');
+
+    // Update Buttons
+    const btnBack = document.getElementById('btn-back');
+    const btnNext = document.getElementById('btn-next');
+
+    if (currentWizardStep === 1) {
+        btnBack.classList.add('hidden');
+        btnNext.innerHTML = 'Suivant <i class="fas fa-arrow-right ml-2"></i>';
+    } else {
+        btnBack.classList.remove('hidden');
+        if (currentWizardStep === 3) {
+            btnNext.innerHTML = '<i class="fas fa-magic mr-2"></i> Générer l\'Agent';
+            btnNext.classList.remove('bg-emerald-600', 'hover:bg-emerald-700');
+            btnNext.classList.add('bg-purple-600', 'hover:bg-purple-700');
+        } else {
+            btnNext.innerHTML = 'Suivant <i class="fas fa-arrow-right ml-2"></i>';
+            btnNext.classList.add('bg-emerald-600', 'hover:bg-emerald-700');
+            btnNext.classList.remove('bg-purple-600', 'hover:bg-purple-700');
+        }
+    }
+
+    // Update Markers
+    for (let i = 1; i <= 3; i++) {
+        const marker = document.getElementById(`step-marker-${i}`);
+        if (i < currentWizardStep) {
+            // Completed
+            marker.className = "w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-lg transition-colors";
+            marker.innerHTML = '<i class="fas fa-check"></i>';
+        } else if (i === currentWizardStep) {
+            // Current
+            marker.className = "w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-lg ring-4 ring-emerald-100 dark:ring-emerald-900/30 transition-colors";
+            marker.innerHTML = i;
+        } else {
+            // Future
+            marker.className = "w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold transition-colors";
+            marker.innerHTML = i;
+        }
+    }
+}
