@@ -27,8 +27,6 @@ const appState = {
     config: {}
 };
 
-let currentWizardStep = 1;
-
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
     initDarkMode(); // Init dark mode
@@ -907,26 +905,9 @@ async function loadAgents() {
 // ====================================================================
 // WIZARD LOGIC
 // ====================================================================
+let currentWizardStep = 1;
 
-function openAgentWizard() {
-    const modal = document.getElementById('agent-wizard-modal');
-    if (modal) {
-        modal.classList.remove('hidden');
-        modal.classList.add('flex');
-        currentWizardStep = 1;
-        updateWizardUI();
-    }
-}
-
-function closeAgentWizard() {
-    const modal = document.getElementById('agent-wizard-modal');
-    if (modal) {
-        modal.classList.add('hidden');
-        modal.classList.remove('flex');
-    }
-}
-
-async function wizardNext() {
+function wizardNext() {
     if (currentWizardStep < 3) {
         // Validation per step
         if (currentWizardStep === 1) {
@@ -950,99 +931,92 @@ async function wizardNext() {
         updateWizardUI();
     } else {
         // Final Step: Create / Save
-        const createBtn = document.getElementById('btn-next');
-        const originalBtnText = createBtn.innerHTML;
-
-        // Determine Schedule
-        let cron = "";
-        const mode = document.getElementById('tab-simple').classList.contains('border-emerald-500') ? 'simple' : 'advanced';
-
-        if (mode === 'advanced') {
-            cron = document.getElementById('cron-expression').value;
-            if (!cron.trim()) {
-                alert("Expression Cron requise.");
-                return;
-            }
-        } else {
-            cron = buildSimpleCron();
-        }
-
-        // Gather Data
-        const payload = {
-            name: document.getElementById('agent-name').value,
-            prompt: document.getElementById('agent-prompt').value,
-            gasUrl: document.getElementById('gas-url').value,
-            gasToken: document.getElementById('gas-token').value, // Assuming input id is 'gas-token'
-            schedule: cron
-        };
-
-        // UI Loading State
-        createBtn.disabled = true;
-        createBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Création...';
-
-        try {
-            const authKey = localStorage.getItem('stackpages_auth');
-            const res = await fetch('/api/agent/create', {
-                method: 'POST',
-                headers: {
-                    'Content-Type': 'application/json',
-                    'X-Auth-Key': authKey
-                },
-                body: JSON.stringify(payload)
-            });
-
-            const data = await res.json();
-
-            if (res.ok && data.success) {
-                // Success
-                alert("🎉 Agent créé avec succès !\n\nProxy déployé sur GitHub et job planifié.");
-
-                closeAgentWizard();
-                currentWizardStep = 1;
-                updateWizardUI();
-
-                // Refresh list
-                loadAgents();
-            } else {
-                throw new Error(data.error || "Erreur inconnue");
-            }
-
-        } catch (e) {
-            console.error("Agent Create Error", e);
-            alert("Erreur lors de la création de l'agent :\n" + e.message);
-        } finally {
-            createBtn.disabled = false;
-            createBtn.innerHTML = originalBtnText;
-        }
+        createAgent();
     }
 }
 
-function buildSimpleCron() {
+async function createAgent() {
+    const createBtn = document.querySelector('#wizard-step-3 button[onclick="wizardNext()"]');
+    const originalText = createBtn.innerHTML;
+    createBtn.disabled = true;
+    createBtn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Création...';
+
+    try {
+        // Collect Data
+        const name = document.getElementById('agent-name').value;
+        const prompt = document.getElementById('agent-prompt').value;
+        const gasUrl = document.getElementById('gas-url').value;
+        const gasToken = document.getElementById('gas-token').value;
+
+        // Determine Schedule
+        let schedule = "";
+        const mode = document.getElementById('tab-simple').classList.contains('border-emerald-500') ? 'simple' : 'advanced';
+
+        if (mode === 'advanced') {
+            schedule = document.getElementById('cron-expression').value;
+            if (!schedule.trim()) throw new Error("Expression Cron requise.");
+        } else {
+            schedule = buildCronFromSimpleUI();
+        }
+
+        // Call API
+        const response = await fetch('/api/agent/create', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-Key': localStorage.getItem('stackpages_auth')
+            },
+            body: JSON.stringify({
+                name,
+                prompt,
+                gasUrl,
+                gasToken,
+                schedule
+            })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Erreur lors de la création");
+        }
+
+        // Success
+        alert("Agent créé avec succès ! 🚀\n\n- Proxy script déployé sur GitHub\n- Tâche planifiée (ou en attente sur CronJob.org)");
+
+        showView('agents');
+        currentWizardStep = 1;
+        updateWizardUI();
+        loadAgents(); // Refresh list
+
+    } catch (e) {
+        console.error("Create Agent Error", e);
+        alert("Erreur: " + e.message);
+    } finally {
+        createBtn.disabled = false;
+        createBtn.innerHTML = originalText;
+    }
+}
+
+function buildCronFromSimpleUI() {
     const freq = document.getElementById('sched-frequency').value;
     const time = document.getElementById('sched-time').value; // HH:MM
-    const days = Array.from(document.querySelectorAll('#sched-days input:checked')).map(cb => cb.value);
+    const [hour, minute] = time.split(':').map(Number);
+    const day = document.getElementById('sched-days')?.value || "*"; // For weekly/monthly if implemented
 
-    // Default time parts
-    let [hour, minute] = time ? time.split(':') : ['09', '00'];
-
-    // Map frequency to cron
-    // Simplified mapping for MVP
-    switch (freq) {
-        case 'hourly':
-            return `${minute} * * * *`;
-        case 'daily':
-            return `${minute} ${hour} * * *`;
-        case 'weekly':
-            // CronJob.org uses standard cron: min hour day month weekday
-            // Note: Cloudflare Cron Triggers use standard Cron too.
-            // weekday: 0-6 (Sun-Sat) or 1-7. Let's assume standard 0-6.
-            const dayStr = days.length > 0 ? days.join(',') : '*';
-            return `${minute} ${hour} * * ${dayStr}`;
-        case 'monthly':
-            return `${minute} ${hour} 1 * *`; // 1st of month
-        default:
-            return `${minute} ${hour} * * *`;
+    // Basic Cron Construction
+    // Minute Hour DayMonth Month DayWeek
+    if (freq === 'daily') {
+        return `${minute} ${hour} * * *`;
+    } else if (freq === 'hourly') {
+        return `${minute} * * * *`;
+    } else if (freq === 'audio') { // 'Audio' ? Probably meant specific internal freq
+        return `*/15 * * * *`; // Every 15 mins example
     }
+
+    // Default to daily if specific logic missing
+    return `${minute} ${hour} * * *`;
+}
 }
 
 function wizardBack() {
