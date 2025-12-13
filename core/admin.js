@@ -100,7 +100,9 @@ async function checkAuth() {
         currentPath === '/admin/' || 
         currentPath === '/admin/index.html' ||
         currentPath === '/admin/ide.html' ||
-        currentPath === '/admin/IDE.html') {
+        currentPath === '/admin/IDE.html' ||
+        currentPath === '/admin/dashboard/ide' ||
+        currentPath === '/admin/dashboard/ide/') {
         // We're on the login page or IDE, don't redirect
         return;
     }

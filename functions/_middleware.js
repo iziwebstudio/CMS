@@ -112,6 +112,14 @@ export async function onRequest(context) {
 
     // Routes locales : /api/*, /admin/*, /core/*
     // IMPORTANT : Cette vérification doit être AVANT toute autre logique
+    
+    // Route spéciale : /admin/dashboard/ide → servir admin/ide.html
+    if (url.pathname === '/admin/dashboard/ide' || url.pathname === '/admin/dashboard/ide/') {
+        const ideRequest = new Request(new URL('/admin/ide.html', request.url), request);
+        const ideResponse = await env.ASSETS.fetch(ideRequest);
+        return ideResponse;
+    }
+    
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
         // Si /api/* → continuer vers les handlers Functions
         if (url.pathname.startsWith('/api/')) {
