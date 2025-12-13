@@ -901,10 +901,54 @@ async function loadAgents() {
     `).join('');
 }
 
-
 // ====================================================================
 // WIZARD LOGIC
 // ====================================================================
+
+async function generateGasCode() {
+    const prompt = document.getElementById('agent-prompt').value;
+    const codeBlock = document.querySelector('#wizard-step-2 pre');
+    const btn = document.querySelector('button[onclick="generateGasCode()"]');
+
+    if (!prompt.trim()) {
+        alert("Veuillez définir un objectif (Prompt) à l'étape 1 avant de générer le code.");
+        return;
+    }
+
+    const originalText = btn.innerHTML;
+    btn.disabled = true;
+    btn.innerHTML = '<i class="fas fa-spinner fa-spin mr-2"></i> Génération IA en cours...';
+
+    try {
+        const response = await fetch('/api/ai/generate', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-Auth-Key': localStorage.getItem('stackpages_auth')
+            },
+            body: JSON.stringify({ prompt })
+        });
+
+        const data = await response.json();
+
+        if (!response.ok) {
+            throw new Error(data.error || "Erreur de génération");
+        }
+
+        // Display Code
+        codeBlock.textContent = data.code;
+        codeBlock.classList.remove('text-blue-300'); // Remove default styling color if needed
+        codeBlock.classList.add('text-green-300');  // Add success color vibe
+
+    } catch (e) {
+        console.error("AI Gen Error", e);
+        alert("Erreur de génération : " + e.message);
+    } finally {
+        btn.disabled = false;
+        btn.innerHTML = originalText;
+    }
+}
+
 let currentWizardStep = 1;
 
 function wizardNext() {
