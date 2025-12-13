@@ -93,7 +93,12 @@ document.addEventListener('DOMContentLoaded', () => {
 });
 
 // Auth Check
+// TEMPORAIREMENT DÉSACTIVÉ - Redirections forcées désactivées
 async function checkAuth() {
+    // DÉSACTIVATION TEMPORAIRE - Toutes les redirections sont désactivées
+    return;
+    
+    /* CODE ORIGINAL COMMENTÉ - À RÉACTIVER PLUS TARD
     // Only check auth on dashboard page, not on login page or IDE
     const currentPath = window.location.pathname;
     
@@ -121,7 +126,6 @@ async function checkAuth() {
     }
 
     // Optional: Verify with server if needed, but for now just trust existence + API 401s
-    /*
     try {
         const res = await fetch('/api/check-auth', { 
             headers: { 'X-Auth-Key': authKey }
