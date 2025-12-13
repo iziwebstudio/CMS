@@ -10,8 +10,13 @@ const CACHE_KEY = 'frontend_template_preview';
 
 export async function onRequestGet(context) {
     const { request, env } = context;
+    const url = new URL(request.url);
 
-    if (!isAuthenticated(request, env)) {
+    // Vérifier l'authentification via header ou token dans l'URL
+    const authKey = request.headers.get('X-Auth-Key') || url.searchParams.get('token');
+    const ADMIN_PASSWORD = env.ADMIN_PASSWORD || "admin";
+    
+    if (authKey !== ADMIN_PASSWORD) {
         return errorResponse("Non autorisé", 401);
     }
 

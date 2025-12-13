@@ -533,34 +533,10 @@
             // Sauvegarder d'abord en cache si pas déjà fait
             await savePage('draft');
 
-            try {
-                // Faire une requête authentifiée pour récupérer le HTML
-                const response = await fetch(`/api/frontend/preview?t=${Date.now()}`, {
-                    method: 'GET',
-                    headers: {
-                        'X-Auth-Key': getAuthToken()
-                    }
-                });
-
-                if (!response.ok) {
-                    const error = await response.json();
-                    throw new Error(error.error || 'Erreur lors de la prévisualisation');
-                }
-
-                // Récupérer le HTML
-                const html = await response.text();
-
-                // Créer un blob URL et l'ouvrir dans un nouvel onglet
-                const blob = new Blob([html], { type: 'text/html' });
-                const blobUrl = URL.createObjectURL(blob);
-                window.open(blobUrl, '_blank');
-
-                // Nettoyer le blob URL après un délai (optionnel)
-                setTimeout(() => URL.revokeObjectURL(blobUrl), 1000);
-            } catch (error) {
-                console.error('Preview error:', error);
-                alert(`Erreur lors de la prévisualisation: ${error.message}`);
-            }
+            // Ouvrir la prévisualisation avec le token dans l'URL
+            const token = getAuthToken();
+            const previewUrl = `/api/frontend/preview?token=${encodeURIComponent(token)}&t=${Date.now()}`;
+            window.open(previewUrl, '_blank');
         }
 
         // Deploy to frontend/index.html
