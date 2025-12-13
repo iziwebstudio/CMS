@@ -30,7 +30,7 @@ The script should be concise, well-commented, and effective.
 Output ONLY the JavaScript code, without markdown backticks or explanations.
 `;
 
-        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.0-flash:generateContent?key=${env.GOOGLE_AI_KEY}`;
+        const apiUrl = `https://generativelanguage.googleapis.com/v1beta/models/gemini-2.5-flash:generateContent?key=${env.GOOGLE_AI_KEY}`;
 
         const payload = {
             contents: [{
