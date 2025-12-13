@@ -118,7 +118,9 @@ export async function onRequest(context) {
         }
 
         // Si /admin/* ou /core/* → servir les fichiers statiques locaux
-        return env.ASSETS.fetch(request);
+        // Important : retourner directement la réponse, même si 404
+        const assetResponse = await env.ASSETS.fetch(request);
+        return assetResponse;
     }
 
     // ====================================================================
