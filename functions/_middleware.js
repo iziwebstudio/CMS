@@ -1,13 +1,24 @@
 // ====================================================================
-// MIDDLEWARE GLOBAL - Cloudflare Pages avec Proxy Webstudio
+// MIDDLEWARE GLOBAL - Cloudflare Pages avec Proxy Webstudio + SSR HTMX
 // ====================================================================
 // Routing :
 // - /api/*    → Functions locales (API)
 // - /admin/*  → Dashboard admin local
-// - /*        → Proxy vers Webstudio (frontend)
+// - /*        → Proxy vers Webstudio OU SSR avec frontend/index.html
 // ====================================================================
 
 import { corsHeaders } from './shared/utils.js';
+import {
+    isHtmxRequest,
+    htmlResponse,
+    extractTemplate,
+    injectContent,
+    generateOOB,
+    generateHomeContent,
+    generatePublicationsContent,
+    generateVideosContent,
+    handleHtmxCatchAll
+} from './shared/htmx-render.js';
 
 export async function onRequest(context) {
     const { request, next, env } = context;
@@ -33,49 +44,147 @@ export async function onRequest(context) {
     }
 
     // ====================================================================
-    // FRONTEND ROUTING - Priorité : Webstudio > frontend/ > index.html racine
+    // FRONTEND ROUTING - Priorité : Webstudio > SSR (frontend/index.html) > index.html racine
     // ====================================================================
     // Logique :
     // 1. Si WSTD_STAGING_URL défini → Proxy vers Webstudio
-    // 2. Si WSTD_STAGING_URL non défini :
-    //    - Pour "/" → Essayer frontend/index.html, sinon index.html racine
-    //    - Pour autres routes → Servir depuis frontend/ si existe, sinon assets normaux
+    // 2. Si WSTD_STAGING_URL non défini → SSR avec frontend/index.html comme template
 
     const WSTD_STAGING_URL = env.WSTD_STAGING_URL;
 
-    // Si pas de WSTD_STAGING_URL, servir depuis frontend/ ou index.html racine
+    // Si pas de WSTD_STAGING_URL, faire du SSR avec frontend/index.html
     if (!WSTD_STAGING_URL) {
-        // Pour la racine "/" ou "/index.html", prioriser frontend/index.html
-        if (url.pathname === '/' || url.pathname === '/index.html') {
-            // Essayer frontend/index.html d'abord
-            const frontendIndexRequest = new Request(new URL('/frontend/index.html', request.url), request);
-            const frontendIndexResponse = await env.ASSETS.fetch(frontendIndexRequest);
-            
-            // Si frontend/index.html existe, le servir
-            if (frontendIndexResponse.status === 200) {
-                return frontendIndexResponse;
-            }
-            
-            // Sinon, essayer index.html à la racine
+        // Charger le template frontend/index.html
+        const templateRequest = new Request(new URL('/frontend/index.html', request.url), request);
+        const templateResponse = await env.ASSETS.fetch(templateRequest);
+        
+        let template = null;
+        if (templateResponse.status === 200) {
+            template = await templateResponse.text();
+        } else {
+            // Fallback : essayer index.html à la racine
             const rootIndexRequest = new Request(new URL('/index.html', request.url), request);
             const rootIndexResponse = await env.ASSETS.fetch(rootIndexRequest);
-            
-            // Si index.html existe à la racine, le servir
             if (rootIndexResponse.status === 200) {
-                return rootIndexResponse;
+                template = await rootIndexResponse.text();
             }
         }
         
-        // Pour les autres routes, essayer de servir depuis frontend/ d'abord
-        const frontendRequest = new Request(new URL('/frontend' + url.pathname, request.url), request);
-        const frontendResponse = await env.ASSETS.fetch(frontendRequest);
-        
-        // Si le fichier existe dans frontend/, le servir
-        if (frontendResponse.status === 200) {
-            return frontendResponse;
+        // Si aucun template trouvé, servir les assets normaux
+        if (!template) {
+            return env.ASSETS.fetch(request);
         }
         
-        // Fallback : servir depuis les assets normaux (pour les autres fichiers)
+        // Détecter si c'est une requête HTMX
+        const isHtmx = isHtmxRequest(request);
+        const path = url.pathname;
+        
+        // Configuration par défaut (peut être améliorée avec des variables d'env)
+        const siteConfig = {
+            site: { name: "StackPages CMS" },
+            seo: {
+                metaDescription: "",
+                keywords: ""
+            }
+        };
+        const siteName = siteConfig.site.name;
+        const siteDescription = siteConfig.seo.metaDescription || "";
+        const siteKeywords = siteConfig.seo.keywords || "";
+        
+        // Gérer la racine "/"
+        if (path === '/' || path === '/index.html') {
+            const metadata = {
+                title: siteName,
+                description: siteDescription,
+                keywords: siteKeywords,
+                siteName: siteName
+            };
+            const content = generateHomeContent(template, metadata);
+            
+            if (isHtmx) {
+                return htmlResponse(content + generateOOB(metadata, request));
+            }
+            return htmlResponse(injectContent(template, content, metadata));
+        }
+        
+        // Gérer les routes spéciales (annoucements, tutorials, etc.)
+        if (path === '/annoucements' || path === '/publications') {
+            // Pour l'instant, retourner juste le template (pas de données RSS)
+            const tplContent = extractTemplate(template, 'tpl-annoucements');
+            if (tplContent) {
+                const metadata = {
+                    title: `Announcements - ${siteName}`,
+                    description: siteDescription,
+                    keywords: siteKeywords
+                };
+                if (isHtmx) {
+                    return htmlResponse(tplContent + generateOOB(metadata, request));
+                }
+                return htmlResponse(injectContent(template, tplContent, metadata));
+            }
+        }
+        
+        if (path === '/tutorials' || path === '/videos') {
+            const tplContent = extractTemplate(template, 'tpl-tutorials');
+            if (tplContent) {
+                const metadata = {
+                    title: `Video Tutorials - ${siteName}`,
+                    description: siteDescription,
+                    keywords: siteKeywords
+                };
+                if (isHtmx) {
+                    return htmlResponse(tplContent + generateOOB(metadata, request));
+                }
+                return htmlResponse(injectContent(template, tplContent, metadata));
+            }
+        }
+        
+        // Catch-all pour les autres routes (serverless, get-started, etc.)
+        // Fonctionne pour HTMX ET requêtes normales
+        if (path.length > 1 && !path.startsWith('/api') && !path.startsWith('/admin') && !path.startsWith('/core')) {
+            const slug = path.substring(1).replace(/\/$/, '');
+            const tplId = `tpl-${slug}`;
+            const tplContent = extractTemplate(template, tplId);
+            
+            if (tplContent) {
+                // Template trouvé ! Générer les métadonnées
+                const title = slug
+                    .split('-')
+                    .map(word => word.charAt(0).toUpperCase() + word.slice(1))
+                    .join(' ');
+                
+                const metadata = {
+                    title: `${title} - ${siteName}`,
+                    description: siteDescription,
+                    keywords: siteKeywords,
+                    siteName: siteName
+                };
+                
+                if (isHtmx) {
+                    // Requête HTMX : retourner juste le contenu + OOB
+                    return htmlResponse(tplContent + generateOOB(metadata, request));
+                } else {
+                    // Requête normale : injecter dans le template complet
+                    return htmlResponse(injectContent(template, tplContent, metadata));
+                }
+            }
+        }
+        
+        // Si c'est une requête normale (pas HTMX) et qu'on a un template, 
+        // injecter le contenu de la page d'accueil par défaut
+        if (!isHtmx) {
+            const metadata = {
+                title: siteName,
+                description: siteDescription,
+                keywords: siteKeywords,
+                siteName: siteName
+            };
+            // Injecter le contenu de la page d'accueil dans #main-content
+            const homeContent = generateHomeContent(template, metadata);
+            return htmlResponse(injectContent(template, homeContent, metadata));
+        }
+        
+        // Fallback : servir les assets normaux (images, CSS, JS, etc.)
         return env.ASSETS.fetch(request);
     }
 
