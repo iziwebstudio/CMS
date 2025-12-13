@@ -8,13 +8,13 @@ export async function onRequestGet(context) {
         return errorResponse("Non autorisé", 401);
     }
 
-    if (!env.GITHUB_TOKEN || !env.GITHUB_REPO) {
+    if (!env.GITHUB_TOKEN || !env.GITHUB_USER || !env.GITHUB_REPO) {
         return jsonResponse([]); // No config = no agents visible yet
     }
 
     try {
         // 1. Fetch file list from GitHub API
-        const repo = env.GITHUB_REPO;
+        const repo = `${env.GITHUB_USER}/${env.GITHUB_REPO}`;
         const path = 'functions/agents';
         const url = `https://api.github.com/repos/${repo}/contents/${path}`;
 
