@@ -55,32 +55,13 @@
                     class="px-4 py-2 bg-white border border-slate-200 text-slate-700 hover:bg-slate-50 rounded-lg font-medium transition flex items-center gap-2">
                     <i class="fas fa-external-link-alt"></i> Prévisualiser
                 </button>
-                <button onclick="publishToGitHub()" id="btn-publish-github"
-                    class="px-4 py-2 bg-gray-800 hover:bg-gray-900 text-white rounded-lg font-medium transition flex items-center gap-2 shadow-lg border border-gray-700">
-                    <i class="fab fa-github"></i> Publier sur GitHub
-                </button>
-                <button onclick="saveAsTheme()" id="btn-save-theme"
-                    class="px-4 py-2 bg-purple-600 hover:bg-purple-700 text-white rounded-lg font-medium transition flex items-center gap-2 shadow-lg border border-purple-500">
-                    <i class="fas fa-palette"></i> Enregistrer Thème
-                </button>
-                <button onclick="savePage('draft')"
-                    class="px-4 py-2 bg-slate-600 hover:bg-slate-700 text-white rounded-lg font-medium transition flex items-center gap-2">
-                    <i class="far fa-save"></i> Brouillon
-                </button>
                 <button onclick="savePage('published')"
-                    class="px-4 py-2 bg-gradient-to-r from-orange-500 to-red-500 hover:from-orange-600 hover:to-red-600 text-white rounded-lg font-medium transition shadow-md hover:shadow-lg flex items-center gap-2">
-                    <i class="fas fa-check"></i> Sauvegarder
+                    class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-lg font-medium transition shadow-lg flex items-center gap-2">
+                    <i class="fas fa-save"></i> Sauvegarder
                 </button>
                 <button onclick="deployFrontend()" id="btn-deploy-frontend"
                     class="px-4 py-2 bg-gradient-to-r from-purple-600 to-purple-800 hover:from-purple-700 hover:to-purple-900 text-white rounded-lg font-medium transition shadow-lg flex items-center gap-2">
                     <i class="fas fa-rocket"></i> Déployer
-                </button>
-
-                <!-- Switch Mode Button -->
-                <button onclick="switchToVisual()"
-                    class="px-3 py-2 bg-slate-700 hover:bg-slate-600 text-slate-200 rounded-lg font-medium transition flex items-center gap-2 border border-slate-600 ml-2">
-                    <i class="fas fa-paint-brush"></i>
-                    <span>Switch to Visual</span>
                 </button>
             </div>
     </header>
@@ -931,134 +912,6 @@
             content.innerHTML = '';
         }
 
-        function switchToVisual() {
-            const slug = document.getElementById('page-slug').value;
-            if (slug) {
-                // Save draft before switching
-                // We can reuse savePage('draft') logic but we need to be careful about async
-                // Let's manually save to localStorage to be sure
-
-                const title = document.getElementById('page-title').value;
-                const htmlContent = monacoEditor ? monacoEditor.getValue() : '';
-                const metaDesc = document.getElementById('page-meta-desc').value;
-                const metaKeywords = document.getElementById('page-meta-keywords').value;
-                const thumbnail = document.getElementById('page-thumbnail').value;
-
-                try {
-                    const stored = localStorage.getItem('stackpages_custom_pages');
-                    const pages = stored ? JSON.parse(stored) : [];
-                    const pageIndex = pages.findIndex(p => p.slug === slug);
-
-                    if (pageIndex !== -1) {
-                        pages[pageIndex].title = title;
-                        pages[pageIndex].htmlContent = htmlContent;
-                        pages[pageIndex].metaDesc = metaDesc;
-                        pages[pageIndex].metaKeywords = metaKeywords;
-                        pages[pageIndex].thumbnail = thumbnail;
-                        pages[pageIndex].updatedAt = new Date().toISOString();
-                        // Keep status as is or set to draft? Let's keep as is.
-
-                        localStorage.setItem('stackpages_custom_pages', JSON.stringify(pages));
-
-                        // Redirect
-                        window.location.href = `/admin/visual-editor.html?page=${slug}`;
-                    } else {
-                        // New page not saved yet?
-                        alert("Veuillez d'abord sauvegarder la page (Brouillon) avant de changer de mode.");
-                    }
-                } catch (e) {
-                    console.error("Error saving before switch:", e);
-                    alert("Erreur lors de la sauvegarde avant le changement de mode.");
-                }
-            } else {
-                window.location.href = '/admin/visual-editor.html';
-            }
-        }
-        // Publish to GitHub
-        async function publishToGitHub() {
-            if (!confirm("Voulez-vous publier cette page sur GitHub ?")) return;
-
-            // 1. Get GitHub Config
-            const ghConfig = JSON.parse(localStorage.getItem('stackpages_github_config') || '{}');
-            if (!ghConfig.owner || !ghConfig.repo || !ghConfig.token) {
-                alert("Configuration GitHub manquante. Veuillez la configurer dans le tableau de bord (cliquez sur l'icône GitHub en bas à gauche).");
-                return;
-            }
-
-            // 2. Get Content & Metadata
-            const slug = document.getElementById('page-slug')?.value.trim();
-            if (!slug) {
-                alert("Veuillez définir un slug pour la page (sauvegardez d'abord la page pour générer un slug si nécessaire).");
-                return;
-            }
-
-            const htmlContent = monacoEditor ? monacoEditor.getValue() : '';
-            if (!htmlContent) {
-                alert("Le contenu est vide.");
-                return;
-            }
-
-            // 3. Prepare API Call
-            const path = `content/pages/${slug}.html`;
-            const contentBase64 = btoa(unescape(encodeURIComponent(htmlContent))); // Handle UTF-8
-            const url = `https://api.github.com/repos/${ghConfig.owner}/${ghConfig.repo}/contents/${path}`;
-
-            // Feedback UI
-            const btn = document.getElementById('btn-publish-github');
-            const originalContent = btn.innerHTML;
-            btn.innerHTML = '<i class="fas fa-spinner fa-spin"></i> Publication...';
-            btn.disabled = true;
-
-            try {
-                // Check if file exists to get SHA
-                let sha = null;
-                const checkRes = await fetch(url, {
-                    headers: {
-                        'Authorization': `token ${ghConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json'
-                    }
-                });
-
-                if (checkRes.ok) {
-                    const data = await checkRes.json();
-                    sha = data.sha;
-                }
-
-                // Push to GitHub
-                const body = {
-                    message: `Update page: ${slug}`,
-                    content: contentBase64,
-                    branch: 'main' // Default branch
-                };
-                if (sha) body.sha = sha;
-
-                const res = await fetch(url, {
-                    method: 'PUT',
-                    headers: {
-                        'Authorization': `token ${ghConfig.token}`,
-                        'Accept': 'application/vnd.github.v3+json',
-                        'Content-Type': 'application/json'
-                    },
-                    body: JSON.stringify(body)
-                });
-
-                if (res.ok) {
-                    alert("Page publiée avec succès sur GitHub !");
-                    // Also save locally to keep sync
-                    savePage();
-                } else {
-                    const error = await res.json();
-                    throw new Error(error.message);
-                }
-
-            } catch (e) {
-                console.error("GitHub Publish Error:", e);
-                alert(`Erreur lors de la publication : ${e.message}`);
-            } finally {
-                btn.innerHTML = originalContent;
-                btn.disabled = false;
-            }
-        }
     </script>
 </body>
 
