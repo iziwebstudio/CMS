@@ -27,6 +27,8 @@ const appState = {
     config: {}
 };
 
+let currentWizardStep = 1;
+
 // Init
 document.addEventListener('DOMContentLoaded', async () => {
     initDarkMode(); // Init dark mode
@@ -909,8 +911,7 @@ async function loadAgents() {
 // ====================================================================
 // WIZARD LOGIC
 // ====================================================================
-let currentWizardStep = 1;
-
+// currentWizardStep declared at top
 async function wizardNext() {
     if (currentWizardStep < 3) {
         // Validation per step
