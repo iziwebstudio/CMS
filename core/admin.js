@@ -94,10 +94,14 @@ document.addEventListener('DOMContentLoaded', () => {
 
 // Auth Check
 async function checkAuth() {
-    // Only check auth on dashboard page, not on login page
+    // Only check auth on dashboard page, not on login page or IDE
     const currentPath = window.location.pathname;
-    if (currentPath === '/admin' || currentPath === '/admin/' || currentPath === '/admin/index.html') {
-        // We're on the login page, don't redirect
+    if (currentPath === '/admin' || 
+        currentPath === '/admin/' || 
+        currentPath === '/admin/index.html' ||
+        currentPath === '/admin/ide.html' ||
+        currentPath === '/admin/IDE.html') {
+        // We're on the login page or IDE, don't redirect
         return;
     }
 

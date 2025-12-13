@@ -111,6 +111,7 @@ export async function onRequest(context) {
     }
 
     // Routes locales : /api/*, /admin/*, /core/*
+    // IMPORTANT : Cette vérification doit être AVANT toute autre logique
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
         // Si /api/* → continuer vers les handlers Functions
         if (url.pathname.startsWith('/api/')) {
@@ -119,7 +120,14 @@ export async function onRequest(context) {
 
         // Si /admin/* ou /core/* → servir les fichiers statiques locaux
         // Important : retourner directement la réponse, même si 404
+        // Cela évite que ces routes passent par la logique SSR
         const assetResponse = await env.ASSETS.fetch(request);
+        
+        // Log pour débogage
+        if (assetResponse.status !== 200) {
+            console.log(`Asset fetch for ${url.pathname}: Status ${assetResponse.status}`);
+        }
+        
         return assetResponse;
     }
 
