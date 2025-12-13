@@ -33,14 +33,49 @@ export async function onRequest(context) {
     }
 
     // ====================================================================
-    // PROXY WEBSTUDIO - Frontend (seulement si WSTD_STAGING_URL définie)
+    // FRONTEND ROUTING - Priorité : Webstudio > frontend/ > index.html racine
     // ====================================================================
-    // Toutes les autres routes → proxy vers Webstudio
+    // Logique :
+    // 1. Si WSTD_STAGING_URL défini → Proxy vers Webstudio
+    // 2. Si WSTD_STAGING_URL non défini :
+    //    - Pour "/" → Essayer frontend/index.html, sinon index.html racine
+    //    - Pour autres routes → Servir depuis frontend/ si existe, sinon assets normaux
 
     const WSTD_STAGING_URL = env.WSTD_STAGING_URL;
 
-    // Si pas de WSTD_STAGING_URL, servir les fichiers locaux (pas de proxy)
+    // Si pas de WSTD_STAGING_URL, servir depuis frontend/ ou index.html racine
     if (!WSTD_STAGING_URL) {
+        // Pour la racine "/" ou "/index.html", prioriser frontend/index.html
+        if (url.pathname === '/' || url.pathname === '/index.html') {
+            // Essayer frontend/index.html d'abord
+            const frontendIndexRequest = new Request(new URL('/frontend/index.html', request.url), request);
+            const frontendIndexResponse = await env.ASSETS.fetch(frontendIndexRequest);
+            
+            // Si frontend/index.html existe, le servir
+            if (frontendIndexResponse.status === 200) {
+                return frontendIndexResponse;
+            }
+            
+            // Sinon, essayer index.html à la racine
+            const rootIndexRequest = new Request(new URL('/index.html', request.url), request);
+            const rootIndexResponse = await env.ASSETS.fetch(rootIndexRequest);
+            
+            // Si index.html existe à la racine, le servir
+            if (rootIndexResponse.status === 200) {
+                return rootIndexResponse;
+            }
+        }
+        
+        // Pour les autres routes, essayer de servir depuis frontend/ d'abord
+        const frontendRequest = new Request(new URL('/frontend' + url.pathname, request.url), request);
+        const frontendResponse = await env.ASSETS.fetch(frontendRequest);
+        
+        // Si le fichier existe dans frontend/, le servir
+        if (frontendResponse.status === 200) {
+            return frontendResponse;
+        }
+        
+        // Fallback : servir depuis les assets normaux (pour les autres fichiers)
         return env.ASSETS.fetch(request);
     }
 
