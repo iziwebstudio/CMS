@@ -815,6 +815,15 @@ async function checkAgentsConfig() {
             missing.push('cronjob');
         }
 
+        // Google AI Check
+        const missingGoogle = document.getElementById('missing-google');
+        if (missingGoogle) missingGoogle.classList.add('hidden');
+
+        if (!conf.hasGoogleAI) {
+            if (missingGoogle) missingGoogle.classList.remove('hidden');
+            missing.push('google');
+        }
+
         if (missing.length > 0) {
             if (warning) warning.classList.remove('hidden');
             return false;
