@@ -96,13 +96,20 @@ document.addEventListener('DOMContentLoaded', () => {
 async function checkAuth() {
     // Only check auth on dashboard page, not on login page or IDE
     const currentPath = window.location.pathname;
-    if (currentPath === '/admin' || 
-        currentPath === '/admin/' || 
-        currentPath === '/admin/index.html' ||
-        currentPath === '/admin/ide.html' ||
-        currentPath === '/admin/IDE.html' ||
-        currentPath === '/admin/dashboard/ide' ||
-        currentPath === '/admin/dashboard/ide/') {
+    
+    // Liste des pages qui ne nécessitent pas d'authentification
+    const publicPages = [
+        '/admin',
+        '/admin/',
+        '/admin/index.html',
+        '/admin/ide.html',
+        '/admin/IDE.html',
+        '/admin/dashboard/ide',
+        '/admin/dashboard/ide/'
+    ];
+    
+    // Vérifier si on est sur une page publique (login ou IDE)
+    if (publicPages.includes(currentPath) || currentPath.includes('/admin/dashboard/ide')) {
         // We're on the login page or IDE, don't redirect
         return;
     }
