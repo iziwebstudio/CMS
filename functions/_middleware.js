@@ -54,25 +54,58 @@ export async function onRequest(context) {
 
     // Si pas de WSTD_STAGING_URL, faire du SSR avec frontend/index.html
     if (!WSTD_STAGING_URL) {
-        // Charger le template frontend/index.html
+        // IMPORTANT : Toujours charger frontend/index.html en priorité
+        // Ne jamais servir directement index.html racine
+        
+        // Vérifier d'abord si c'est un asset statique (image, CSS, JS, etc.)
+        // Si oui, servir directement sans SSR
+        if (url.pathname.includes('.') && 
+            !url.pathname.endsWith('.html') && 
+            !url.pathname.startsWith('/frontend/')) {
+            return env.ASSETS.fetch(request);
+        }
+        
+        // Charger le template frontend/index.html (OBLIGATOIRE)
+        // Ne jamais utiliser index.html racine comme fallback
         const templateRequest = new Request(new URL('/frontend/index.html', request.url), request);
         const templateResponse = await env.ASSETS.fetch(templateRequest);
         
         let template = null;
+        
         if (templateResponse.status === 200) {
             template = await templateResponse.text();
         } else {
-            // Fallback : essayer index.html à la racine
-            const rootIndexRequest = new Request(new URL('/index.html', request.url), request);
-            const rootIndexResponse = await env.ASSETS.fetch(rootIndexRequest);
-            if (rootIndexResponse.status === 200) {
-                template = await rootIndexResponse.text();
+            // frontend/index.html n'existe pas - ERREUR
+            // Ne pas utiliser index.html racine comme fallback
+            console.error('ERROR: frontend/index.html not found! Status:', templateResponse.status);
+            console.error('Request URL:', templateRequest.url);
+            
+            // Pour les routes HTML, retourner une erreur explicite
+            if (url.pathname === '/' || url.pathname.endsWith('.html') || !url.pathname.includes('.')) {
+                return new Response(
+                    `frontend/index.html not found. Please ensure the file exists at /frontend/index.html. Status: ${templateResponse.status}`,
+                    { 
+                        status: 500,
+                        headers: { 'Content-Type': 'text/plain' }
+                    }
+                );
             }
+            
+            // Pour les assets statiques, servir normalement
+            return env.ASSETS.fetch(request);
         }
         
-        // Si aucun template trouvé, servir les assets normaux
+        // Si aucun template trouvé, vérifier si c'est un asset statique
         if (!template) {
-            return env.ASSETS.fetch(request);
+            // Si c'est un fichier avec extension (image, CSS, JS, etc.), servir normalement
+            if (url.pathname.includes('.') && !url.pathname.endsWith('.html')) {
+                return env.ASSETS.fetch(request);
+            }
+            // Pour les routes HTML sans template, retourner 404
+            return new Response('Template not found. Please ensure frontend/index.html exists.', { 
+                status: 404,
+                headers: { 'Content-Type': 'text/plain' }
+            });
         }
         
         // Détecter si c'est une requête HTMX
@@ -185,6 +218,25 @@ export async function onRequest(context) {
         }
         
         // Fallback : servir les assets normaux (images, CSS, JS, etc.)
+        // IMPORTANT : Ne JAMAIS servir index.html racine directement
+        // Si c'est une route HTML, toujours utiliser le template avec SSR
+        const isHtmlRoute = url.pathname === '/' || 
+                           url.pathname.endsWith('.html') || 
+                           (!url.pathname.includes('.') && url.pathname !== '/');
+        
+        if (isHtmlRoute) {
+            // Route HTML : toujours utiliser le template avec SSR (jamais servir index.html racine directement)
+            const metadata = {
+                title: siteName,
+                description: siteDescription,
+                keywords: siteKeywords,
+                siteName: siteName
+            };
+            const homeContent = generateHomeContent(template, metadata);
+            return htmlResponse(injectContent(template, homeContent, metadata));
+        }
+        
+        // Pour les autres assets (images, CSS, JS), servir normalement
         return env.ASSETS.fetch(request);
     }
 
