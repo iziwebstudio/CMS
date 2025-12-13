@@ -332,11 +332,17 @@
         </div>
     </div>
 
-    <script src="../core/admin.js"></script>
     <script>
-        // Global Monaco Editor instance (accessible from admin.js)
+        // Global Monaco Editor instance
         let monacoEditor = null;
         window.monacoEditor = null;
+        
+        // Simple auth check for IDE (optional - IDE can work without auth)
+        async function checkAuth() {
+            // IDE doesn't require authentication - it's a standalone tool
+            // Authentication is handled at API level when needed
+            return true;
+        }
 
         // Initialize Monaco Editor
         function initMonacoEditor(initialValue = '') {
