@@ -210,7 +210,7 @@ export async function onRequest(context) {
         const siteDescription = siteConfig.seo.metaDescription || "";
         const siteKeywords = siteConfig.seo.keywords || "";
         
-        // Gérer la racine "/"
+        // Gérer la racine "/" - chercher le template "tpl-home" de manière générique
         if (path === '/' || path === '/index.html') {
             const metadata = {
                 title: siteName,
@@ -226,47 +226,25 @@ export async function onRequest(context) {
             return htmlResponse(injectContent(template, content, metadata));
         }
         
-        // Gérer les routes spéciales (annoucements, tutorials, etc.)
-        if (path === '/annoucements' || path === '/publications') {
-            // Pour l'instant, retourner juste le template (pas de données RSS)
-            const tplContent = extractTemplate(template, 'tpl-annoucements');
-            if (tplContent) {
-                const metadata = {
-                    title: `Announcements - ${siteName}`,
-                    description: siteDescription,
-                    keywords: siteKeywords
-                };
-                if (isHtmx) {
-                    return htmlResponse(tplContent + generateOOB(metadata, request));
-                }
-                return htmlResponse(injectContent(template, tplContent, metadata));
-            }
+        // Utiliser handleHtmxCatchAll pour les requêtes HTMX (gère toutes les routes dynamiquement)
+        const htmxCatchAll = handleHtmxCatchAll(request, path, template, siteConfig);
+        if (htmxCatchAll) {
+            return htmxCatchAll;
         }
         
-        if (path === '/tutorials' || path === '/videos') {
-            const tplContent = extractTemplate(template, 'tpl-tutorials');
-            if (tplContent) {
-                const metadata = {
-                    title: `Video Tutorials - ${siteName}`,
-                    description: siteDescription,
-                    keywords: siteKeywords
-                };
-                if (isHtmx) {
-                    return htmlResponse(tplContent + generateOOB(metadata, request));
-                }
-                return htmlResponse(injectContent(template, tplContent, metadata));
-            }
-        }
-        
-        // Catch-all pour les autres routes (serverless, get-started, etc.)
-        // Fonctionne pour HTMX ET requêtes normales
-        if (path.length > 1 && !path.startsWith('/api') && !path.startsWith('/admin') && !path.startsWith('/core')) {
+        // Pour les requêtes non-HTMX, faire la même chose que handleHtmxCatchAll mais avec injection complète
+        if (!isHtmx && path.length > 1 && 
+            !path.startsWith('/api') && 
+            !path.startsWith('/admin') && 
+            !path.startsWith('/core') &&
+            path !== '/' && 
+            path !== '/index.html') {
+            
             const slug = path.substring(1).replace(/\/$/, '');
             const tplId = `tpl-${slug}`;
             const tplContent = extractTemplate(template, tplId);
             
             if (tplContent) {
-                // Template trouvé ! Générer les métadonnées
                 const title = slug
                     .split('-')
                     .map(word => word.charAt(0).toUpperCase() + word.slice(1))
@@ -279,13 +257,8 @@ export async function onRequest(context) {
                     siteName: siteName
                 };
                 
-                if (isHtmx) {
-                    // Requête HTMX : retourner juste le contenu + OOB
-                    return htmlResponse(tplContent + generateOOB(metadata, request));
-                } else {
-                    // Requête normale : injecter dans le template complet
-                    return htmlResponse(injectContent(template, tplContent, metadata));
-                }
+                // Requête normale : injecter dans le template complet
+                return htmlResponse(injectContent(template, tplContent, metadata));
             }
         }
         
