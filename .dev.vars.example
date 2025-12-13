@@ -1,0 +1,46 @@
+# ====================================================================
+# VARIABLES D'ENVIRONNEMENT POUR LE DÉVELOPPEMENT LOCAL
+# ====================================================================
+# Copier ce fichier vers .dev.vars et remplir avec vos vraies valeurs
+# Le fichier .dev.vars est automatiquement ignoré par Git (.gitignore)
+
+# --- AUTHENTIFICATION ADMIN ---
+ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=changeme123
+
+# --- FLUX RSS CONTENUS ---
+# Blog : RSS de votre blog (Substack, WordPress, Ghost, Medium, etc.)
+# Exemples:
+# - Substack: https://VOTRE_COMPTE.substack.com/feed
+# - WordPress: https://votreblog.com/feed
+# - Ghost: https://votreblog.com/rss
+# - Medium: https://medium.com/feed/@username
+BLOG_FEED_URL=https://example.substack.com/feed
+
+# YouTube : https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
+# Pour trouver votre CHANNEL_ID : https://commentpicker.com/youtube-channel-id.php
+YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxxxxxxx
+
+# Podcast : URL du flux RSS (Anchor, Spotify, Apple Podcasts, etc.)
+PODCAST_FEED_URL=https://anchor.fm/s/xxxxxxx/podcast/rss
+
+# --- FRONTEND WEBSTUDIO ---
+# URL de votre projet Webstudio (staging ou production)
+# Exemple : https://votre-projet.wstd.io
+WSTD_STAGING_URL=https://votre-projet.wstd.io
+
+# URL de votre projet Webstudio dashboard (optionnel)
+FRONTEND_BUILDER_URL=https://apps.webstudio.is/dashboard
+
+# --- SEO & MÉTADONNÉES ---
+META_TITLE=Mon Site StackPages
+META_DESCRIPTION=Portail de contenus agrégés depuis Substack, YouTube et Podcast
+META_KEYWORDS=blog,contenu,substack,youtube,podcast
+
+# ====================================================================
+# INSTRUCTIONS
+# ====================================================================
+# 1. Copier ce fichier : cp .dev.vars.example .dev.vars
+# 2. Éditer .dev.vars avec vos vraies valeurs
+# 3. Lancer le worker : npx wrangler dev
+# 4. Accéder au dashboard : http://localhost:8787/admin/

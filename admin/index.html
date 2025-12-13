@@ -1,0 +1,172 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Connexion - iziWebCMS CMS</title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=" http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" %3E%3Crect width="24" height="24" rx="5" fill="%239333ea" /%3E%3Cpolyline
+        points="16 18 22 12 16 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" /%3E%3Cpolyline points="8 6 2 12 8 18" fill="none" stroke="white" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" /%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="/core/admin.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.8);
+            backdrop-filter: blur(12px);
+            border: 1px solid rgba(255, 255, 255, 0.6);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-gradient-to-br from-purple-50 to-red-50 dark:from-slate-900 dark:to-purple-900 h-screen flex items-center justify-center p-4 transition-colors duration-300">
+
+    <div class="fixed top-4 right-4 z-50">
+        <button onclick="toggleDarkMode()"
+            class="bg-white/80 dark:bg-slate-800/80 backdrop-blur-sm p-3 rounded-full shadow-lg text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 transition">
+            <i class="fas fa-moon theme-toggle-icon text-xl block"></i>
+        </button>
+    </div>
+
+    <div
+        class="glass-panel dark:bg-slate-800/80 dark:border-slate-700 p-8 rounded-2xl shadow-xl w-full max-w-md transition-colors duration-300">
+        <div class="text-center mb-8">
+            <h1 class="text-xl font-bold">
+                <a href="https://stackpages.net/" target="_blank" class="flex flex-col items-center gap-2">
+                    <div
+                        class="w-16 h-16 bg-gradient-to-br from-purple-500 to-purple-700 rounded-2xl flex items-center justify-center shadow-lg">
+                        <i class="fas fa-plus text-white text-3xl"></i>
+                    </div>
+                    <span class="dark:text-white">iziWebCMS CMS</span>
+                </a>
+            </h1>
+            <p class="text-slate-500 dark:text-slate-400 text-sm">Portail d'Administration</p>
+        </div>
+
+        <form id="login-form" class="space-y-6">
+            <div>
+                <label for="email" class="block text-sm font-medium text-slate-700 mb-1">Email</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-envelope text-slate-400"></i>
+                    </div>
+                    <input type="email" id="email" name="email" required
+                        class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm"
+                        placeholder="admin@example.com">
+                </div>
+            </div>
+
+            <!-- Advanced Options Removed as per user request -->
+
+            <div>
+                <label for="password" class="block text-sm font-medium text-slate-700 mb-1">Mot de passe</label>
+                <div class="relative">
+                    <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                        <i class="fas fa-lock text-slate-400"></i>
+                    </div>
+                    <input type="password" id="password" name="password" required
+                        class="block w-full pl-10 pr-3 py-2.5 border border-slate-300 rounded-lg focus:ring-2 focus:ring-purple-500 focus:border-purple-500 transition sm:text-sm"
+                        placeholder="••••••••">
+                </div>
+            </div>
+
+            <div id="error-message"
+                class="hidden text-red-500 text-sm text-center bg-red-50 p-2 rounded-lg border border-red-100">
+                Identifiants incorrects.
+            </div>
+
+            <button type="submit"
+                class="w-full flex justify-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition transform hover:scale-[1.02]">
+                Se connecter
+            </button>
+        </form>
+
+
+    </div>
+
+    <script>
+        // Check if already authenticated, redirect to dashboard
+        document.addEventListener('DOMContentLoaded', () => {
+            const authKey = localStorage.getItem('stackpages_auth');
+            if (authKey) {
+                window.location.href = '/dashboard';
+                return;
+            }
+        });
+
+        document.getElementById('login-form').addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const email = document.getElementById('email').value;
+            const password = document.getElementById('password').value;
+            const errorDiv = document.getElementById('error-message');
+            const btn = e.target.querySelector('button');
+
+            // Reset UI
+            errorDiv.classList.add('hidden');
+            btn.disabled = true;
+            btn.innerHTML = '<i class="fas fa-circle-notch fa-spin"></i>';
+
+            try {
+                // Always use relative path for "connect to self" behavior
+                const loginUrl = '/api/login';
+
+                const res = await fetch(loginUrl, {
+                    method: 'POST',
+                    headers: { 'Content-Type': 'application/json' },
+                    body: JSON.stringify({ email, password })
+                });
+
+                if (res.ok) {
+                    localStorage.setItem('stackpages_auth', password);
+                    // Ensure api_base_url is cleared so core/admin.js uses relative paths
+                    localStorage.removeItem('api_base_url');
+                    window.location.href = '/admin/dashboard.html';
+                } else {
+                    errorDiv.textContent = "Identifiants incorrects.";
+                    errorDiv.classList.remove('hidden');
+                    btn.disabled = false;
+                    btn.textContent = 'Se connecter';
+                }
+            } catch (err) {
+                errorDiv.textContent = "Erreur de connexion.";
+                errorDiv.classList.remove('hidden');
+                btn.disabled = false;
+                btn.textContent = 'Se connecter';
+            }
+        });
+    </script>
+</body>
+
+</html>

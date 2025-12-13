@@ -1,0 +1,40 @@
+# ====================================================================
+# Git Ignore - StackPages CMS
+# ====================================================================
+
+# Secrets et variables d'environnement sensibles
+.dev.vars
+.env
+*.env
+*.env.local
+
+# Fichiers système
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# Dépendances
+node_modules/
+.pnpm-store/
+
+# Cache Wrangler
+.wrangler/
+.mf/
+wrangler.toml.bak
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Build
+dist/
+build/
+.cache/

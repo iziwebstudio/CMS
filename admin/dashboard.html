@@ -1,0 +1,1766 @@
+<!DOCTYPE html>
+<html lang="fr">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Dashboard - iziWebCMS CMS </title>
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns=" http://www.w3.org/2000/svg"
+        viewBox="0 0 24 24" %3E%3Crect width="24" height="24" rx="5" fill="%239333ea" /%3E%3Cpolyline
+        points="16 18 22 12 16 6" fill="none" stroke="white" stroke-width="2" stroke-linecap="round"
+        stroke-linejoin="round" /%3E%3Cpolyline points="8 6 2 12 8 18" fill="none" stroke="white" stroke-width="2"
+        stroke-linecap="round" stroke-linejoin="round" /%3E%3C/svg%3E">
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        purple: {
+                            50: '#f5f3ff',
+                            100: '#ede9fe',
+                            200: '#ddd6fe',
+                            300: '#c4b5fd',
+                            400: '#a78bfa',
+                            500: '#8b5cf6',
+                            600: '#7c3aed',
+                            700: '#6d28d9',
+                            800: '#5b21b6',
+                            900: '#4c1d95',
+                        }
+                    }
+                }
+            }
+        }
+    </script>
+    <script src="/core/WhatsappChatBox.min.js"></script>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        body {
+            font-family: 'Inter', sans-serif;
+        }
+
+        .glass-panel {
+            background: rgba(255, 255, 255, 0.7);
+            backdrop-filter: blur(10px);
+            border-bottom: 1px solid rgba(226, 232, 240, 0.8);
+        }
+
+        .dark .glass-panel {
+            background: rgba(15, 23, 42, 0.8);
+            border-bottom: 1px solid rgba(51, 65, 85, 0.5);
+        }
+    </style>
+</head>
+
+<body
+    class="bg-slate-50 dark:bg-slate-900 text-slate-800 dark:text-slate-200 h-screen flex overflow-hidden transition-colors duration-300">
+
+    <!-- Sidebar -->
+    <aside
+        class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col z-10 transition-colors duration-300">
+        <div class="p-6 border-b border-slate-100 dark:border-slate-700">
+            <h1 class="text-xl font-bold">
+                <a href="https://stackpages.net/" target="_blank" class="flex items-center gap-2">
+                    <div
+                        class="w-8 h-8 bg-gradient-to-br from-purple-500 to-purple-700 rounded-lg flex items-center justify-center">
+                        <i class="fas fa-plus text-white text-lg"></i>
+                    </div>
+                    <span class="dark:text-white">iziWebCMS</span>
+                </a>
+            </h1>
+        </div>
+
+        <nav class="flex-1 p-4 space-y-2 overflow-y-auto">
+            <button onclick="showView('dashboard')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center active-nav">
+                <i class="fas fa-chart-pie w-6"></i> Tableau de bord
+            </button>
+            <button onclick="showView('content')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-newspaper w-6"></i> Articles
+            </button>
+            <button onclick="showView('videos')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-video w-6"></i> Vidéos
+            </button>
+            <button onclick="showView('podcasts')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-microphone w-6"></i> Podcasts
+            </button>
+            <button onclick="showView('agents')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-robot w-6"></i> Agents IA
+            </button>
+
+            <div class="border-t border-slate-100 dark:border-slate-700 my-2"></div>
+
+            <button onclick="showView('api-explorer')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-terminal w-6"></i> API Explorer
+            </button>
+            <button onclick="showView('builder')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-paint-brush w-6"></i> Frontend Builder
+            </button>
+            <button onclick="showView('analytics')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-chart-line w-6"></i> Google Analytics
+            </button>
+
+            <div class="border-t border-slate-100 dark:border-slate-700 my-2"></div>
+
+            <button onclick="showView('config')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-cog w-6"></i> Configuration
+            </button>
+            <button onclick="showView('help')"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-question-circle w-6"></i> Aide & Support
+            </button>
+            <a href="https://docs.stackpages.net/" target="_blank"
+                class="nav-item w-full text-left px-4 py-3 rounded-lg text-sm font-medium transition-colors hover:bg-purple-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 flex items-center">
+                <i class="fas fa-book w-6"></i> Documentation
+            </a>
+        </nav>
+
+        <div class="p-4 border-t border-slate-100 dark:border-slate-700 space-y-2">
+            <!-- Dark Mode Toggle -->
+            <button onclick="toggleDarkMode()"
+                class="w-full text-left px-4 py-2 rounded-lg text-sm font-medium transition-colors hover:bg-slate-50 dark:hover:bg-slate-700 text-slate-600 dark:text-slate-400 flex items-center gap-3">
+                <i class="fas fa-moon theme-toggle-icon w-6"></i>
+                <span>Mode Sombre</span>
+            </button>
+
+            <div class="flex items-center justify-between px-2 pt-2 border-t border-slate-100 dark:border-slate-700">
+                <div class="flex items-center gap-3">
+                    <div
+                        class="w-8 h-8 rounded-full bg-slate-200 dark:bg-slate-700 flex items-center justify-center text-slate-500 dark:text-slate-400">
+                        <i class="fas fa-eject"></i>
+                    </div>
+                    <div class="text-sm">
+                        <p id="dashboard-site-name" class="font-medium text-slate-700">Déconnexion</p>
+                        <p id="dashboard-author" class="text-xs text-slate-500">CMS v1.0.3</p>
+                    </div>
+                </div>
+                <button onclick="logout()" class="text-slate-400 hover:text-red-500 transition" title="Déconnexion">
+                    <i class="fas fa-sign-out-alt"></i>
+                </button>
+            </div>
+        </div>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="flex-1 overflow-auto relative">
+        <!-- Header -->
+        <header class="sticky top-0 z-20 glass-panel px-8 py-4 flex justify-between items-center">
+            <h2 id="page-title" class="text-xl font-semibold text-slate-800 dark:text-white">Tableau de bord</h2>
+            <div class="flex gap-3">
+                <a id="header-site-btn" href="/" target="_blank"
+                    class="px-4 py-2 text-sm font-bold text-slate-700 hover:text-purple-600 transition bg-white border border-slate-200 dark:border-transparent rounded-lg shadow-sm hover:shadow">
+                    <i class="fas fa-external-link-alt mr-2"></i>Aller au Site
+                </a>
+            </div>
+        </header>
+
+        <div class="p-8 max-w-7xl mx-auto space-y-8">
+
+            <!-- VIEW: DASHBOARD -->
+            <div id="view-dashboard" class="view-section space-y-6">
+                <!-- Welcome Card -->
+                <div
+                    class="bg-gradient-to-r from-purple-600 to-indigo-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                    <div class="relative z-10">
+                        <h3 class="text-3xl font-bold mb-2">Bonjour, Admin 👋</h3>
+                        <p class="text-purple-100 dark:text-purple-200 text-lg">Voici ce qui se passe sur votre site
+                            aujourd'hui.</p>
+                    </div>
+                    <div class="absolute right-0 top-0 h-full w-1/2 bg-white/10 skew-x-12 transform translate-x-20">
+                    </div>
+                </div>
+
+                <!-- Stats Grid -->
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-6">
+                    <!-- Articles Published -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 bg-orange-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-orange-600 dark:text-orange-400">
+                                <i class="fas fa-newspaper text-xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">En
+                                ligne</span>
+                        </div>
+                        <h4 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Articles</h4>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="stat-posts-count">-</p>
+                    </div>
+
+                    <!-- Videos Synced -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 bg-pink-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-pink-600 dark:text-pink-400">
+                                <i class="fas fa-video text-xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">Actif</span>
+                        </div>
+                        <h4 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Vidéos</h4>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="stat-videos-count">-</p>
+                    </div>
+
+                    <!-- Podcasts Synced -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 bg-purple-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-purple-600 dark:text-purple-400">
+                                <i class="fas fa-microphone text-xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full">RSS</span>
+                        </div>
+                        <h4 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Podcasts</h4>
+                        <p class="text-2xl font-bold text-slate-800 dark:text-white mt-1" id="stat-podcasts-count">-</p>
+                    </div>
+
+                    <!-- Feed Status -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                        <div class="flex items-center justify-between mb-4">
+                            <div
+                                class="w-12 h-12 bg-green-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400">
+                                <i class="fas fa-wifi text-xl"></i>
+                            </div>
+                            <span
+                                class="text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full">OK</span>
+                        </div>
+                        <h4 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Mise à jour</h4>
+                        <p class="text-sm font-bold text-slate-800 dark:text-white mt-2 truncate" id="stat-last-sync">-
+                        </p>
+                    </div>
+                </div>
+
+                <!-- Recent Content Grid -->
+                <!-- Recent Articles (Full Width) -->
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                        <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Articles</h3>
+                        <button onclick="showView('content')"
+                            class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
+                            tout</button>
+                    </div>
+                    <div class="p-0 overflow-x-auto">
+                        <table class="w-full text-left border-collapse">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
+                                <tr>
+                                    <th class="px-6 py-3 font-medium">Titre</th>
+                                    <th class="px-6 py-3 font-medium">Date</th>
+                                    <th class="px-6 py-3 font-medium text-right">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody id="dashboard-recent-posts" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <tr>
+                                    <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
+                                        Chargement...</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+
+                <!-- Videos & Podcasts Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Videos Table -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Dernières Vidéos</h3>
+                            <button onclick="showView('videos')"
+                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
+                                tout</button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium">Titre</th>
+                                        <th class="px-6 py-3 font-medium">Date</th>
+                                        <th class="px-6 py-3 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-videos"
+                                    class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
+                                            Chargement...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- Recent Podcasts Table -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Podcasts</h3>
+                            <button onclick="showView('podcasts')"
+                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
+                                tout</button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium">Titre</th>
+                                        <th class="px-6 py-3 font-medium">Date</th>
+                                        <th class="px-6 py-3 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-podcasts"
+                                    class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
+                                            Chargement...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: CONTENT -->
+            <div id="view-content" class="view-section hidden space-y-6">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 transition-colors duration-300">
+                        <div class="flex items-center gap-4">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Tous les Articles</h3>
+                            <button onclick="loadData()" class="text-slate-400 hover:text-purple-500 transition"
+                                title="Actualiser">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="search-posts" placeholder="Rechercher..."
+                            class="px-3 py-1.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-6 py-3">Image</th>
+                                    <th class="px-6 py-3">Titre</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="all-posts-table" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- Pagination Controls -->
+                    <div
+                        class="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 transition-colors duration-300">
+                        <span id="pagination-info" class="text-sm text-slate-500 dark:text-slate-400">Page 1 sur
+                            1</span>
+                        <div class="flex gap-2">
+                            <button id="prev-page-btn" onclick="prevPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Précédent</button>
+                            <button id="next-page-btn" onclick="nextPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Suivant</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: VIDEOS -->
+            <div id="view-videos" class="view-section hidden space-y-6">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 transition-colors duration-300">
+                        <div class="flex items-center gap-4">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Toutes les Vidéos</h3>
+                            <button onclick="loadData()" class="text-slate-400 hover:text-purple-500 transition"
+                                title="Actualiser">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="search-videos" placeholder="Rechercher..."
+                            class="px-3 py-1.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-6 py-3">Image</th>
+                                    <th class="px-6 py-3">Titre</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="videos-table" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div
+                        class="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 transition-colors duration-300">
+                        <span id="video-pagination-info" class="text-sm text-slate-500 dark:text-slate-400">Page 1 sur
+                            1</span>
+                        <div class="flex gap-2">
+                            <button id="prev-video-page-btn" onclick="prevVideoPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Précédent</button>
+                            <button id="next-video-page-btn" onclick="nextVideoPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Suivant</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            <!-- VIEW: API EXPLORER -->
+            <div id="view-api-explorer" class="view-section hidden space-y-6">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 transition-colors duration-300">
+                    <h3 class="font-semibold text-slate-800 dark:text-white mb-4">Tester les Endpoints</h3>
+
+                    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                        <!-- Left Column: Controls -->
+                        <div class="space-y-4">
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/metadata</code>
+                                <button onclick="testApi('/api/metadata')"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/posts</code>
+                                <button onclick="testApi('/api/posts')"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/videos</code>
+                                <button onclick="testApi('/api/videos')"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/podcasts</code>
+                                <button onclick="testApi('/api/podcasts')"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code
+                                    class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/post/:slug</code>
+                                <input type="text" id="api-slug-input" placeholder="slug-article"
+                                    class="px-2 py-1 text-sm border border-slate-300 dark:border-slate-500 dark:bg-slate-600 dark:text-white rounded w-32">
+                                <button onclick="testApiSlug()"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/video/:id</code>
+                                <input type="text" id="api-video-input" placeholder="id-video"
+                                    class="px-2 py-1 text-sm border border-slate-300 dark:border-slate-500 dark:bg-slate-600 dark:text-white rounded w-32">
+                                <button onclick="testApiVideo()"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+                            <div
+                                class="flex gap-4 items-center p-4 bg-slate-50 dark:bg-slate-700/50 rounded-lg border border-slate-200 dark:border-slate-600">
+                                <span
+                                    class="px-2 py-1 bg-blue-100 text-blue-700 rounded text-xs font-mono font-bold">GET</span>
+                                <code
+                                    class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/podcast/:id</code>
+                                <input type="text" id="api-podcast-input" placeholder="guid-ou-slug"
+                                    class="px-2 py-1 text-sm border border-slate-300 dark:border-slate-500 dark:bg-slate-600 dark:text-white rounded w-32">
+                                <button onclick="testApiPodcast()"
+                                    class="ml-auto px-3 py-1 bg-white dark:bg-slate-600 border border-slate-300 dark:border-slate-500 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-500 dark:text-white">Envoyer</button>
+                            </div>
+
+                        </div>
+
+                        <!-- Right Column: Response -->
+                        <div class="flex flex-col space-y-4">
+                            <div>
+                                <h4 id="api-response-title"
+                                    class="text-sm font-medium text-slate-500 dark:text-slate-400 mb-2">Réponse
+                                </h4>
+                                <pre id="api-output"
+                                    class="bg-slate-900 border border-slate-800 text-green-400 p-4 rounded-lg text-xs font-mono h-[450px] overflow-auto shadow-inner">En attente...</pre>
+                            </div>
+                            <button onclick="clearApiOutput()"
+                                class="w-full py-2 border border-slate-200 dark:border-slate-600 text-slate-500 dark:text-slate-400 hover:text-slate-700 dark:hover:text-slate-300 hover:bg-slate-50 dark:hover:bg-slate-700 rounded-lg text-sm transition flex items-center justify-center gap-2">
+                                <i class="fas fa-trash-alt"></i> Effacer la console
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: ANALYTICS -->
+            <div id="view-analytics" class="view-section hidden space-y-6">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50">
+                        <h3 class="font-semibold text-slate-800 dark:text-white">Rapports Google Analytics</h3>
+                    </div>
+                    <div class="p-6">
+                        <!-- Container for dynamic iframe -->
+                        <div id="analytics-container" class="hidden">
+                            <iframe id="analytics-frame" width="100%" height="600" src="" frameborder="0"
+                                style="border:0" allowfullscreen
+                                sandbox="allow-scripts allow-same-origin allow-popups allow-popups-to-escape-sandbox"></iframe>
+                        </div>
+
+                        <!-- Setup Guide (shown when no URL configured) -->
+                        <div id="analytics-guide" class="hidden text-center py-12 px-4">
+                            <div
+                                class="w-16 h-16 bg-purple-100 text-purple-600 rounded-2xl flex items-center justify-center mx-auto mb-6">
+                                <i class="fas fa-chart-line text-3xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-800 dark:text-white mb-2">Configurer Google
+                                Analytics</h3>
+                            <p class="text-slate-600 dark:text-slate-300 mb-8 max-w-lg mx-auto">
+                                Pour afficher vos statistiques, vous devez connecter votre compte Google Analytics
+                                via
+                                Looker Studio.
+                            </p>
+
+                            <div
+                                class="max-w-xl mx-auto space-y-4 text-left bg-slate-50 dark:bg-slate-700/30 p-6 rounded-xl border border-slate-200 dark:border-slate-600">
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 rounded-full flex items-center justify-center font-bold text-slate-600 dark:text-white">
+                                        1
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-700 dark:text-slate-200 font-medium mb-1">Cloner le modèle
+                                            Looker Studio
+                                        </p>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-2">Utilisez notre modèle
+                                            pré-configuré
+                                            comme
+                                            base.
+                                        </p>
+                                        <a href="https://lookerstudio.google.com/reporting/a2371327-f823-4c3d-85b2-d6d3084997fd/page/e1rgF"
+                                            target="_blank"
+                                            class="text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 font-medium text-sm">
+                                            Ouvrir le modèle <i class="fas fa-external-link-alt text-xs ml-1"></i>
+                                        </a>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 rounded-full flex items-center justify-center font-bold text-slate-600 dark:text-white">
+                                        2
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-700 dark:text-slate-200 font-medium mb-1">Connecter vos
+                                            données</p>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400">Cliquez sur les 3 points
+                                            en haut à droite
+                                            >
+                                            "Créer une copie" > Sélectionnez votre source de données Google
+                                            Analytics.
+                                        </p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 rounded-full flex items-center justify-center font-bold text-slate-600 dark:text-white">
+                                        3
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-700 dark:text-slate-200 font-medium mb-1">Obtenir le lien
+                                            d'intégration</p>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400">Fichier > Intégrer le
+                                            rapport > Activer
+                                            l'intégration > Copier l'URL d'intégration.</p>
+                                    </div>
+                                </div>
+                                <div class="flex items-start gap-4">
+                                    <div
+                                        class="flex-shrink-0 w-8 h-8 bg-white dark:bg-slate-600 border border-slate-200 dark:border-slate-500 rounded-full flex items-center justify-center font-bold text-slate-600 dark:text-white">
+                                        4
+                                    </div>
+                                    <div>
+                                        <p class="text-slate-700 dark:text-slate-200 font-medium mb-1">Configurer la
+                                            variable</p>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400">Ajoutez la variable
+                                            <code>ANALYTICS_EMBED_URL</code> dans Cloudflare Pages avec votre lien.
+                                        </p>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: PODCASTS -->
+            <div id="view-podcasts" class="view-section hidden space-y-6">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden transition-colors duration-300">
+                    <div
+                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-white dark:bg-slate-800 transition-colors duration-300">
+                        <div class="flex items-center gap-4">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Épisodes de Podcast</h3>
+                            <button onclick="loadData()" class="text-slate-400 hover:text-purple-500 transition"
+                                title="Actualiser">
+                                <i class="fas fa-sync-alt"></i>
+                            </button>
+                        </div>
+                        <input type="text" id="search-podcasts" placeholder="Rechercher..."
+                            class="px-3 py-1.5 border border-slate-200 dark:border-slate-600 dark:bg-slate-700 dark:text-white rounded-md text-sm focus:outline-none focus:ring-2 focus:ring-purple-500">
+                    </div>
+
+                    <div class="overflow-x-auto">
+                        <table class="w-full text-sm text-left">
+                            <thead
+                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 font-medium">
+                                <tr>
+                                    <th class="px-6 py-3">Image</th>
+                                    <th class="px-6 py-3">Titre</th>
+                                    <th class="px-6 py-3">Date</th>
+                                    <th class="px-6 py-3 text-right">Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="podcasts-table" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                <!-- Populated by JS -->
+                            </tbody>
+                        </table>
+                    </div>
+
+                    <!-- Pagination Controls -->
+                    <div
+                        class="px-6 py-4 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 transition-colors duration-300">
+                        <span id="podcast-pagination-info" class="text-sm text-slate-500 dark:text-slate-400">Page 1 sur
+                            1</span>
+                        <div class="flex gap-2">
+                            <button id="prev-podcast-page-btn" onclick="prevPodcastPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Précédent</button>
+                            <button id="next-podcast-page-btn" onclick="nextPodcastPage()"
+                                class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Suivant</button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- VIEW: AGENTS (LIST) -->
+            <div id="view-agents" class="view-section hidden space-y-6">
+                <!-- WARNING: MISSING CONFIG -->
+                <div id="agents-config-warning"
+                    class="hidden bg-orange-50 dark:bg-orange-900/20 border-l-4 border-orange-500 p-6 mb-8 rounded-r shadow-sm">
+                    <div class="flex items-start">
+                        <div class="flex-shrink-0">
+                            <i class="fas fa-exclamation-triangle text-orange-500 text-xl"></i>
+                        </div>
+                        <div class="ml-4">
+                            <h3 class="text-lg font-bold text-orange-800 dark:text-orange-200">Configuration Requise
+                            </h3>
+                            <p class="text-sm text-orange-700 dark:text-orange-300 mt-2">
+                                Pour utiliser les Agents Google AI, vous devez configurer les variables d'environnement
+                                suivantes :
+                            </p>
+                            <ul class="space-y-4 mt-4">
+                                <!-- GITHUB INSTRUCTIONS -->
+                                <li id="missing-github"
+                                    class="hidden p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-200 dark:border-orange-800 text-sm">
+                                    <strong class="block text-orange-900 dark:text-orange-100 mb-2 text-base">
+                                        <i class="fab fa-github mr-2"></i>GitHub (Stockage des Agents)
+                                    </strong>
+                                    <ol
+                                        class="list-decimal list-inside space-y-1 text-orange-800 dark:text-orange-200 ml-1">
+                                        <li>Allez sur <a href="https://github.com/settings/tokens" target="_blank"
+                                                class="underline font-bold hover:text-orange-950">GitHub Developer
+                                                Settings</a>.</li>
+                                        <li>Créez un <strong>Personal Access Token (Classic)</strong>.</li>
+                                        <li>Cochez la permission <strong>repo</strong> (Full control).</li>
+                                        <li>Ajoutez ces variables :
+                                            <ul class="list-disc list-inside ml-4 mt-1 font-mono text-xs opacity-90">
+                                                <li>GITHUB_TOKEN : <code>ghp_...</code></li>
+                                                <li>GITHUB_USER : <code>votre-nom-utilisateur</code></li>
+                                                <li>GITHUB_REPO : <code>nom-du-repo</code></li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </li>
+
+                                <!-- CRONJOB INSTRUCTIONS -->
+                                <li id="missing-cronjob"
+                                    class="hidden p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-200 dark:border-orange-800 text-sm">
+                                    <strong class="block text-orange-900 dark:text-orange-100 mb-2 text-base">
+                                        <i class="fas fa-clock mr-2"></i>CronJob.org (Planification)
+                                    </strong>
+                                    <ol
+                                        class="list-decimal list-inside space-y-1 text-orange-800 dark:text-orange-200 ml-1">
+                                        <li>Connectez-vous à <a href="https://console.cron-job.org/settings"
+                                                target="_blank"
+                                                class="underline font-bold hover:text-orange-950">CronJob.org Console >
+                                                Settings</a>.</li>
+                                        <li>Allez dans la section <strong>API Key</strong>.</li>
+                                        <li>Cliquez sur <strong>Create API Key</strong>.</li>
+                                        <li>Ajoutez la variable :
+                                            <ul class="list-disc list-inside ml-4 mt-1 font-mono text-xs opacity-90">
+                                                <li>CRONJOB_API_KEY : <code>Masquer...</code></li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </li>
+
+                                <!-- GOOGLE AI INSTRUCTIONS -->
+                                <li id="missing-google"
+                                    class="hidden p-4 bg-orange-100 dark:bg-orange-900/40 rounded-lg border border-orange-200 dark:border-orange-800 text-sm">
+                                    <strong class="block text-orange-900 dark:text-orange-100 mb-2 text-base">
+                                        <i class="fab fa-google mr-2"></i>Google AI (Génération de Code)
+                                    </strong>
+                                    <ol
+                                        class="list-decimal list-inside space-y-1 text-orange-800 dark:text-orange-200 ml-1">
+                                        <li>Rendez-vous sur <a href="https://aistudio.google.com/app/apikey"
+                                                target="_blank" class="underline font-bold hover:text-orange-950">Google
+                                                AI Studio</a>.</li>
+                                        <li>Cliquez sur <strong>Create API Key</strong>.</li>
+                                        <li>Ajoutez la variable :
+                                            <ul class="list-disc list-inside ml-4 mt-1 font-mono text-xs opacity-90">
+                                                <li>GOOGLE_AI_KEY : <code>AIza...</code></li>
+                                            </ul>
+                                        </li>
+                                    </ol>
+                                </li>
+                            </ul>
+                            <p class="text-sm text-orange-700 dark:text-orange-300 mt-4">
+                                Consultez le fichier <code>README.md</code> ou <code>QUICK_START.md</code> pour savoir
+                                comment les obtenir.
+                            </p>
+                        </div>
+                    </div>
+                </div>
+
+                <div id="agents-list-container">
+                    <!-- Header / Intro -->
+                    <div
+                        class="bg-gradient-to-r from-emerald-600 to-teal-600 rounded-2xl p-8 text-white shadow-lg relative overflow-hidden">
+                        <div class="relative z-10 max-w-2xl">
+                            <h3 class="text-2xl font-bold mb-2"><i class="fas fa-robot mr-2"></i> Agents IA &
+                                Automatisation
+                            </h3>
+                            <p class="text-emerald-100 text-lg mb-4">Créez des workflows automatisés intelligents
+                                propulsés
+                                par Gemini.</p>
+                            <div class="flex flex-wrap gap-3">
+                                <button onclick="document.getElementById('services-modal').classList.remove('hidden')"
+                                    class="px-4 py-2 bg-white/20 hover:bg-white/30 rounded-lg text-sm font-medium backdrop-blur-sm transition flex items-center gap-2">
+                                    <i class="fas fa-plug"></i> Services connectés
+                                </button>
+                                <button
+                                    onclick="document.getElementById('agent-create-modal').classList.remove('hidden')"
+                                    id="btn-create-agent" disabled
+                                    class="px-4 py-2 bg-white text-emerald-700 hover:bg-emerald-50 rounded-lg text-sm font-bold shadow transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                    <i class="fas fa-plus"></i> Nouvel Agent
+                                </button>
+                            </div>
+                        </div>
+                        <div class="hidden md:block absolute right-0 bottom-0 h-full w-1/3 opacity-20">
+                            <i class="fab fa-google text-[150px] absolute bottom-[-30px] right-10"></i>
+                        </div>
+                    </div>
+
+                    <!-- Agents List -->
+                    <div id="agents-list" class="mt-6">
+                        <div class="flex items-center justify-between mb-4">
+                            <h2 class="text-lg font-bold text-slate-800 dark:text-white">Agents</h2>
+                            <button id="btn-create-agent" disabled
+                                class="px-4 py-2 bg-white text-emerald-700 hover:bg-emerald-50 rounded-lg text-sm font-bold shadow transition flex items-center gap-2 disabled:opacity-50 disabled:cursor-not-allowed">
+                                <i class="fas fa-plus"></i> Nouvel Agent
+                            </button>
+                        </div>
+                        <div class="overflow-x-auto">
+                            <table class="min-w-full divide-y divide-slate-100 dark:divide-slate-700">
+                                <thead>
+                                    <tr>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Statut</th>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Nom de l'Agent</th>
+                                        <th
+                                            class="px-4 py-2 text-left text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Dernière exécution</th>
+                                        <th
+                                            class="px-4 py-2 text-right text-xs font-medium text-slate-500 uppercase tracking-wider">
+                                            Actions</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="agents-table" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <!-- Agents will be dynamically added here -->
+                                </tbody>
+                            </table>
+                        </div>
+                    </div>
+
+                    <!-- SERVICES MODAL -->
+                    <div id="services-modal"
+                        class="fixed inset-0 z-50 flex items-center justify-center bg-black/50 hidden backdrop-blur-sm p-4">
+                        <div
+                            class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] overflow-y-auto border border-slate-200 dark:border-slate-700 animate-fade-in-up">
+                            <!-- Helper for animation -->
+                            <style>
+                                @keyframes fadeInUp {
+                                    from {
+                                        opacity: 0;
+                                        transform: translateY(20px);
+                                    }
+
+                                    to {
+                                        opacity: 1;
+                                        transform: translateY(0);
+                                    }
+                                }
+
+                                .animate-fade-in-up {
+                                    animation: fadeInUp 0.3s ease-out;
+                                }
+                            </style>
+
+                            <!-- Header -->
+                            <div
+                                class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-800/50 rounded-t-2xl">
+                                <div>
+                                    <h2 class="text-xl font-bold dark:text-white flex items-center gap-3">
+                                        <div
+                                            class="p-2 bg-emerald-100 dark:bg-emerald-900/30 rounded-lg text-emerald-600 dark:text-emerald-400">
+                                            <i class="fas fa-plug"></i>
+                                        </div>
+                                        Services Connectés
+                                    </h2>
+                                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">Gérez les connexions
+                                        aux services tiers indispensables pour vos agents.</p>
+                                </div>
+                                <button onclick="document.getElementById('services-modal').classList.add('hidden')"
+                                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full">
+                                    <i class="fas fa-times text-xl"></i>
+                                </button>
+                            </div>
+
+                            <!-- Content Grid -->
+                            <div class="p-8">
+                                <!-- Google Ecosystem -->
+                                <div class="mb-8">
+
+
+                                    <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-6 gap-4">
+                                        <!-- Gmail -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-envelope text-red-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Gmail</span>
+                                        </div>
+                                        <!-- Sheets -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-table text-emerald-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Sheets</span>
+                                        </div>
+                                        <!-- Drive -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fab fa-google-drive text-blue-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Drive</span>
+                                        </div>
+                                        <!-- Docs -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-file-alt text-blue-600 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Docs</span>
+                                        </div>
+                                        <!-- YouTube -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fab fa-youtube text-red-600 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">YouTube</span>
+                                        </div>
+                                        <!-- Analytics -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-chart-line text-orange-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Analytics</span>
+                                        </div>
+                                        <!-- Calendar -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-calendar-alt text-blue-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Calendar</span>
+                                        </div>
+                                        <!-- BigQuery -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-database text-teal-600 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">BigQuery</span>
+                                        </div>
+                                        <!-- Forms -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-list-alt text-purple-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Forms</span>
+                                        </div>
+                                        <!-- Contacts -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-address-book text-blue-400 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Contacts</span>
+                                        </div>
+                                        <!-- Tasks -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-check-circle text-blue-500 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Tasks</span>
+                                        </div>
+                                        <!-- Meet -->
+                                        <div
+                                            class="flex flex-col items-center justify-center p-4 rounded-xl bg-slate-50 dark:bg-slate-800 border border-slate-100 dark:border-slate-700 hover:bg-slate-100 dark:hover:bg-slate-700 transition">
+                                            <i class="fas fa-video text-emerald-600 text-2xl mb-2"></i>
+                                            <span
+                                                class="text-xs font-medium text-slate-700 dark:text-slate-300">Meet</span>
+                                        </div>
+                                    </div>
+                                </div>
+
+                                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+
+                                    <!-- GitHub -->
+                                    <div
+                                        class="group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg hover:border-emerald-500/50 transition-all duration-300">
+                                        <div class="absolute top-4 right-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                <i class="fas fa-check-circle mr-1"></i> Connecté
+                                            </span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div
+                                                class="w-12 h-12 bg-slate-900 rounded-lg flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-110 transition-transform">
+                                                <i class="fab fa-github"></i>
+                                            </div>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">GitHub
+                                        </h3>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 min-h-[40px]">
+                                            Stockage et versionning de vos agents. Indispensable pour l'exécution du
+                                            code.
+                                        </p>
+                                        <a href="https://github.com/settings/tokens" target="_blank"
+                                            class="inline-flex w-full justify-center items-center px-4 py-2 bg-slate-100 hover:bg-slate-200 dark:bg-slate-700 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 rounded-lg text-sm font-medium transition gap-2">
+                                            <i class="fas fa-external-link-alt"></i> Configurer
+                                        </a>
+                                    </div>
+
+                                    <!-- CronJob.org -->
+                                    <div
+                                        class="group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg hover:border-blue-500/50 transition-all duration-300">
+                                        <div class="absolute top-4 right-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                <i class="fas fa-check-circle mr-1"></i> Connecté
+                                            </span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div
+                                                class="w-12 h-12 bg-blue-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-110 transition-transform">
+                                                <i class="fas fa-clock"></i>
+                                            </div>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">
+                                            CronJob</h3>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 min-h-[40px]">
+                                            Planificateur de tâches externe gratuit et fiable pour exécuter vos
+                                            agents.
+                                        </p>
+                                        <a href="https://console.cron-job.org/settings" target="_blank"
+                                            class="inline-flex w-full justify-center items-center px-4 py-2 bg-blue-50 hover:bg-blue-100 dark:bg-blue-900/20 dark:hover:bg-blue-900/40 text-blue-700 dark:text-blue-300 rounded-lg text-sm font-medium transition gap-2">
+                                            <i class="fas fa-cog"></i> Configurer
+                                        </a>
+                                    </div>
+
+                                    <!-- Google AI -->
+                                    <div
+                                        class="group relative bg-white dark:bg-slate-800 rounded-xl border border-slate-200 dark:border-slate-700 p-6 hover:shadow-lg hover:border-purple-500/50 transition-all duration-300">
+                                        <div class="absolute top-4 right-4">
+                                            <span
+                                                class="inline-flex items-center px-2.5 py-0.5 rounded-full text-xs font-medium bg-emerald-100 text-emerald-800 dark:bg-emerald-900/30 dark:text-emerald-400">
+                                                <i class="fas fa-check-circle mr-1"></i> Connecté
+                                            </span>
+                                        </div>
+                                        <div class="mb-4">
+                                            <div
+                                                class="w-12 h-12 bg-gradient-to-br from-blue-500 to-purple-600 rounded-lg flex items-center justify-center text-white text-2xl shadow-md group-hover:scale-110 transition-transform">
+                                                <i class="fab fa-google"></i>
+                                            </div>
+                                        </div>
+                                        <h3 class="text-lg font-bold text-slate-900 dark:text-white mb-2">Google AI
+                                        </h3>
+                                        <p class="text-sm text-slate-500 dark:text-slate-400 mb-6 min-h-[40px]">
+                                            Moteur d'intelligence artificielle Gemini pour générer le code de vos
+                                            agents.
+                                        </p>
+                                        <a href="https://aistudio.google.com/app/apikey" target="_blank"
+                                            class="inline-flex w-full justify-center items-center px-4 py-2 bg-purple-50 hover:bg-purple-100 dark:bg-purple-900/20 dark:hover:bg-purple-900/40 text-purple-700 dark:text-purple-300 rounded-lg text-sm font-medium transition gap-2">
+                                            <i class="fas fa-key"></i> Obtenir Clé API
+                                        </a>
+                                    </div>
+
+                                </div>
+
+
+
+                            </div>
+                        </div>
+                    </div>
+
+
+                </div>
+            </div>
+
+            <!-- GAS handles connections directly in the script properties -->
+
+            <!-- MODAL: AGENT WIZARD -->
+            <div id="agent-create-modal"
+                class="fixed inset-0 z-[100] flex items-center justify-center bg-black/50 hidden backdrop-blur-sm p-4">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-5xl max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-700 animate-fade-in-up relative overflow-hidden">
+                    <!-- Close Button -->
+                    <button onclick="document.getElementById('agent-create-modal').classList.add('hidden')"
+                        class="absolute top-4 right-4 text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 z-50 backdrop-blur-sm bg-white/50 dark:bg-slate-800/50 rounded-full p-2">
+                        <i class="fas fa-times text-xl"></i>
+                    </button>
+                    <!-- Wizard Progress (Fixed Header) -->
+                    <div class="max-w-4xl mx-auto pt-8 px-8 mb-4 w-full flex-shrink-0">
+                        <div class="flex items-center justify-between relative">
+                            <div
+                                class="absolute left-0 top-1/2 -translate-y-1/2 w-full h-1 bg-slate-200 dark:bg-slate-700 -z-10">
+                            </div>
+
+                            <!-- Step 1 -->
+                            <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                                <div id="step-marker-1"
+                                    class="w-10 h-10 rounded-full bg-emerald-600 text-white flex items-center justify-center font-bold shadow-lg ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                    1</div>
+                                <span
+                                    class="text-sm font-medium text-emerald-600 dark:text-emerald-400">Déclencheur</span>
+                            </div>
+
+                            <!-- Step 2 -->
+                            <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                                <div id="step-marker-2"
+                                    class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                    2</div>
+                                <span class="text-sm font-medium text-slate-500">Intelligence</span>
+                            </div>
+
+                            <!-- Step 3 -->
+                            <div class="flex flex-col items-center gap-2 bg-slate-50 dark:bg-slate-900 px-4 z-10">
+                                <div id="step-marker-3"
+                                    class="w-10 h-10 rounded-full bg-slate-200 dark:bg-slate-700 text-slate-500 flex items-center justify-center font-bold ring-4 ring-white dark:ring-slate-900 transition-colors">
+                                    3</div>
+                                <span class="text-sm font-medium text-slate-500">Validation</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Wizard Content (Scrollable) -->
+                    <div class="flex-1 overflow-y-auto px-8 pb-4 w-full">
+                        <div class="max-w-3xl mx-auto transition-colors duration-300">
+
+                            <!-- STEP 1: IDENTITY (Name & Prompt) -->
+                            <div id="wizard-step-1" class="p-8">
+                                <h2 class="text-2xl font-bold text-slate-800 dark:text-white mb-2">Définition de l'Agent
+                                </h2>
+                                <p class="text-slate-500 dark:text-slate-400 mb-6">Commencez par nommer votre agent et
+                                    décrire
+                                    sa
+                                    mission.</p>
+
+                                <div class="space-y-6">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Nom
+                                            de
+                                            l'Agent</label>
+                                        <input type="text" id="agent-name" placeholder="ex: LinkedIn Auto-Post"
+                                            class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition">
+                                    </div>
+
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Objectif
+                                            (Prompt)</label>
+                                        <div class="relative">
+                                            <textarea id="agent-prompt" rows="6"
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 focus:border-transparent outline-none transition resize-none"
+                                                placeholder="Ex: Récupère le dernier article de mon blog via le flux RSS, résume-le en 3 phrases accrocheuses, et prépare un post au format JSON pour LinkedIn..."></textarea>
+                                            <div
+                                                class="absolute bottom-3 right-3 text-emerald-600 dark:text-emerald-400">
+                                                <i class="fas fa-magic"></i>
+                                            </div>
+                                        </div>
+                                        <p class="text-xs text-slate-500 mt-2"><i class="fas fa-info-circle mr-1"></i>
+                                            Soyez
+                                            précis.
+                                            Ce prompt servira à générer le code Google Apps Script.</p>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 2: EXECUTION (Code & Link) -->
+                            <div id="wizard-step-2" class="p-8 hidden">
+                                <div class="text-center mb-8">
+                                    <div
+                                        class="w-20 h-20 bg-blue-50 text-blue-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl p-4">
+                                        <img src="https://img.icons8.com/?size=100&id=iBkBIBWE6tfT&format=png&color=000000"
+                                            class="w-full h-full object-contain" alt="Gemini">
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Code Google Apps
+                                        Script
+                                    </h2>
+                                    <p class="text-slate-500 dark:text-slate-400">1. Créez un projet sur <a
+                                            href="https://script.new" target="_blank"
+                                            class="text-blue-500 underline">script.new</a>. 2. Copiez ce code. 3.
+                                        Déployez
+                                        en
+                                        Web
+                                        App.</p>
+                                </div>
+
+                                <!-- 1. Code View -->
+                                <div
+                                    class="bg-slate-900 rounded-xl p-4 overflow-hidden mb-6 relative group border border-slate-700">
+                                    <div class="absolute top-2 right-4 text-xs text-slate-500 font-mono">Code.gs</div>
+                                    <div class="absolute top-2 right-14">
+                                        <button
+                                            class="text-xs bg-white/10 hover:bg-white/20 text-white px-2 py-1 rounded transition">Copier</button>
+                                    </div>
+                                    <pre class="text-xs font-mono text-blue-300 overflow-x-auto p-2 h-40">
+<span class="text-purple-400">function</span> <span class="text-yellow-400">doPost</span>(e) {
+  <span class="text-purple-400">var</span> data = JSON.<span class="text-blue-400">parse</span>(e.postData.contents);
+  <span class="text-purple-400">if</span> (data.token !== <span class="text-green-400">"SECRET_TOKEN_XYZ"</span>) <span class="text-purple-400">return</span>;
+  
+  <span class="text-slate-400">// Logic Generated from: "<span id="display-prompt-slug">...</span>"</span>
+  GmailApp.<span class="text-blue-400">sendEmail</span>(data.email, <span class="text-green-400">"Subject"</span>, <span class="text-green-400">"Body"</span>);
+  
+  <span class="text-purple-400">return</span> ContentService.<span class="text-blue-400">createTextOutput</span>(<span class="text-green-400">"OK"</span>);
+}</pre>
+                                </div>
+
+                                <!-- 2. Configuration Inputs -->
+                                <div
+                                    class="space-y-4 bg-slate-50 dark:bg-slate-900/50 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">URL
+                                            de
+                                            déploiement (Web App)</label>
+                                        <input type="text" id="gas-url"
+                                            placeholder="https://script.google.com/macros/s/..."
+                                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-xs">
+                                    </div>
+                                    <div>
+                                        <label
+                                            class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Token
+                                            Secret</label>
+                                        <input type="text" id="gas-token" value="SECRET_TOKEN_XYZ" readonly
+                                            class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 bg-slate-100 text-slate-500 outline-none font-mono text-xs cursor-not-allowed">
+                                    </div>
+                                </div>
+                            </div>
+
+                            <!-- STEP 3: SCHEDULING (ADVANCED) -->
+                            <div id="wizard-step-3" class="p-8 hidden">
+                                <div class="text-center mb-8">
+                                    <div
+                                        class="w-16 h-16 bg-emerald-100 text-emerald-600 rounded-full flex items-center justify-center mx-auto mb-4 text-2xl">
+                                        <i class="fas fa-calendar-alt"></i>
+                                    </div>
+                                    <h2 class="text-2xl font-bold text-slate-800 dark:text-white">Planification Avancée
+                                    </h2>
+                                    <p class="text-slate-500 dark:text-slate-400">Définissez précisément quand votre
+                                        agent
+                                        doit
+                                        travailler.</p>
+                                </div>
+
+                                <div class="max-w-2xl mx-auto">
+                                    <!-- Frequency Tabs -->
+                                    <div class="flex border-b border-slate-200 dark:border-slate-700 mb-6">
+                                        <button onclick="setScheduleMode('simple')" id="tab-simple"
+                                            class="px-6 py-2 border-b-2 border-emerald-500 text-emerald-600 font-bold bg-slate-50 dark:bg-slate-800/50 rounded-t-lg transition">Simple</button>
+                                        <button onclick="setScheduleMode('advanced')" id="tab-advanced"
+                                            class="px-6 py-2 border-b-2 border-transparent text-slate-500 hover:text-slate-700 hover:border-slate-300 transition">Avance
+                                            (Cron)</button>
+                                    </div>
+
+                                    <!-- MODE: SIMPLE -->
+                                    <div id="schedule-simple" class="space-y-6">
+                                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                            <div>
+                                                <label
+                                                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Fréquence</label>
+                                                <select id="sched-frequency"
+                                                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                                    <option value="every_x_minutes">Toutes les X minutes</option>
+                                                    <option value="hourly">Toutes les heures</option>
+                                                    <option value="daily">Tous les jours</option>
+                                                    <option value="weekly">Toutes les semaines</option>
+                                                    <option value="monthly">Tous les mois</option>
+                                                </select>
+                                            </div>
+                                            <div id="sched-time-container" class="hidden">
+                                                <label
+                                                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Heure
+                                                    (UTC)</label>
+                                                <input type="time" id="sched-time"
+                                                    class="w-full px-3 py-2 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none">
+                                            </div>
+                                        </div>
+
+                                        <div id="sched-days-container" class="hidden">
+                                            <label
+                                                class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Jours
+                                                de la semaine</label>
+                                            <div class="flex gap-2">
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '1')">L</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '2')">M</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '3')">M</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '4')">J</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '5')">V</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '6')">S</button>
+                                                <button type="button"
+                                                    class="sched-day w-10 h-10 rounded-full border border-slate-200 dark:border-slate-600 flex items-center justify-center hover:bg-emerald-50 dark:hover:bg-emerald-900/20 text-slate-500 text-sm font-bold transition"
+                                                    onclick="toggleDay(this, '0')">D</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <!-- MODE: ADVANCED -->
+                                    <div id="schedule-advanced" class="hidden space-y-6">
+                                        <div>
+                                            <label
+                                                class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-2">Expression
+                                                CRON</label>
+                                            <input type="text" id="cron-expression" placeholder="* * * * *"
+                                                class="w-full px-4 py-3 rounded-lg border border-slate-200 dark:border-slate-600 dark:bg-slate-700 focus:ring-2 focus:ring-emerald-500 outline-none font-mono text-lg tracking-widest text-center">
+                                            <p class="text-xs text-slate-500 mt-2 text-center">Format:
+                                                <code>Minute Heure Jour Mois JourSemaine</code>
+                                            </p>
+                                            <div class="mt-4 flex justify-center gap-2">
+                                                <button
+                                                    onclick="document.getElementById('cron-expression').value = '0 * * * *'"
+                                                    class="px-2 py-1 bg-slate-100 rounded text-xs hover:bg-slate-200 text-slate-600">Hourly</button>
+                                                <button
+                                                    onclick="document.getElementById('cron-expression').value = '0 9 * * *'"
+                                                    class="px-2 py-1 bg-slate-100 rounded text-xs hover:bg-slate-200 text-slate-600">Daily
+                                                    9am</button>
+                                                <button
+                                                    onclick="document.getElementById('cron-expression').value = '0 0 * * 1'"
+                                                    class="px-2 py-1 bg-slate-100 rounded text-xs hover:bg-slate-200 text-slate-600">Weekly</button>
+                                            </div>
+                                        </div>
+                                    </div>
+
+                                    <div
+                                        class="mt-8 bg-slate-50 dark:bg-slate-800/50 p-4 rounded-lg text-sm text-slate-600 dark:text-slate-400 flex items-center justify-center">
+                                        <i class="fas fa-server mr-2 text-emerald-500"></i> Propulsé par
+                                        <strong>CronJob</strong>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Footer / Navigation (Fixed) -->
+                    <div
+                        class="px-8 py-6 bg-slate-50 dark:bg-slate-900/50 border-t border-slate-100 dark:border-slate-700 flex justify-between items-center flex-shrink-0">
+                        <button id="btn-back" onclick="wizardBack()"
+                            class="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium transition hidden">
+                            Retour
+                        </button>
+                        <div class="ml-auto">
+                            <button id="btn-cancel"
+                                onclick="document.getElementById('agent-create-modal').classList.add('hidden')"
+                                class="px-4 py-2 text-slate-500 hover:text-slate-700 dark:text-slate-400 dark:hover:text-slate-200 font-medium transition mr-2">
+                                Annuler
+                            </button>
+                            <button id="btn-next" onclick="wizardNext()"
+                                class="px-6 py-2 bg-emerald-600 hover:bg-emerald-700 text-white rounded-lg font-bold shadow-lg shadow-emerald-500/30 transition transform hover:scale-105">
+                                Suivant <i class="fas fa-arrow-right ml-2"></i>
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: CONFIGURATION -->
+        <div id="view-config" class="view-section hidden space-y-6">
+            <div class="max-w-6xl mx-auto">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 transition-colors duration-300">
+                    <h3 class="font-semibold text-slate-800 dark:text-white mb-6 border-b dark:border-slate-700 pb-2">
+                        Paramètres du Site</h3>
+                    <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 mb-6 rounded-r shadow-sm">
+                        <div class="flex items-start">
+                            <div class="flex-shrink-0">
+                                <i class="fas fa-info-circle text-blue-500 dark:text-blue-400 mt-0.5"></i>
+                            </div>
+                            <div class="ml-3">
+                                <h3 class="text-sm font-medium text-blue-800 dark:text-blue-200">Configuration via
+                                    Variables
+                                    d'Environnement
+                                </h3>
+                                <div class="mt-1 text-sm text-blue-700 dark:text-blue-300">
+                                    <p>La configuration de ce site est gérée directement via les variables
+                                        d'environnement
+                                        de votre hébergeur (ex: Cloudflare Dashboard ou wrangler.toml).</p>
+                                    <p class="mt-2">Les valeurs ci-dessous sont affichées à titre informatif et ne
+                                        peuvent
+                                        pas être modifiées ici.</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <form id="config-form" class="space-y-6 opacity-75">
+                        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                            <div>
+                                <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Nom du
+                                    Site</label>
+                                <input type="text" id="conf-siteName" readonly
+                                    class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            </div>
+                            <div>
+                                <label
+                                    class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Auteur</label>
+                                <input type="text" id="conf-author" readonly
+                                    class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            </div>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">URL Flux
+                                RSS Blog</label>
+                            <input type="url" id="conf-substack" readonly
+                                class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                <code>BLOG_FEED_URL</code> (Substack,
+                                WordPress, Ghost, Medium...)
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">URL Flux
+                                RSS
+                                YouTube</label>
+                            <input type="url" id="conf-youtube" readonly
+                                class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                <code>YOUTUBE_FEED_URL</code>
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">URL Flux
+                                RSS
+                                Podcast</label>
+                            <input type="url" id="conf-podcast" readonly
+                                class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                <code>PODCAST_FEED_URL</code>
+                            </p>
+                        </div>
+
+                        <div>
+                            <label class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">URL
+                                Webstudio
+                                Staging</label>
+                            <input type="url" id="conf-wstd-staging" readonly
+                                class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                            <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                <code>WSTD_STAGING_URL</code>
+                                (Optionnel -
+                                Active le proxy vers Webstudio)
+                            </p>
+                        </div>
+
+
+                        <div class="border-t dark:border-slate-700 pt-4">
+                            <h4 class="text-sm font-medium text-slate-900 dark:text-white mb-4">SEO & Métadonnées</h4>
+                            <div class="space-y-4">
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Titre
+                                        Meta</label>
+                                    <input type="text" id="conf-metaTitle" readonly
+                                        class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                                    <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                        <code>META_TITLE</code>
+                                    </p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Description
+                                        Meta</label>
+                                    <textarea id="conf-metaDesc" rows="3" readonly
+                                        class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed"></textarea>
+                                    <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                        <code>META_DESCRIPTION</code>
+                                    </p>
+                                </div>
+                                <div>
+                                    <label
+                                        class="block text-sm font-medium text-slate-700 dark:text-slate-300 mb-1">Mots-clés
+                                        Meta</label>
+                                    <input type="text" id="conf-metaKeywords" readonly
+                                        class="w-full bg-slate-100 dark:bg-slate-700/50 border-slate-300 dark:border-slate-600 rounded-lg shadow-sm text-slate-500 dark:text-slate-400 cursor-not-allowed">
+                                    <p class="text-xs text-slate-500 dark:text-slate-500 mt-1">Variable:
+                                        <code>META_KEYWORDS</code>
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="border-t dark:border-slate-700 pt-4">
+                            <h4 class="text-sm font-medium text-slate-900 dark:text-white mb-4">Maintenance</h4>
+                            <button type="button" onclick="clearCache()"
+                                class="bg-slate-100 dark:bg-slate-700 hover:bg-slate-200 dark:hover:bg-slate-600 text-slate-700 dark:text-slate-200 px-4 py-2 rounded-lg text-sm font-medium transition flex items-center gap-2">
+                                <i class="fas fa-broom"></i> Vider le Cache
+                            </button>
+                            <p id="cache-status" class="text-xs text-slate-500 mt-2"></p>
+                        </div>
+                    </form>
+                </div>
+            </div>
+        </div>
+
+        <!-- VIEW: BUILDER -->
+        <div id="view-builder" class="view-section hidden space-y-6">
+            <div class="max-w-6xl mx-auto">
+                <div class="grid grid-cols-1 lg:grid-cols-[2fr_3fr] gap-6 h-[calc(100vh-12rem)]">
+                    <!-- Left Column: Instructions & Button -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 flex flex-col justify-center items-start space-y-8 transition-colors duration-300">
+                        <div>
+                            <div
+                                class="w-16 h-16 bg-purple-100 dark:bg-purple-900/50 rounded-2xl flex items-center justify-center text-purple-600 dark:text-purple-400 mb-6">
+                                <i class="fas fa-paint-brush text-3xl"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold text-slate-800 dark:text-white mb-3">Éditeur Visuel</h3>
+                            <p class="text-slate-600 dark:text-slate-300 text-lg leading-relaxed">
+                                Utilisez notre éditeur visuel avancé pour personnaliser l'apparence de votre site.
+                                L'interface s'ouvrira dans un nouvel onglet pour vous offrir un espace de travail
+                                optimal.
+                            </p>
+                        </div>
+
+                        <a id="builder-tab-btn" href="#" target="_blank"
+                            class="inline-flex items-center gap-3 bg-gradient-to-r from-purple-500 to-purple-700 hover:from-purple-600 hover:to-purple-800 text-white px-8 py-4 rounded-xl font-bold text-lg transition shadow-lg hover:shadow-xl transform hover:-translate-y-0.5">
+                            <span>Ouvrir le Builder</span>
+                            <i class="fas fa-external-link-alt"></i>
+                        </a>
+
+                        <div class="bg-blue-50 dark:bg-blue-900/20 border-l-4 border-blue-500 p-4 rounded-r w-full">
+                            <div class="flex">
+                                <div class="flex-shrink-0">
+                                    <i class="fas fa-info-circle text-blue-500 dark:text-blue-400"></i>
+                                </div>
+                                <div class="ml-3">
+                                    <p class="text-sm text-blue-700 dark:text-blue-300">
+                                        Regardez les tutoriels à droite pour apprendre à maîtriser l'outil.
+                                    </p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Right Column: Tutorials -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-700/50 flex justify-between items-center transition-colors duration-300">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Tutoriels Vidéo</h3>
+                            <span
+                                class="text-xs font-medium text-slate-500 dark:text-slate-400 uppercase tracking-wider">Playlist
+                                YouTube</span>
+                        </div>
+                        <div class="flex-1 bg-black relative group">
+                            <iframe width="100%" height="100%"
+                                src="https://www.youtube-nocookie.com/embed/videoseries?si=YyePOX9RjcazflwN&amp;list=PL4vVqpngzeT4Bfs_D25xNi_qNMY99R928"
+                                title="YouTube video player" frameborder="0"
+                                allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share"
+                                referrerpolicy="strict-origin-when-cross-origin" allowfullscreen
+                                class="absolute inset-0 w-full h-full">
+                            </iframe>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+
+        <!-- VIEW: HELP (FAQ Accordion) -->
+        <div id="view-help" class="view-section hidden space-y-6">
+            <div class="max-w-6xl mx-auto">
+                <div
+                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-8 transition-colors duration-300">
+                    <h3 class="font-semibold text-slate-800 dark:text-white mb-6 text-xl">Foire Aux Questions</h3>
+                    <div class="space-y-4">
+
+                        <!-- Item 1 -->
+                        <details
+                            class="group border border-slate-200 dark:border-slate-700 rounded-lg open:border-purple-200 dark:open:border-purple-900 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 dark:bg-slate-700/50 rounded-lg group-open:bg-purple-50 dark:group-open:bg-purple-900/20 group-open:text-purple-700 dark:group-open:text-purple-400 transition">
+                                <span
+                                    class="font-medium text-slate-700 dark:text-slate-300 group-open:text-purple-700 dark:group-open:text-purple-400">Qu'est-ce
+                                    que
+                                    iziWebCMS ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 group-open:border-purple-100 dark:group-open:border-purple-900/50">
+                                iziWebCMS est un CMS Headless moderne qui connecte vos sources de données existantes
+                                (Substack, YouTube, Podcast) à un frontend ultra-rapide. Il vous permet de gérer
+                                votre
+                                contenu centralisé sans base de données complexe.
+                            </div>
+                        </details>
+
+                        <!-- Item 2 -->
+                        <details
+                            class="group border border-slate-200 dark:border-slate-700 rounded-lg open:border-purple-200 dark:open:border-purple-900 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 dark:bg-slate-700/50 rounded-lg group-open:bg-purple-50 dark:group-open:bg-purple-900/20 group-open:text-purple-700 dark:group-open:text-purple-400 transition">
+                                <span
+                                    class="font-medium text-slate-700 dark:text-slate-300 group-open:text-purple-700 dark:group-open:text-purple-400">Comment
+                                    mettre à
+                                    jour mon contenu ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 group-open:border-purple-100 dark:group-open:border-purple-900/50">
+                                C'est automatique ! iziWebCMS se synchronise avec vos flux RSS (Substack, YouTube,
+                                Anchor). Dès que vous publiez sur ces plateformes, votre site est mis à jour après
+                                expiration du cache (environ 3 minutes). Vous pouvez forcer la mise à jour avec le
+                                bouton "Vider le Cache".
+                            </div>
+                        </details>
+
+                        <!-- Item 3 -->
+                        <details
+                            class="group border border-slate-200 dark:border-slate-700 rounded-lg open:border-purple-200 dark:open:border-purple-900 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 dark:bg-slate-700/50 rounded-lg group-open:bg-purple-50 dark:group-open:bg-purple-900/20 group-open:text-purple-700 dark:group-open:text-purple-400 transition">
+                                <span
+                                    class="font-medium text-slate-700 dark:text-slate-300 group-open:text-purple-700 dark:group-open:text-purple-400">Comment
+                                    changer
+                                    le
+                                    nom de mon site ?</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 group-open:border-purple-100 dark:group-open:border-purple-900/50">
+                                Le nom de votre site est défini par la variable d'environnement
+                                <code>META_TITLE</code>
+                                dans Cloudflare Pages. Vous pouvez le modifier dans les paramètres de votre projet
+                                Cloudflare > Settings > Environment Variables.
+                            </div>
+                        </details>
+
+                        <!-- Item 4 -->
+                        <details
+                            class="group border border-slate-200 dark:border-slate-700 rounded-lg open:border-purple-200 dark:open:border-purple-900 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 dark:bg-slate-700/50 rounded-lg group-open:bg-purple-50 dark:group-open:bg-purple-900/20 group-open:text-purple-700 dark:group-open:text-purple-400 transition">
+                                <span
+                                    class="font-medium text-slate-700 dark:text-slate-300 group-open:text-purple-700 dark:group-open:text-purple-400">Le
+                                    Frontend
+                                    Builder
+                                    ne fonctionne pas</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 group-open:border-purple-100 dark:group-open:border-purple-900/50">
+                                Le Builder ouvre votre site en mode édition. Assurez-vous d'avoir configuré la
+                                variable
+                                <code>FRONTEND_BUILDER_URL</code> avec l'URL de votre éditeur (ex:
+                                https://builder.webstudio.so). Si la page reste blanche, vérifiez si votre
+                                navigateur
+                                ne
+                                bloque pas les pop-ups.
+                            </div>
+                        </details>
+
+                        <!-- Item 5 -->
+                        <details
+                            class="group border border-slate-200 dark:border-slate-700 rounded-lg open:border-purple-200 dark:open:border-purple-900 transition">
+                            <summary
+                                class="flex items-center justify-between p-4 cursor-pointer list-none bg-slate-50 dark:bg-slate-700/50 rounded-lg group-open:bg-purple-50 dark:group-open:bg-purple-900/20 group-open:text-purple-700 dark:group-open:text-purple-400 transition">
+                                <span
+                                    class="font-medium text-slate-700 dark:text-slate-300 group-open:text-purple-700 dark:group-open:text-purple-400">Mes
+                                    images ne
+                                    s'affichent pas</span>
+                                <span class="transition group-open:rotate-180">
+                                    <i class="fas fa-chevron-down text-slate-400 group-open:text-purple-500"></i>
+                                </span>
+                            </summary>
+                            <div
+                                class="p-4 text-slate-600 dark:text-slate-400 leading-relaxed border-t border-slate-100 dark:border-slate-700 group-open:border-purple-100 dark:group-open:border-purple-900/50">
+                                iziWebCMS utilise un proxy intelligent pour afficher votre site Webstudio sur votre
+                                propre domaine. Si des images manquent, c'est souvent lié à une configuration DNS ou
+                                CSP. Le système gère, cependant, automatiquement la plupart des cas via le proxy
+                                intégré.
+                            </div>
+                        </details>
+
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        </div>
+    </main>
+
+    <!-- Modal Preview -->
+    <div id="preview-modal"
+        class="fixed inset-0 z-50 hidden bg-black/50 backdrop-blur-sm flex items-center justify-center p-4">
+        <div
+            class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col overflow-hidden">
+            <div
+                class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center bg-slate-50 dark:bg-slate-700/50">
+                <h3 id="modal-title" class="font-bold text-lg text-slate-800 dark:text-white truncate pr-4">Titre de
+                    l'article</h3>
+                <button onclick="closeModal()"
+                    class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-300 transition">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div id="modal-content" class="p-8 overflow-y-auto prose prose-purple dark:prose-invert max-w-none">
+                <!-- Content -->
+            </div>
+        </div>
+    </div>
+
+    <!-- ====================================================================
+         MODE LOCAL ACTIVÉ (par défaut)
+         ====================================================================
+         Le worker local (_worker.js) gère toute la configuration via ses 
+         variables d'environnement. Aucune config frontend n'est nécessaire.
+         
+         Pour activer le MODE PUBLIC (API partagée), décommenter ci-dessous :
+    -->
+    <!--
+    <script>
+        // URL de l'API Worker public (ex: https://api.stackpages.dev) 
+        window.STACKPAGES_API_URL = "https://demo.stackpages.workers.dev/";
+        
+        // Configuration des flux RSS (requis pour le mode Public)
+        window.STACKPAGES_CONFIG = {
+            substack: "https://votre-compte.substack.com/feed",
+            youtube: "https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_CHANNEL_ID",
+            podcast: "https://anchor.fm/s/VOTRE_PODCAST_ID/podcast/rss"
+        };
+    </script>
+    -->
+
+    <script src="/core/admin.js"></script>
+    <script>
+        // Logout Handler
+        async function logout() {
+            // await fetch('/api/logout'); // Optional: Call backend logout if needed
+            localStorage.removeItem('stackpages_auth');
+            localStorage.removeItem('api_base_url'); // Clear remote worker URL
+            window.location.href = '/admin';
+        }
+    </script>
+
+    <!--<script>
+        // integration de Chat WhatsApp
+        new WAChatBox({
+            link: "https://wa.me/2250747288793",
+            user: {
+                name: "Ange",
+                avatar: "https://img.icons8.com/?size=100&id=23460&format=png&color=000000",
+                status: "Typically replies within an hour",
+            },
+            text: `Hey There 👋<br><br>I'm here to help, so let me know what's up and I'll be happy to find a solution 🤓`,
+            button_text: "Need Help?",
+        });
+    </script> -->
+</body>
+
+</html>
