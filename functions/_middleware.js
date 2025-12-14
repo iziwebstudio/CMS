@@ -24,17 +24,114 @@ export async function onRequest(context) {
     const { request, next, env } = context;
     const url = new URL(request.url);
     
-    // Helper pour charger un fichier depuis les assets
+    // Helper robuste pour charger le template frontend/index.html
+    // Utilise le Cache API de Cloudflare pour améliorer la fiabilité
+    async function loadFrontendTemplate() {
+        const CACHE_KEY = 'frontend_template_v1';
+        const cache = caches.default;
+        const cacheRequest = new Request(`https://cache.local/${CACHE_KEY}`);
+        
+        // Essayer de récupérer depuis le cache d'abord
+        const cachedResponse = await cache.match(cacheRequest);
+        if (cachedResponse) {
+            const cachedText = await cachedResponse.text();
+            if (cachedText && cachedText.length > 100) { // Vérifier que le cache contient du contenu valide
+                console.log('✓ Template loaded from cache');
+                return cachedText;
+            }
+        }
+        
+        // Si pas dans le cache, charger depuis les assets avec plusieurs tentatives
+        const possiblePaths = [
+            '/frontend/index.html',
+            '/frontend/index.html/',
+            'frontend/index.html',
+        ];
+        
+        for (const templatePath of possiblePaths) {
+            try {
+                let assetUrl;
+                if (templatePath.startsWith('/')) {
+                    assetUrl = new URL(templatePath, request.url);
+                } else {
+                    assetUrl = new URL('/' + templatePath, request.url);
+                }
+                
+                // Créer une requête avec un timeout implicite
+                const assetRequest = new Request(assetUrl.toString(), {
+                    method: 'GET',
+                    headers: {
+                        ...Object.fromEntries(request.headers),
+                        'Cache-Control': 'no-cache' // Forcer un rechargement
+                    }
+                });
+                
+                let response = await env.ASSETS.fetch(assetRequest);
+                
+                // Suivre les redirections avec un maximum de 5 tentatives
+                let redirectCount = 0;
+                while ((response.status === 308 || response.status === 301 || response.status === 302) && redirectCount < 5) {
+                    const location = response.headers.get('Location');
+                    if (location) {
+                        const redirectUrl = location.startsWith('http') 
+                            ? new URL(location) 
+                            : new URL(location, request.url);
+                        
+                        response = await env.ASSETS.fetch(new Request(redirectUrl.toString(), {
+                            method: 'GET',
+                            headers: assetRequest.headers
+                        }));
+                        redirectCount++;
+                    } else {
+                        break;
+                    }
+                }
+                
+                if (response.status === 200) {
+                    const templateText = await response.text();
+                    
+                    // Vérifier que le contenu est valide (contient des balises HTML)
+                    if (templateText && templateText.includes('<html') && templateText.length > 100) {
+                        // Mettre en cache pour les prochaines requêtes (TTL: 5 minutes)
+                        const cacheResponse = new Response(templateText, {
+                            headers: {
+                                'Content-Type': 'text/html',
+                                'Cache-Control': 'public, max-age=300'
+                            }
+                        });
+                        await cache.put(cacheRequest, cacheResponse);
+                        
+                        console.log(`✓ Template loaded successfully from: ${templatePath}`);
+                        return templateText;
+                    } else {
+                        console.log(`✗ Invalid template content from: ${templatePath}`);
+                    }
+                } else {
+                    console.log(`✗ Failed to load from ${templatePath}: Status ${response.status}`);
+                }
+            } catch (error) {
+                console.error(`Error loading template from ${templatePath}:`, error);
+            }
+        }
+        
+        // Si aucune tentative n'a réussi, essayer de retourner le cache même s'il est ancien
+        if (cachedResponse) {
+            const cachedText = await cachedResponse.text();
+            console.log('⚠ Using stale cache as fallback');
+            return cachedText;
+        }
+        
+        console.error('ERROR: Could not load frontend/index.html from any path');
+        return null;
+    }
+    
+    // Helper pour charger d'autres assets (moins critique)
     async function loadAsset(path) {
         try {
-            // Construire l'URL complète en utilisant l'origin de la requête
-            // Si path est relatif, utiliser l'origin de request.url
             let assetUrl;
             if (path.startsWith('/')) {
-                // Chemin absolu : utiliser l'origin de la requête
                 assetUrl = new URL(path, request.url);
             } else {
-                // Chemin relatif : utiliser l'origin de la requête
                 assetUrl = new URL('/' + path, request.url);
             }
             
@@ -45,43 +142,21 @@ export async function onRequest(context) {
             
             let response = await env.ASSETS.fetch(assetRequest);
             
-            // Suivre les redirections (308, 301, 302)
+            // Suivre les redirections
             let redirectCount = 0;
             while ((response.status === 308 || response.status === 301 || response.status === 302) && redirectCount < 5) {
                 const location = response.headers.get('Location');
                 if (location) {
-                    // Construire l'URL de redirection (peut être relative ou absolue)
-                    let redirectUrl;
-                    if (location.startsWith('http://') || location.startsWith('https://')) {
-                        redirectUrl = new URL(location);
-                    } else {
-                        // Si c'est une URL relative, utiliser l'origin de la requête originale
-                        redirectUrl = new URL(location, request.url);
-                    }
-                    
-                    // Créer une nouvelle requête pour la redirection
-                    const redirectRequest = new Request(redirectUrl.toString(), {
+                    const redirectUrl = location.startsWith('http') 
+                        ? new URL(location) 
+                        : new URL(location, request.url);
+                    response = await env.ASSETS.fetch(new Request(redirectUrl.toString(), {
                         method: 'GET',
                         headers: request.headers
-                    });
-                    
-                    response = await env.ASSETS.fetch(redirectRequest);
+                    }));
                     redirectCount++;
                 } else {
-                    // Pas de header Location, peut-être que c'est une redirection vers le même chemin avec un slash
-                    // Essayer d'ajouter un slash final si ce n'est pas déjà le cas
-                    if (!path.endsWith('/')) {
-                        const pathWithSlash = path + '/';
-                        const retryUrl = new URL(pathWithSlash, request.url);
-                        const retryRequest = new Request(retryUrl.toString(), {
-                            method: 'GET',
-                            headers: request.headers
-                        });
-                        response = await env.ASSETS.fetch(retryRequest);
-                        redirectCount++;
-                    } else {
-                        break;
-                    }
+                    break;
                 }
             }
             
@@ -89,12 +164,6 @@ export async function onRequest(context) {
                 return await response.text();
             }
             
-            // Log pour débogage avec plus de détails
-            console.log(`loadAsset failed for ${path}: Status ${response.status}`);
-            if (response.status === 308) {
-                const location = response.headers.get('Location');
-                console.log(`  → Redirect Location: ${location}`);
-            }
             return null;
         } catch (error) {
             console.error(`loadAsset error for ${path}:`, error);
@@ -461,27 +530,8 @@ export async function onRequest(context) {
         }
         
         // Charger le template frontend/index.html (OBLIGATOIRE)
-        // Ne jamais utiliser index.html racine comme fallback
-        // Note: Cloudflare Pages peut rediriger (308), donc on suit les redirections
-        let template = null;
-        
-        // Essayer plusieurs chemins possibles pour frontend/index.html
-        // Note: Cloudflare Pages peut servir les fichiers différemment selon la configuration
-        const possiblePaths = [
-            '/frontend/index.html',
-            '/frontend/index.html/',  // Avec slash final (peut être requis)
-            'frontend/index.html',    // Sans slash initial (chemin relatif)
-        ];
-        
-        for (const templatePath of possiblePaths) {
-            template = await loadAsset(templatePath);
-            if (template) {
-                console.log(`✓ Template loaded successfully from: ${templatePath}`);
-                break; // Template trouvé, sortir de la boucle
-            } else {
-                console.log(`✗ Failed to load from: ${templatePath}`);
-            }
-        }
+        // Utiliser la fonction robuste avec cache
+        const template = await loadFrontendTemplate();
         
         // Si aucun template trouvé après avoir essayé tous les chemins
         if (!template) {
