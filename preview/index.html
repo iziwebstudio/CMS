@@ -54,23 +54,91 @@
                         const currentHead = document.head;
                         const newHeadElements = Array.from(doc.head.children);
                         
-                        // Ajouter les éléments du template au head (CSS, scripts, etc.)
+                        // Séparer les éléments par type pour respecter l'ordre
+                        const styles = [];
+                        const links = [];
+                        const scripts = [];
+                        const others = [];
+                        
                         newHeadElements.forEach(element => {
-                            // Ne pas dupliquer les scripts déjà présents (comme htmx)
-                            if (element.tagName === 'SCRIPT' && element.src) {
-                                const existing = document.querySelector(`script[src="${element.src}"]`);
-                                if (existing) {
-                                    return; // Skip si déjà présent
+                            if (element.tagName === 'STYLE') {
+                                styles.push(element);
+                            } else if (element.tagName === 'LINK' && element.rel === 'stylesheet') {
+                                links.push(element);
+                            } else if (element.tagName === 'SCRIPT') {
+                                scripts.push(element);
+                            } else {
+                                others.push(element);
+                            }
+                        });
+                        
+                        // Injecter dans l'ordre : styles inline, puis links, puis scripts, puis autres
+                        // 1. Styles inline (doivent être en premier)
+                        styles.forEach(style => {
+                            const existing = Array.from(currentHead.querySelectorAll('style')).find(s => 
+                                s.textContent === style.textContent
+                            );
+                            if (!existing) {
+                                const cloned = style.cloneNode(true);
+                                currentHead.appendChild(cloned);
+                            }
+                        });
+                        
+                        // 2. Links CSS (corriger les chemins relatifs)
+                        links.forEach(link => {
+                            const href = link.getAttribute('href');
+                            if (href && href.startsWith('/') && !href.startsWith('//') && !href.startsWith('http')) {
+                                // Convertir le chemin relatif en absolu
+                                const absoluteHref = new URL(href, window.location.origin).href;
+                                link.setAttribute('href', absoluteHref);
+                            }
+                            
+                            const existing = currentHead.querySelector(`link[href="${link.getAttribute('href')}"]`);
+                            if (!existing) {
+                                const cloned = link.cloneNode(true);
+                                currentHead.appendChild(cloned);
+                            }
+                        });
+                        
+                        // 3. Scripts (éviter les doublons)
+                        scripts.forEach(script => {
+                            const src = script.getAttribute('src');
+                            if (src) {
+                                const existing = currentHead.querySelector(`script[src="${src}"]`);
+                                if (!existing) {
+                                    const cloned = script.cloneNode(true);
+                                    currentHead.appendChild(cloned);
+                                }
+                            } else if (script.textContent) {
+                                // Script inline - vérifier le contenu
+                                const existing = Array.from(currentHead.querySelectorAll('script')).find(s => 
+                                    s.textContent === script.textContent
+                                );
+                                if (!existing) {
+                                    const cloned = script.cloneNode(true);
+                                    currentHead.appendChild(cloned);
                                 }
                             }
-                            // Ne pas dupliquer les styles déjà présents
-                            if (element.tagName === 'LINK' && element.rel === 'stylesheet' && element.href) {
-                                const existing = document.querySelector(`link[href="${element.href}"]`);
-                                if (existing) {
-                                    return; // Skip si déjà présent
+                        });
+                        
+                        // 4. Autres éléments (meta, etc.)
+                        others.forEach(element => {
+                            // Éviter les doublons pour les meta tags spécifiques
+                            if (element.tagName === 'META') {
+                                const name = element.getAttribute('name');
+                                const property = element.getAttribute('property');
+                                if (name || property) {
+                                    const selector = name ? `meta[name="${name}"]` : `meta[property="${property}"]`;
+                                    const existing = currentHead.querySelector(selector);
+                                    if (existing) {
+                                        // Mettre à jour l'existant au lieu de créer un doublon
+                                        Array.from(element.attributes).forEach(attr => {
+                                            existing.setAttribute(attr.name, attr.value);
+                                        });
+                                        return;
+                                    }
                                 }
                             }
-                            // Cloner l'élément avec tous ses attributs et son contenu
                             const cloned = element.cloneNode(true);
                             currentHead.appendChild(cloned);
                         });
@@ -92,12 +160,57 @@
                         }
                     }
                     
+                    // Fonction pour corriger les chemins relatifs dans les attributs
+                    const fixRelativePaths = (element) => {
+                        // Corriger les images
+                        const images = element.querySelectorAll('img[src]');
+                        images.forEach(img => {
+                            const src = img.getAttribute('src');
+                            if (src && src.startsWith('/') && !src.startsWith('//') && !src.startsWith('http')) {
+                                img.setAttribute('src', new URL(src, window.location.origin).href);
+                            }
+                        });
+                        
+                        // Corriger les autres ressources (CSS, JS, etc. dans les attributs style)
+                        const elementsWithStyle = element.querySelectorAll('[style]');
+                        elementsWithStyle.forEach(el => {
+                            const style = el.getAttribute('style');
+                            if (style && style.includes('url(')) {
+                                // Corriger les URLs dans les styles inline
+                                const correctedStyle = style.replace(/url\(['"]?(\/[^'")]+)['"]?\)/g, (match, path) => {
+                                    if (!path.startsWith('//') && !path.startsWith('http')) {
+                                        return `url('${new URL(path, window.location.origin).href}')`;
+                                    }
+                                    return match;
+                                });
+                                el.setAttribute('style', correctedStyle);
+                            }
+                        });
+                    };
+                    
                     // Remplacer le body
                     if (doc.body) {
                         document.body.innerHTML = doc.body.innerHTML;
+                        fixRelativePaths(document.body);
                     } else {
                         // Fallback: injecter directement dans le body si pas de structure HTML complète
                         document.body.innerHTML = html;
+                        fixRelativePaths(document.body);
+                    }
+                    
+                    // Forcer le rechargement des styles après injection
+                    const styleSheets = document.styleSheets;
+                    for (let i = 0; i < styleSheets.length; i++) {
+                        try {
+                            styleSheets[i].cssRules; // Force le chargement
+                        } catch (e) {
+                            // Ignorer les erreurs CORS
+                        }
+                    }
+                    
+                    // Réinitialiser Tailwind si présent
+                    if (typeof tailwind !== 'undefined' && tailwind.refresh) {
+                        tailwind.refresh();
                     }
                     
                     // Modifier tous les liens HTMX pour qu'ils pointent vers preview.html avec le slug
