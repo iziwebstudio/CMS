@@ -564,7 +564,7 @@
             await savePage('draft');
 
             // Ouvrir la prévisualisation locale avec le slug
-            const previewUrl = `/preview.html?slug=${encodeURIComponent(slug)}`;
+            const previewUrl = `/preview?slug=${encodeURIComponent(slug)}`;
             window.open(previewUrl, '_blank');
         }
 

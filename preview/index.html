@@ -54,26 +54,26 @@
                         const hxDelete = link.getAttribute('hx-delete');
                         
                         // Modifier hx-get
-                        if (hxGet && !hxGet.startsWith('http') && !hxGet.startsWith('/api/') && !hxGet.startsWith('/admin') && !hxGet.includes('/preview.html')) {
-                            const newUrl = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxGet)}`;
+                        if (hxGet && !hxGet.startsWith('http') && !hxGet.startsWith('/api/') && !hxGet.startsWith('/admin') && !hxGet.startsWith('/preview')) {
+                            const newUrl = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxGet)}`;
                             link.setAttribute('hx-get', newUrl);
                         }
                         
                         // Modifier hx-post
-                        if (hxPost && !hxPost.startsWith('http') && !hxPost.startsWith('/api/') && !hxPost.startsWith('/admin') && !hxPost.includes('/preview.html')) {
-                            const newUrl = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxPost)}`;
+                        if (hxPost && !hxPost.startsWith('http') && !hxPost.startsWith('/api/') && !hxPost.startsWith('/admin') && !hxPost.startsWith('/preview')) {
+                            const newUrl = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxPost)}`;
                             link.setAttribute('hx-post', newUrl);
                         }
                         
                         // Modifier hx-put
-                        if (hxPut && !hxPut.startsWith('http') && !hxPut.startsWith('/api/') && !hxPut.startsWith('/admin') && !hxPut.includes('/preview.html')) {
-                            const newUrl = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxPut)}`;
+                        if (hxPut && !hxPut.startsWith('http') && !hxPut.startsWith('/api/') && !hxPut.startsWith('/admin') && !hxPut.startsWith('/preview')) {
+                            const newUrl = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxPut)}`;
                             link.setAttribute('hx-put', newUrl);
                         }
                         
                         // Modifier hx-delete
-                        if (hxDelete && !hxDelete.startsWith('http') && !hxDelete.startsWith('/api/') && !hxDelete.startsWith('/admin') && !hxDelete.includes('/preview.html')) {
-                            const newUrl = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxDelete)}`;
+                        if (hxDelete && !hxDelete.startsWith('http') && !hxDelete.startsWith('/api/') && !hxDelete.startsWith('/admin') && !hxDelete.startsWith('/preview')) {
+                            const newUrl = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(hxDelete)}`;
                             link.setAttribute('hx-delete', newUrl);
                         }
                     });
@@ -82,23 +82,23 @@
                     const hrefLinks = document.querySelectorAll('a[href]');
                     hrefLinks.forEach(link => {
                         const href = link.getAttribute('href');
-                        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('/api/') && !href.startsWith('/admin') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.includes('/preview.html')) {
-                            const newHref = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(href)}`;
+                        if (href && !href.startsWith('http') && !href.startsWith('#') && !href.startsWith('/api/') && !href.startsWith('/admin') && !href.startsWith('mailto:') && !href.startsWith('tel:') && !href.startsWith('/preview')) {
+                            const newHref = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(href)}`;
                             link.setAttribute('href', newHref);
                         }
                     });
                     
-                    // Intercepter les requêtes HTMX pour rediriger vers preview.html
+                    // Intercepter les requêtes HTMX pour rediriger vers preview
                     document.body.addEventListener('htmx:configRequest', (event) => {
                         const requestPath = event.detail.path;
                         
-                        // Si ce n'est pas déjà une requête vers preview.html et pas une API/admin
-                        if (!requestPath.includes('/preview.html') && 
+                        // Si ce n'est pas déjà une requête vers preview et pas une API/admin
+                        if (!requestPath.startsWith('/preview') && 
                             !requestPath.startsWith('/api/') && 
                             !requestPath.startsWith('/admin')) {
                             
-                            // Rediriger vers preview.html avec le slug et le path
-                            const newPath = `/preview.html?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(requestPath)}`;
+                            // Rediriger vers preview avec le slug et le path
+                            const newPath = `/preview?slug=${encodeURIComponent(currentSlug)}&path=${encodeURIComponent(requestPath)}`;
                             event.detail.path = newPath;
                         }
                     });

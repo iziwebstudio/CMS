@@ -113,10 +113,10 @@ export async function onRequest(context) {
     // Routes locales : /api/*, /admin/*, /core/*
     // IMPORTANT : Cette vérification doit être AVANT toute autre logique
     
-    // Route pour preview.html avec contenu dynamique
+    // Route pour preview/ avec contenu dynamique
     // IMPORTANT : Cette route doit être AVANT la logique SSR
-    if (url.pathname === '/preview.html' || url.pathname === '/preview/') {
-        console.log(`[Preview Route] Intercepting preview.html request`);
+    if (url.pathname.startsWith('/preview')) {
+        console.log(`[Preview Route] Intercepting preview request`);
         const slug = url.searchParams.get('slug');
         const path = url.searchParams.get('path') || '/';
         const isHtmx = request.headers.get('HX-Request') === 'true';
@@ -192,50 +192,29 @@ export async function onRequest(context) {
             }
         }
         
-        // Sinon, servir preview.html normalement (chargement initial depuis localStorage)
-        console.log(`[Preview Route] Serving preview.html static file`);
+        // Sinon, servir preview/index.html normalement (chargement initial depuis localStorage)
+        console.log(`[Preview Route] Serving preview/index.html static file`);
         
-        // Essayer plusieurs méthodes pour charger le fichier
-        // 1. Utiliser loadAsset qui gère mieux les redirections Cloudflare
-        let previewContent = await loadAsset('/preview.html');
+        // Servir le fichier preview/index.html
+        const previewRequest = new Request(new URL('/preview/index.html', request.url), request);
+        const previewResponse = await env.ASSETS.fetch(previewRequest);
         
-        if (!previewContent) {
-            // 2. Essayer avec différents chemins
-            const alternativePaths = ['preview.html', '/preview.html/', 'preview.html/'];
-            for (const altPath of alternativePaths) {
-                previewContent = await loadAsset(altPath);
-                if (previewContent) {
-                    console.log(`[Preview Route] Found preview.html at: ${altPath}`);
-                    break;
+        // Suivre les redirections si nécessaire
+        if (previewResponse.status === 200) {
+            return previewResponse;
+        } else if (previewResponse.status === 308 || previewResponse.status === 301 || previewResponse.status === 302) {
+            const location = previewResponse.headers.get('Location');
+            if (location) {
+                const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
+                const redirectResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), request));
+                if (redirectResponse.status === 200) {
+                    return redirectResponse;
                 }
             }
         }
         
-        // 3. Si toujours pas trouvé, essayer directement avec env.ASSETS.fetch
-        if (!previewContent) {
-            console.log(`[Preview Route] Trying direct ASSETS.fetch`);
-            const directRequest = new Request(new URL('/preview.html', request.url), request);
-            const directResponse = await env.ASSETS.fetch(directRequest);
-            
-            if (directResponse.status === 200) {
-                previewContent = await directResponse.text();
-                console.log(`[Preview Route] Found via direct ASSETS.fetch`);
-            } else {
-                // Suivre les redirections si nécessaire
-                if (directResponse.status === 308 || directResponse.status === 301 || directResponse.status === 302) {
-                    const location = directResponse.headers.get('Location');
-                    if (location) {
-                        const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
-                        const redirectResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), request));
-                        if (redirectResponse.status === 200) {
-                            previewContent = await redirectResponse.text();
-                            console.log(`[Preview Route] Found via redirect: ${location}`);
-                        }
-                    }
-                }
-            }
-        }
-        
+        // Si pas trouvé, essayer avec loadAsset
+        const previewContent = await loadAsset('/preview/index.html');
         if (previewContent) {
             return new Response(previewContent, {
                 headers: {
@@ -245,10 +224,9 @@ export async function onRequest(context) {
         }
         
         // Si toujours pas trouvé, retourner une erreur explicite
-        console.error(`[Preview Route] Failed to load preview.html from all methods`);
+        console.error(`[Preview Route] Failed to load preview/index.html`);
         return new Response(
-            `preview.html not found. Please ensure the file exists at the root of the project and is committed to the repository.\n\n` +
-            `The file should be at: /preview.html in your project root.`,
+            `preview/index.html not found. Please ensure the file exists in the preview/ directory.`,
             { status: 404, headers: { 'Content-Type': 'text/plain' } }
         );
     }
@@ -394,8 +372,8 @@ export async function onRequest(context) {
         // IMPORTANT : Toujours charger frontend/index.html en priorité
         // Ne jamais servir directement index.html racine
         
-        // Exclure preview.html de la logique SSR (déjà géré plus haut)
-        if (url.pathname === '/preview.html' || url.pathname === '/preview/') {
+        // Exclure preview/ de la logique SSR (déjà géré plus haut)
+        if (url.pathname.startsWith('/preview')) {
             return env.ASSETS.fetch(request);
         }
         
