@@ -1,0 +1,447 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Le Barbershop | Votre Style, Notre Passion</title>
+    <meta name="description" content="Découvrez Le Barbershop, l'endroit idéal pour une coupe stylée, une taille de barbe parfaite et une expérience unique.">
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="icon" href="https://via.placeholder.com/32x32/000000/FFFFFF?text=B" type="image/x-icon">
+</head>
+<body class="font-sans antialiased text-gray-800 bg-gray-50">
+
+    <!-- Header Section -->
+    <header class="bg-gray-900 text-white shadow-lg fixed w-full z-50">
+        <nav class="container mx-auto px-6 py-4 flex justify-between items-center">
+            <a href="/" class="text-3xl font-bold text-red-600 hover:text-red-700 transition duration-300"
+               hx-get="/" hx-target="#main-content" hx-push-url="true">
+                Le Barbershop
+            </a>
+            <div class="flex space-x-6">
+                <a href="/" class="text-lg hover:text-red-400 transition duration-300"
+                   hx-get="/" hx-target="#main-content" hx-push-url="true">Accueil</a>
+                <a href="/services" class="text-lg hover:text-red-400 transition duration-300"
+                   hx-get="/services" hx-target="#main-content" hx-push-url="true">Services</a>
+                <a href="/gallery" class="text-lg hover:text-red-400 transition duration-300"
+                   hx-get="/gallery" hx-target="#main-content" hx-push-url="true">Galerie</a>
+                <a href="/blog" class="text-lg hover:text-red-400 transition duration-300"
+                   hx-get="/blog" hx-target="#main-content" hx-push-url="true">Blog</a>
+                <a href="/contact" class="text-lg hover:text-red-400 transition duration-300"
+                   hx-get="/contact" hx-target="#main-content" hx-push-url="true">Contact</a>
+                <a href="/book" class="bg-red-600 text-white px-4 py-2 rounded-full hover:bg-red-700 transition duration-300"
+                   hx-get="/book" hx-target="#main-content" hx-push-url="true">Réserver</a>
+            </div>
+        </nav>
+    </header>
+
+    <!-- Main Content Area -->
+    <main id="main-content" class="pt-24 min-h-screen">
+        <!-- Content will be swapped here by HTMX. Initial load: home template -->
+        <div hx-get="/" hx-trigger="load" hx-target="#main-content">Chargement...</div>
+    </main>
+
+    <!-- Footer Section -->
+    <footer class="bg-gray-900 text-gray-400 py-10">
+        <div class="container mx-auto px-6 text-center">
+            <div class="mb-4">
+                <a href="/" class="text-2xl font-bold text-red-600 hover:text-red-700 transition duration-300"
+                   hx-get="/" hx-target="#main-content" hx-push-url="true">Le Barbershop</a>
+            </div>
+            <p class="text-sm">&copy; 2023 Le Barbershop. Tous droits réservés.</p>
+            <div class="flex justify-center space-x-4 mt-4">
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><img src="https://www.svgrepo.com/show/521711/facebook.svg" alt="Facebook" class="h-6 w-6"></a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><img src="https://www.svgrepo.com/show/521696/instagram.svg" alt="Instagram" class="h-6 w-6"></a>
+                <a href="#" class="text-gray-400 hover:text-white transition duration-300"><img src="https://www.svgrepo.com/show/521650/twitter.svg" alt="Twitter" class="h-6 w-6"></a>
+            </div>
+        </div>
+    </footer>
+
+    <!-- HTMX Script -->
+    <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-D1Kt99CQMDuKMfqxCsHTBdd5vhyxjkfngsrpvOqsHKVQM4cHfrgfmPOBZZHXKE0N" crossorigin="anonymous"></script>
+
+    <!-- Super Templates -->
+
+    <!-- Template: Homepage Content -->
+    <template id='tpl-home'>
+        <section class="relative bg-cover bg-center h-[600px] flex items-center justify-center text-white" style="background-image: url('https://images.unsplash.com/photo-1595168019053-fd6a7a0f7601?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D');">
+            <div class="absolute inset-0 bg-black opacity-60"></div>
+            <div class="relative z-10 text-center p-8">
+                <h1 class="text-5xl md:text-7xl font-extrabold mb-4 animate-fade-in-up">LE BARBERSHOP</h1>
+                <p class="text-xl md:text-2xl mb-8 animate-fade-in-up animation-delay-300">Votre Style, Notre Passion</p>
+                <a href="/book" class="bg-red-600 text-white text-xl px-8 py-4 rounded-full hover:bg-red-700 transition duration-300 shadow-lg animate-fade-in-up animation-delay-600"
+                   hx-get="/book" hx-target="#main-content" hx-push-url="true">Réserver Maintenant</a>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-800 mb-12">Nos Services d'Exception</h2>
+                <div class="grid md:grid-cols-3 gap-8">
+                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition duration-300 border-t-4 border-red-600">
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-900">Coupes Modernes</h3>
+                        <p class="text-gray-600">Des coupes tendance et classiques, adaptées à votre style unique.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition duration-300 border-t-4 border-red-600">
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-900">Taille de Barbe</h3>
+                        <p class="text-gray-600">Expertise en taille de barbe pour un look impeccable et soigné.</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-md hover:shadow-xl transition duration-300 border-t-4 border-red-600">
+                        <h3 class="text-2xl font-semibold mb-4 text-gray-900">Soins Homme</h3>
+                        <p class="text-gray-600">Des soins du visage et du cuir chevelu pour une fraîcheur totale.</p>
+                    </div>
+                </div>
+                <div class="mt-12">
+                    <a href="/services" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-700 transition duration-300"
+                       hx-get="/services" hx-target="#main-content" hx-push-url="true">Voir Tous les Services</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold text-gray-800 mb-12">Notre Galerie</h2>
+                <div class="grid grid-cols-2 md:grid-cols-4 gap-4">
+                    <img src="https://images.unsplash.com/photo-1596489392231-152e9882208a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coupe de cheveux" class="w-full h-64 object-cover rounded-lg shadow-md hover:scale-105 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1503951914878-ba20778cce6e?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Taille de barbe" class="w-full h-64 object-cover rounded-lg shadow-md hover:scale-105 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1628173429990-b18c5e634707?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Rasage traditionnel" class="w-full h-64 object-cover rounded-lg shadow-md hover:scale-105 transition duration-300">
+                    <img src="https://images.unsplash.com/photo-1596489392231-152e9882208a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coiffure homme" class="w-full h-64 object-cover rounded-lg shadow-md hover:scale-105 transition duration-300">
+                </div>
+                <div class="mt-12">
+                    <a href="/gallery" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-700 transition duration-300"
+                       hx-get="/gallery" hx-target="#main-content" hx-push-url="true">Voir Toute la Galerie</a>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-16 bg-gray-900 text-white">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-4xl font-bold mb-8">Prêt pour un Nouveau Look?</h2>
+                <p class="text-xl mb-10">Prenez rendez-vous dès aujourd'hui pour une expérience barbier inégalée.</p>
+                <a href="/book" class="bg-red-600 text-white text-xl px-10 py-5 rounded-full hover:bg-red-700 transition duration-300 shadow-lg"
+                   hx-get="/book" hx-target="#main-content" hx-push-url="true">Réservez Votre Place</a>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Services Page Content -->
+    <template id='tpl-services'>
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-5xl font-extrabold text-gray-800 mb-12">Nos Services & Tarifs</h2>
+                <p class="text-lg text-gray-700 mb-16 max-w-2xl mx-auto">
+                    Découvrez l'éventail complet de nos services de barbier. Chaque prestation est réalisée avec passion et précision pour garantir votre entière satisfaction.
+                </p>
+
+                <div class="grid md:grid-cols-2 lg:grid-cols-3 gap-10" hx-get="/api/services" hx-trigger="load" hx-target="this">
+                    <!-- Example service card structure (backend would populate these) -->
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Coupe Homme Classique</h3>
+                        <p class="text-gray-600 mb-4">Une coupe précise et intemporelle pour un look élégant.</p>
+                        <p class="text-red-600 text-2xl font-bold">25€</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Taille de Barbe Expert</h3>
+                        <p class="text-gray-600 mb-4">Mise en forme et entretien de votre barbe avec soin et précision.</p>
+                        <p class="text-red-600 text-2xl font-bold">20€</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Coupe + Barbe</h3>
+                        <p class="text-gray-600 mb-4">Le forfait complet pour un style harmonisé et impeccable.</p>
+                        <p class="text-red-600 text-2xl font-bold">40€</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Rasage à l'Ancienne</h3>
+                        <p class="text-gray-600 mb-4">Un rituel de rasage traditionnel avec serviette chaude et produits premium.</p>
+                        <p class="text-red-600 text-2xl font-bold">30€</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Coloration Discrète</h3>
+                        <p class="text-gray-600 mb-4">Pour camoufler les cheveux gris ou apporter une nuance subtile.</p>
+                        <p class="text-red-600 text-2xl font-bold">De 35€</p>
+                    </div>
+                    <div class="bg-white p-8 rounded-lg shadow-xl hover:shadow-2xl transition duration-300 border-b-4 border-red-600 flex flex-col items-center text-center">
+                        <h3 class="text-3xl font-semibold mb-4 text-gray-900">Soin du Visage Homme</h3>
+                        <p class="text-gray-600 mb-4">Nettoyage, hydratation et revitalisation pour une peau saine.</p>
+                        <p class="text-red-600 text-2xl font-bold">35€</p>
+                    </div>
+                </div>
+
+                <div class="mt-16">
+                    <h3 class="text-3xl font-bold text-gray-800 mb-6">Prêt à prendre soin de vous?</h3>
+                    <a href="/book" class="bg-red-600 text-white text-xl px-10 py-5 rounded-full hover:bg-red-700 transition duration-300 shadow-lg"
+                       hx-get="/book" hx-target="#main-content" hx-push-url="true">Réservez Votre Expérience</a>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Gallery Page Content -->
+    <template id='tpl-gallery'>
+        <section class="py-16 bg-gray-50">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-5xl font-extrabold text-gray-800 mb-12">Notre Galerie de Styles</h2>
+                <p class="text-lg text-gray-700 mb-16 max-w-2xl mx-auto">
+                    Inspirez-vous de nos créations. Voici quelques-uns des styles que nous maîtrisons, des coupes classiques aux plus audacieuses.
+                </p>
+
+                <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6" hx-get="/api/gallery" hx-trigger="load" hx-target="this">
+                    <!-- Example gallery items (backend would populate these) -->
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1579895240974-bc55845c4852?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Coupe classique" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">Coupe Classique</p>
+                        </div>
+                    </div>
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1616053303866-b328a649fb94?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Barbe taillée" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">Barbe Perfection</p>
+                        </div>
+                    </div>
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1601716382024-db08b075459b?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Fade haircut" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">Fade Moderne</p>
+                        </div>
+                    </div>
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1600109406547-86f343465451?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Cheveux longs homme" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">Texture & Volume</p>
+                        </div>
+                    </div>
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1596489392231-152e9882208a?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Rasage traditionnel" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">Rasage Précis</p>
+                        </div>
+                    </div>
+                    <div class="relative group rounded-lg overflow-hidden shadow-lg">
+                        <img src="https://images.unsplash.com/photo-1605497258414-2ac2ddf76269?q=80&w=2940&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="Barbier au travail" class="w-full h-80 object-cover transform group-hover:scale-105 transition duration-500">
+                        <div class="absolute inset-0 bg-black bg-opacity-50 flex items-center justify-center opacity-0 group-hover:opacity-100 transition duration-500">
+                            <p class="text-white text-xl font-bold">L'Art du Barbier</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Blog Listing Page -->
+    <template id='tpl-blog'>
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6">
+                <h2 class="text-5xl font-extrabold text-gray-800 text-center mb-12">Notre Blog & Conseils</h2>
+                <p class="text-lg text-gray-700 mb-16 max-w-2xl mx-auto text-center">
+                    Découvrez nos articles sur les dernières tendances, les conseils d'entretien et l'histoire du rasage.
+                </p>
+
+                <div id="blog-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                     hx-get="/api/posts" hx-trigger="load" hx-target="#blog-posts-container">
+                    <!-- Blog cards will be loaded here by the backend -->
+                    <p class="text-center col-span-full text-gray-600">Chargement des articles...</p>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Contact Page Content -->
+    <template id='tpl-contact'>
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6 text-center">
+                <h2 class="text-5xl font-extrabold text-gray-800 mb-12">Contactez-Nous</h2>
+                <p class="text-lg text-gray-700 mb-16 max-w-2xl mx-auto">
+                    Avez-vous des questions, des commentaires ou souhaitez-vous simplement nous dire bonjour? Nous serons ravis de vous lire!
+                </p>
+
+                <div class="grid md:grid-cols-2 gap-12 items-center">
+                    <div class="bg-white p-8 rounded-lg shadow-xl text-left border-t-4 border-red-600">
+                        <h3 class="text-3xl font-semibold text-gray-900 mb-6">Informations de Contact</h3>
+                        <p class="mb-4 text-gray-700"><strong class="text-gray-900">Adresse:</strong> 123 Rue du Barbier, 75001 Paris</p>
+                        <p class="mb-4 text-gray-700"><strong class="text-gray-900">Téléphone:</strong> <a href="tel:+33123456789" class="text-blue-600 hover:underline">01 23 45 67 89</a></p>
+                        <p class="mb-4 text-gray-700"><strong class="text-gray-900">Email:</strong> <a href="mailto:contact@lebarbershop.fr" class="text-blue-600 hover:underline">contact@lebarbershop.fr</a></p>
+                        <p class="mb-6 text-gray-700"><strong class="text-gray-900">Heures d'ouverture:</strong> Mar-Sam: 9h-19h</p>
+
+                        <h3 class="text-3xl font-semibold text-gray-900 mb-6 mt-8">Suivez-nous</h3>
+                        <div class="flex space-x-4">
+                            <a href="#" class="text-gray-600 hover:text-blue-600 transition duration-300"><img src="https://www.svgrepo.com/show/521711/facebook.svg" alt="Facebook" class="h-8 w-8"></a>
+                            <a href="#" class="text-gray-600 hover:text-pink-600 transition duration-300"><img src="https://www.svgrepo.com/show/521696/instagram.svg" alt="Instagram" class="h-8 w-8"></a>
+                            <a href="#" class="text-gray-600 hover:text-blue-400 transition duration-300"><img src="https://www.svgrepo.com/show/521650/twitter.svg" alt="Twitter" class="h-8 w-8"></a>
+                        </div>
+                    </div>
+
+                    <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-red-600">
+                        <h3 class="text-3xl font-semibold text-gray-900 mb-6 text-center">Envoyez-nous un Message</h3>
+                        <form hx-post="/api/contact" hx-swap="outerHTML" hx-target="this">
+                            <div class="mb-4">
+                                <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Nom Complet</label>
+                                <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Email</label>
+                                <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                            </div>
+                            <div class="mb-4">
+                                <label for="message" class="block text-gray-700 text-sm font-bold mb-2">Votre Message</label>
+                                <textarea id="message" name="message" rows="6" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required></textarea>
+                            </div>
+                            <div class="flex items-center justify-center">
+                                <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-75 transition duration-300">
+                                    Envoyer le Message
+                                </button>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </section>
+        <div class="mt-12">
+            <h3 class="text-4xl font-bold text-gray-800 text-center mb-8">Où nous trouver</h3>
+            <div class="w-full h-96 bg-gray-300">
+                <iframe
+                    src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d2624.991696614457!2d2.292292615674393!3d48.85837007928746!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x47e66e2964a27453%3A0x58247f480ad2e061!2sTour%20Eiffel!5e0!3m2!1sen!2sfr!4v1678912345678!5m2!1sen!2sfr"
+                    width="100%" height="100%" style="border:0;" allowfullscreen="" loading="lazy" referrerpolicy="no-referrer-when-downgrade">
+                </iframe>
+            </div>
+        </div>
+    </template>
+
+    <!-- Template: Booking Page Content -->
+    <template id='tpl-book'>
+        <section class="py-16 bg-gray-100 flex items-center justify-center">
+            <div class="container mx-auto px-6 text-center max-w-2xl">
+                <h2 class="text-5xl font-extrabold text-gray-800 mb-12">Réservez Votre Rendez-vous</h2>
+                <p class="text-lg text-gray-700 mb-10">
+                    Utilisez notre système de réservation en ligne pour choisir le service, la date et l'heure qui vous conviennent.
+                </p>
+
+                <div class="bg-white p-8 rounded-lg shadow-xl border-t-4 border-red-600">
+                    <h3 class="text-3xl font-semibold text-gray-900 mb-6">Prendre un Rendez-vous</h3>
+                    <form hx-post="/api/book" hx-swap="outerHTML" hx-target="this" class="space-y-6">
+                        <div class="text-left">
+                            <label for="service" class="block text-gray-700 text-sm font-bold mb-2">Choisissez un Service</label>
+                            <select id="service" name="service" class="shadow border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                                <option value="">-- Sélectionnez un service --</option>
+                                <option value="coupe-classique">Coupe Homme Classique (25€)</option>
+                                <option value="taille-barbe">Taille de Barbe Expert (20€)</option>
+                                <option value="coupe-barbe">Coupe + Barbe (40€)</option>
+                                <option value="rasage-ancien">Rasage à l'Ancienne (30€)</option>
+                                <option value="soin-visage">Soin du Visage Homme (35€)</option>
+                            </select>
+                        </div>
+                        <div class="text-left">
+                            <label for="date" class="block text-gray-700 text-sm font-bold mb-2">Date</label>
+                            <input type="date" id="date" name="date" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        </div>
+                        <div class="text-left">
+                            <label for="time" class="block text-gray-700 text-sm font-bold mb-2">Heure</label>
+                            <input type="time" id="time" name="time" min="09:00" max="19:00" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        </div>
+                        <div class="text-left">
+                            <label for="name" class="block text-gray-700 text-sm font-bold mb-2">Votre Nom</label>
+                            <input type="text" id="name" name="name" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        </div>
+                        <div class="text-left">
+                            <label for="email" class="block text-gray-700 text-sm font-bold mb-2">Votre Email</label>
+                            <input type="email" id="email" name="email" class="shadow appearance-none border rounded w-full py-3 px-4 text-gray-700 leading-tight focus:outline-none focus:ring-2 focus:ring-red-600" required>
+                        </div>
+                        <div class="flex items-center justify-center pt-4">
+                            <button type="submit" class="bg-red-600 hover:bg-red-700 text-white font-bold py-3 px-8 rounded-full focus:outline-none focus:ring-2 focus:ring-red-600 focus:ring-opacity-75 transition duration-300">
+                                Confirmer la Réservation
+                            </button>
+                        </div>
+                    </form>
+                </div>
+
+                <p class="text-lg text-gray-700 mt-10">
+                    Vous préférez parler à quelqu'un? Appelez-nous au <a href="tel:+33123456789" class="text-blue-600 hover:underline">01 23 45 67 89</a>.
+                </p>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Blog Card (for listings) -->
+    <template id='tpl-blog-card'>
+        <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 overflow-hidden border-t-4 border-red-600">
+            <img src='{{image}}' alt='{{title}}' class="w-full h-48 object-cover">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">
+                    <a href='/post/{{slug}}' class='hover:text-red-600 transition duration-300'
+                       hx-get='/post/{{slug}}' hx-target='#main-content' hx-push-url='true'>{{title}}</a>
+                </h3>
+                <p class="text-gray-600 text-sm mb-4">{{description}}</p>
+                <div class="flex justify-between items-center text-gray-500 text-sm">
+                    <span>Par {{author}}</span>
+                    <span>{{date}}</span>
+                </div>
+            </div>
+        </article>
+    </template>
+
+    <!-- Template: Video Card (for listings) -->
+    <template id='tpl-video-card'>
+        <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition duration-300 overflow-hidden border-t-4 border-red-600">
+            <img src='{{thumbnail}}' alt='{{title}}' class="w-full h-48 object-cover">
+            <div class="p-6">
+                <h3 class="text-xl font-semibold mb-2 text-gray-900">
+                    <a href='/video/{{slug}}' class='hover:text-red-600 transition duration-300'
+                       hx-get='/video/{{slug}}' hx-target='#main-content' hx-push-url='true'>{{title}}</a>
+                </h3>
+                <p class="text-gray-500 text-sm">{{date}}</p>
+            </div>
+        </article>
+    </template>
+
+    <!-- Template: Post Detail (Full Blog Post View) -->
+    <template id='tpl-post-detail'>
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <article class="bg-white rounded-lg shadow-xl p-8 lg:p-12">
+                    <img src='{{image}}' alt='{{title}}' class="w-full h-96 object-cover rounded-lg mb-8 shadow-md">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">{{title}}</h1>
+                    <div class="flex items-center text-gray-600 text-sm mb-8 space-x-4">
+                        <span>Par <span class="font-semibold text-red-600">{{author}}</span></span>
+                        <span>|</span>
+                        <span>Publié le {{date}}</span>
+                    </div>
+                    <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
+                        {{content}}
+                    </div>
+                    <div class="mt-12 text-center">
+                        <a href="/blog" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-700 transition duration-300"
+                           hx-get="/blog" hx-target="#main-content" hx-push-url="true">Retour au Blog</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </template>
+
+    <!-- Template: Video Detail (Full Video View) -->
+    <template id='tpl-video-detail'>
+        <section class="py-16 bg-gray-100">
+            <div class="container mx-auto px-6 max-w-4xl">
+                <article class="bg-white rounded-lg shadow-xl p-8 lg:p-12">
+                    <h1 class="text-4xl md:text-5xl font-extrabold text-gray-900 mb-6">{{title}}</h1>
+                    <div class="text-gray-600 text-sm mb-8">Publié le {{published}}</div>
+
+                    <div class="aspect-w-16 aspect-h-9 w-full bg-gray-200 rounded-lg overflow-hidden mb-8 shadow-md">
+                        <iframe src="{{embedUrl}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen class="w-full h-full"></iframe>
+                    </div>
+
+                    <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-8">
+                        {{description}}
+                    </div>
+                    <div class="text-center">
+                        <a href="{{link}}" target="_blank" rel="noopener noreferrer" class="bg-red-600 text-white px-8 py-3 rounded-full hover:bg-red-700 transition duration-300">Voir sur la plateforme originale</a>
+                    </div>
+                    <div class="mt-12 text-center">
+                        <a href="/videos" class="bg-gray-800 text-white px-8 py-3 rounded-full hover:bg-gray-700 transition duration-300"
+                           hx-get="/videos" hx-target="#main-content" hx-push-url="true">Retour aux Vidéos</a>
+                    </div>
+                </article>
+            </div>
+        </section>
+    </template>
+
+</body>
+</html>
