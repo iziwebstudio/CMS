@@ -52,6 +52,33 @@
             -webkit-text-fill-color: transparent;
             background-clip: text;
         }
+
+        /* Scrolling animations */
+        @keyframes scroll-left {
+            0% {
+                transform: translateX(0);
+            }
+            100% {
+                transform: translateX(-50%);
+            }
+        }
+
+        @keyframes scroll-right {
+            0% {
+                transform: translateX(-50%);
+            }
+            100% {
+                transform: translateX(0);
+            }
+        }
+
+        .animate-scroll-left {
+            animation: scroll-left 30s linear infinite;
+        }
+
+        .animate-scroll-right {
+            animation: scroll-right 30s linear infinite;
+        }
     </style>
 </head>
 
@@ -289,74 +316,149 @@
                             <li class="flex items-center gap-2"><i class="fas fa-check text-purple-600"></i> One-Click Deploy</li>
                         </ul>
                         </div>
-                </div>
-            </div>
+                    </div>
+                        </div>
         </section>
 
 
 
-        <!-- How it Works -->
-        <section class="py-24 bg-white">
+        <!-- Serverless Advantages -->
+        <section class="py-24 bg-gradient-purple">
             <div class="container mx-auto px-6">
-                <div class="text-center mb-16">
-                    <h2 class="text-4xl md:text-5xl font-bold mb-4">Choose Your Deployment</h2>
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Serverless Advantages</h2>
+                    <p class="text-xl text-purple-100 max-w-2xl mx-auto mb-8">
+                        Why serverless architecture is the future of web development
+                    </p>
+                    </div>
+                <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-5xl mx-auto mb-12">
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-rocket text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-white">Automatic Scaling</h3>
+                        <p class="text-purple-100">Scale from zero to millions of requests instantly. No configuration needed.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-shield-alt text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-white">Built-in Security</h3>
+                        <p class="text-purple-100">DDoS protection, SSL/TLS encryption, and security updates handled automatically.</p>
+                    </div>
+                    <div class="text-center">
+                        <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-tools text-3xl text-white"></i>
+                        </div>
+                        <h3 class="text-xl font-bold mb-2 text-white">No DevOps Required</h3>
+                        <p class="text-purple-100">Focus on building features, not managing servers. Deploy in seconds.</p>
+                    </div>
+                </div>
+                <div class="text-center">
+                    <a href="/serverless" hx-get="/serverless" hx-target="#main-content" hx-push-url="true"
+                        class="inline-block px-8 py-4 bg-white text-purple-600 font-semibold rounded-lg hover:bg-gray-100 transition-colors text-lg shadow-xl">
+                        Learn More About Serverless
+                    </a>
+                </div>
+            </div>
+        </section>
+
+        <!-- AI Automation Integrations Preview -->
+        <section class="py-20 bg-white overflow-hidden">
+            <div class="container mx-auto px-6">
+                <div class="text-center mb-12">
+                    <h2 class="text-4xl md:text-5xl font-bold mb-4">AI Automation Integrations</h2>
                     <p class="text-xl text-gray-600 max-w-2xl mx-auto">
-                        Self-host on your Cloudflare account or let us handle everything
+                        Connect to 30+ services and automate your workflows with AI Workers
                     </p>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto">
-                    <!-- Open Source / Self-Hosted -->
-                    <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-purple-500 transition-all shadow-lg">
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="w-16 h-16 bg-gray-100 rounded-xl flex items-center justify-center">
-                                <i class="fas fa-code-branch text-gray-700 text-2xl"></i>
-                    </div>
-                            <span class="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-semibold">OPEN SOURCE</span>
-                    </div>
-                        <h3 class="text-2xl font-bold mb-3">Self-Hosted</h3>
-                        <p class="text-gray-600 mb-6">
-                            Deploy on your own Cloudflare account. Full control, unlimited customization.
-                        </p>
-                        <ul class="space-y-3 text-gray-600 mb-8">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Full Source Code Access</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Host on Your Cloudflare</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Unlimited Customization</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Community Support</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-green-500"></i> Free Forever</li>
-                        </ul>
-                        <a href="https://github.com" target="_blank"
-                            class="block w-full py-4 bg-gray-900 text-white text-center font-bold rounded-lg hover:bg-gray-800 transition-colors">
-                            Fork on GitHub
-                        </a>
+                
+                <!-- Scrolling Logos Container -->
+                <div class="space-y-8">
+                    <!-- Line 1: Scroll right to left -->
+                    <div class="overflow-hidden">
+                        <div class="flex animate-scroll-left space-x-12">
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" alt="Supabase" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/gemini-icon-logo.svg" alt="Gemini" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/github-icon-1.svg" alt="GitHub" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/gitlab.svg" alt="GitLab" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg" alt="Slack" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/stripe-4.svg" alt="Stripe" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/paypal-4.svg" alt="PayPal" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/notion-2.svg" alt="Notion" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                            </div>
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" alt="Supabase" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/gemini-icon-logo.svg" alt="Gemini" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/github-icon-1.svg" alt="GitHub" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/gitlab.svg" alt="GitLab" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/slack-new-logo.svg" alt="Slack" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/stripe-4.svg" alt="Stripe" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/paypal-4.svg" alt="PayPal" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/notion-2.svg" alt="Notion" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                            </div>
+                        </div>
                     </div>
 
-                    <!-- Managed -->
-                    <div class="bg-white p-8 rounded-2xl border-2 border-purple-500 shadow-xl relative overflow-hidden">
-                        <div class="absolute top-0 right-0 bg-gradient-purple text-white text-xs font-bold px-3 py-1 rounded-bl-lg">
-                            RECOMMENDED
-                        </div>
-                        <div class="flex items-center justify-between mb-6">
-                            <div class="w-16 h-16 bg-gradient-purple rounded-xl flex items-center justify-center">
-                                <i class="fas fa-rocket text-white text-2xl"></i>
-                            </div>
-                            <span class="px-3 py-1 bg-purple-100 text-purple-700 rounded-full text-sm font-semibold">MANAGED</span>
-                        </div>
-                        <h3 class="text-2xl font-bold mb-3">Managed Deployment</h3>
-                        <p class="text-gray-600 mb-6">
-                            We handle deployment and infrastructure. Focus on building, we handle the rest.
-                        </p>
-                        <ul class="space-y-3 text-gray-600 mb-8">
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> One-Click Deployment</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Automatic Updates</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> 24/7 Monitoring</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Priority Support</li>
-                            <li class="flex items-center gap-2"><i class="fas fa-check text-purple-500"></i> Custom Domain</li>
-                        </ul>
-                        <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
-                            class="block w-full py-4 bg-gradient-purple text-white text-center font-bold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30">
-                            Start Managed Plan
-                        </a>
+                    <!-- Line 2: Scroll left to right -->
+                    <div class="overflow-hidden">
+                        <div class="flex animate-scroll-right space-x-12">
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://cdn.worldvectorlogo.com/logos/official-gmail-icon-2020-.svg" alt="Gmail" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-8.svg" alt="YouTube" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" alt="Twitter" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/instagram-2016-5.svg" alt="Instagram" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-3.svg" alt="LinkedIn" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/facebook-2020-2-1.svg" alt="Facebook" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://companieslogo.com/img/orig/airtable-5e5cc25f.svg" alt="Airtable" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/openai-2.svg" alt="ChatGPT" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                </div>
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://cdn.worldvectorlogo.com/logos/official-gmail-icon-2020-.svg" alt="Gmail" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/youtube-icon-8.svg" alt="YouTube" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/twitter-6.svg" alt="Twitter" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/instagram-2016-5.svg" alt="Instagram" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/linkedin-icon-3.svg" alt="LinkedIn" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/facebook-2020-2-1.svg" alt="Facebook" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://companieslogo.com/img/orig/airtable-5e5cc25f.svg" alt="Airtable" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/openai-2.svg" alt="ChatGPT" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
                     </div>
+                    </div>
+                    </div>
+
+                    <!-- Line 3: Scroll right to left -->
+                    <div class="overflow-hidden">
+                        <div class="flex animate-scroll-left space-x-12">
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-calendar-icon-2020-.svg" alt="Google Calendar" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-sheets-logo-icon.svg" alt="Google Sheets" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-drive-icon-2020.svg" alt="Google Drive" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-analytics-4.svg" alt="Google Analytics" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/shopify.svg" alt="Shopify" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/canva-wordmark-2.svg" alt="Canva" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/substack-1.svg" alt="Substack" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/spotify-2.svg" alt="Spotify" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                            </div>
+                            <div class="flex space-x-12 flex-shrink-0">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-calendar-icon-2020-.svg" alt="Google Calendar" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-sheets-logo-icon.svg" alt="Google Sheets" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-drive-icon-2020.svg" alt="Google Drive" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/google-analytics-4.svg" alt="Google Analytics" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/shopify.svg" alt="Shopify" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/canva-wordmark-2.svg" alt="Canva" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/substack-1.svg" alt="Substack" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                                <img src="https://cdn.worldvectorlogo.com/logos/spotify-2.svg" alt="Spotify" class="h-16 w-16 object-contain opacity-60 hover:opacity-100 transition-opacity">
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center mt-12">
+                    <a href="/integrations" hx-get="/integrations" hx-target="#main-content" hx-push-url="true"
+                        class="inline-block px-8 py-4 bg-gradient-purple text-white font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30 text-lg">
+                        View All Integrations
+                    </a>
                 </div>
             </div>
         </section>
