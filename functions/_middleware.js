@@ -195,27 +195,48 @@ export async function onRequest(context) {
         // Sinon, servir preview/index.html normalement (chargement initial depuis localStorage)
         console.log(`[Preview Route] Serving preview/index.html static file`);
         
-        // Servir le fichier preview/index.html
-        const previewRequest = new Request(new URL('/preview/index.html', request.url), request);
-        const previewResponse = await env.ASSETS.fetch(previewRequest);
+        // Essayer plusieurs chemins possibles pour preview/index.html
+        const previewPaths = [
+            '/preview/index.html',
+            '/preview/index.html/',
+            'preview/index.html',
+            'preview/index.html/'
+        ];
         
-        // Suivre les redirections si nécessaire
-        if (previewResponse.status === 200) {
-            return previewResponse;
-        } else if (previewResponse.status === 308 || previewResponse.status === 301 || previewResponse.status === 302) {
-            const location = previewResponse.headers.get('Location');
-            if (location) {
-                const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
-                const redirectResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), request));
-                if (redirectResponse.status === 200) {
-                    return redirectResponse;
+        for (const previewPath of previewPaths) {
+            let previewUrl;
+            if (previewPath.startsWith('/')) {
+                previewUrl = new URL(previewPath, request.url);
+            } else {
+                previewUrl = new URL('/' + previewPath, request.url);
+            }
+            
+            const previewRequest = new Request(previewUrl.toString(), request);
+            let previewResponse = await env.ASSETS.fetch(previewRequest);
+            
+            // Suivre les redirections si nécessaire
+            let redirectCount = 0;
+            while ((previewResponse.status === 308 || previewResponse.status === 301 || previewResponse.status === 302) && redirectCount < 5) {
+                const location = previewResponse.headers.get('Location');
+                if (location) {
+                    const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
+                    previewResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), request));
+                    redirectCount++;
+                } else {
+                    break;
                 }
+            }
+            
+            if (previewResponse.status === 200) {
+                console.log(`[Preview Route] ✓ Successfully loaded from: ${previewPath}`);
+                return previewResponse;
             }
         }
         
-        // Si pas trouvé, essayer avec loadAsset
+        // Si pas trouvé avec ASSETS.fetch, essayer avec loadAsset
         const previewContent = await loadAsset('/preview/index.html');
         if (previewContent) {
+            console.log(`[Preview Route] ✓ Successfully loaded via loadAsset`);
             return new Response(previewContent, {
                 headers: {
                     'Content-Type': 'text/html; charset=utf-8'
@@ -224,9 +245,10 @@ export async function onRequest(context) {
         }
         
         // Si toujours pas trouvé, retourner une erreur explicite
-        console.error(`[Preview Route] Failed to load preview/index.html`);
+        console.error(`[Preview Route] Failed to load preview/index.html from all paths`);
         return new Response(
-            `preview/index.html not found. Please ensure the file exists in the preview/ directory.`,
+            `preview/index.html not found. Please ensure the file exists in the preview/ directory.\n\n` +
+            `Tried paths: ${previewPaths.join(', ')}`,
             { status: 404, headers: { 'Content-Type': 'text/plain' } }
         );
     }
@@ -277,7 +299,11 @@ export async function onRequest(context) {
     }
     
     // Route spéciale : /admin/dashboard/ide → servir admin/ide.html
-    if (url.pathname === '/admin/dashboard/ide' || url.pathname === '/admin/dashboard/ide/') {
+    // IMPORTANT : Cette route doit être AVANT la route générale /admin/*
+    // Vérifier aussi les variations avec ou sans slash final
+    if (url.pathname === '/admin/dashboard/ide' || 
+        url.pathname === '/admin/dashboard/ide/' ||
+        url.pathname.startsWith('/admin/dashboard/ide?')) {
         console.log(`[IDE Route] Handling /admin/dashboard/ide request`);
         
         // Essayer plusieurs chemins possibles pour ide.html
@@ -348,7 +374,45 @@ export async function onRequest(context) {
         // Important : retourner directement la réponse, même si 404
         // Cela évite que ces routes passent par la logique SSR
         console.log(`[Admin/Core Route] Serving static asset: ${url.pathname}`);
-        const assetResponse = await env.ASSETS.fetch(request);
+        
+        // Essayer plusieurs chemins pour les fichiers admin
+        let assetResponse = await env.ASSETS.fetch(request);
+        
+        // Si 404, essayer avec des variations de chemin
+        if (assetResponse.status === 404) {
+            const altPaths = [
+                url.pathname,
+                url.pathname + '/',
+                url.pathname.replace('/admin/', 'admin/'),
+                url.pathname.replace('/core/', 'core/')
+            ];
+            
+            for (const altPath of altPaths) {
+                if (altPath === url.pathname) continue; // Déjà essayé
+                
+                const altUrl = new URL(altPath, request.url);
+                const altRequest = new Request(altUrl.toString(), request);
+                assetResponse = await env.ASSETS.fetch(altRequest);
+                
+                if (assetResponse.status === 200) {
+                    console.log(`[Admin/Core Route] Found asset at alternative path: ${altPath}`);
+                    break;
+                }
+            }
+        }
+        
+        // Suivre les redirections si nécessaire
+        let redirectCount = 0;
+        while ((assetResponse.status === 308 || assetResponse.status === 301 || assetResponse.status === 302) && redirectCount < 5) {
+            const location = assetResponse.headers.get('Location');
+            if (location) {
+                const redirectUrl = location.startsWith('http') ? new URL(location) : new URL(location, request.url);
+                assetResponse = await env.ASSETS.fetch(new Request(redirectUrl.toString(), request));
+                redirectCount++;
+            } else {
+                break;
+            }
+        }
         
         // Log pour débogage
         if (assetResponse.status !== 200) {
@@ -372,8 +436,10 @@ export async function onRequest(context) {
         // IMPORTANT : Toujours charger frontend/index.html en priorité
         // Ne jamais servir directement index.html racine
         
-        // Exclure preview/ de la logique SSR (déjà géré plus haut)
-        if (url.pathname.startsWith('/preview')) {
+        // Exclure preview/ et admin/ de la logique SSR (déjà gérés plus haut)
+        if (url.pathname.startsWith('/preview') || 
+            url.pathname.startsWith('/admin') || 
+            url.pathname.startsWith('/core')) {
             return env.ASSETS.fetch(request);
         }
         

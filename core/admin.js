@@ -109,7 +109,12 @@ async function checkAuth() {
     ];
     
     // Vérifier si on est sur une page publique (login ou IDE)
-    if (publicPages.includes(currentPath) || currentPath.includes('/admin/dashboard/ide')) {
+    // Utiliser startsWith pour être plus flexible avec les variations d'URL
+    const isPublicPage = publicPages.some(page => currentPath === page || currentPath.startsWith(page + '/')) ||
+                        currentPath.includes('/admin/dashboard/ide') ||
+                        currentPath.includes('/admin/ide');
+    
+    if (isPublicPage) {
         // We're on the login page or IDE, don't redirect
         return;
     }
