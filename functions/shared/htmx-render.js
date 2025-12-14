@@ -242,14 +242,24 @@ export function handleHtmxCatchAll(request, path, fullTemplate, siteConfig = {},
         // Sinon, on continue vers le 404 par défaut
     }
 
-    // Par défaut : retourner une page 404 pour HTMX
-    return htmlResponse(`
+    // Par défaut : retourner une page 404 avec le bon status HTTP
+    const notFoundHtml = `
         <div class="p-8 text-center">
-            <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">Page non trouvée</h1>
+            <h1 class="text-2xl font-bold text-slate-800 dark:text-slate-200 mb-4">404 - Page non trouvée</h1>
             <p class="text-slate-600 dark:text-slate-400 mb-4">Le template <code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">${tplId}</code> n'existe pas.</p>
             <p class="text-sm text-slate-500">Créez un template avec l'ID <code class="bg-slate-100 dark:bg-slate-800 px-2 py-1 rounded">${tplId}</code> dans votre fichier de template.</p>
         </div>
-    `);
+    `;
+    
+    // Retourner un vrai 404 HTTP, même pour HTMX
+    return new Response(notFoundHtml, {
+        status: 404,
+        statusText: 'Not Found',
+        headers: { 
+            'Content-Type': 'text/html; charset=utf-8',
+            'Cache-Control': 'no-cache'
+        }
+    });
 }
 
 // ====================================================================
