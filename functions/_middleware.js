@@ -113,7 +113,88 @@ export async function onRequest(context) {
     // Routes locales : /api/*, /admin/*, /core/*
     // IMPORTANT : Cette vérification doit être AVANT toute autre logique
     
-    // Intercepter les requêtes HTMX depuis la prévisualisation API
+    // Route pour preview.html avec contenu dynamique
+    if (url.pathname === '/preview.html' || url.pathname === '/preview/') {
+        const slug = url.searchParams.get('slug');
+        const path = url.searchParams.get('path') || '/';
+        const isHtmx = request.headers.get('HX-Request') === 'true';
+        
+        // Si c'est une requête HTMX avec un path, générer le contenu dynamique
+        if (isHtmx && path && slug) {
+            console.log(`[Preview HTMX] Handling HTMX request for preview with slug: ${slug}, path: ${path}`);
+            
+            // Récupérer le template depuis le cache serveur (KV)
+            const cacheKey = `frontend_template_${slug}`;
+            let templateData = null;
+            
+            if (env.FRONTEND_TEMPLATE_CACHE) {
+                const cached = await env.FRONTEND_TEMPLATE_CACHE.get(cacheKey);
+                if (cached) {
+                    templateData = JSON.parse(cached);
+                }
+            } else {
+                // Fallback: utiliser Cache API
+                const cache = caches.default;
+                const cacheRequest = new Request(`https://cache.local/${cacheKey}`);
+                const cachedResponse = await cache.match(cacheRequest);
+                if (cachedResponse) {
+                    templateData = await cachedResponse.json();
+                }
+            }
+            
+            if (templateData && templateData.html) {
+                const templateHtml = templateData.html;
+                
+                // Charger la config du site pour les métadonnées et données RSS
+                let siteConfig = {};
+                try {
+                    const configUrl = new URL('/api/config', request.url);
+                    const configRequest = new Request(configUrl.toString(), {
+                        headers: { 'X-Auth-Key': request.headers.get('X-Auth-Key') || env.ADMIN_PASSWORD || 'admin' }
+                    });
+                    const configResponse = await fetch(configRequest);
+                    if (configResponse.ok) {
+                        siteConfig = await configResponse.json();
+                    }
+                } catch (e) {
+                    console.error('Error loading config:', e);
+                }
+                
+                // Gérer la racine "/"
+                if (path === '/' || path === '/index.html') {
+                    const siteName = siteConfig.siteName || "iziWebCMS";
+                    const metadata = {
+                        title: siteName,
+                        description: siteConfig.seo?.metaDescription || "",
+                        keywords: siteConfig.seo?.metaKeywords || "",
+                        siteName: siteName
+                    };
+                    const content = generateHomeContent(templateHtml, metadata);
+                    return htmlResponse(content + generateOOB(metadata, request));
+                }
+                
+                // Utiliser handleHtmxCatchAll pour les autres routes
+                const content = handleHtmxCatchAll(request, path, templateHtml, siteConfig);
+                if (content) {
+                    return content;
+                }
+            } else {
+                // Template non trouvé dans le cache serveur
+                return htmlResponse(`
+                    <div class="p-8 text-center">
+                        <h1 class="text-2xl font-bold mb-4">Template non trouvé</h1>
+                        <p>Le template avec le slug <code>${slug}</code> n'a pas été trouvé dans le cache serveur.</p>
+                        <p class="text-sm mt-2">Assurez-vous d'avoir sauvegardé le template depuis l'IDE.</p>
+                    </div>
+                `);
+            }
+        }
+        
+        // Sinon, servir preview.html normalement (chargement initial depuis localStorage)
+        return env.ASSETS.fetch(request);
+    }
+    
+    // Intercepter les requêtes HTMX depuis la prévisualisation API (ancien système)
     // Si c'est une requête HTMX et qu'elle vient de /api/admin/preview,
     // utiliser le template depuis le cache au lieu de frontend/index.html
     const isHtmx = request.headers.get('HX-Request') === 'true';

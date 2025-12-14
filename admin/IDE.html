@@ -511,6 +511,23 @@
 
                     localStorage.setItem('stackpages_custom_pages', JSON.stringify(pages));
 
+                    // Sauvegarder aussi pour la prévisualisation locale
+                    const PREVIEW_STORAGE_KEY = 'iziwebcms_preview_template';
+                    const previewData = {
+                        html: fullTemplate,
+                        metadata: {
+                            title,
+                            slug,
+                            metaDesc,
+                            metaKeywords,
+                            thumbnail,
+                            status,
+                            savedAt: new Date().toISOString()
+                        }
+                    };
+                    const previewStorageKey = `${PREVIEW_STORAGE_KEY}_${slug}`;
+                    localStorage.setItem(previewStorageKey, JSON.stringify(previewData));
+
                     alert(status === 'draft' ? 'Brouillon sauvegardé en cache !' : 'Template sauvegardé en cache !');
                 } else {
                     throw new Error(result.error || 'Erreur lors de la sauvegarde');
@@ -546,8 +563,8 @@
             // Sauvegarder d'abord en cache si pas déjà fait
             await savePage('draft');
 
-            // Ouvrir la prévisualisation avec le slug via l'API
-            const previewUrl = `/api/admin/preview?slug=${encodeURIComponent(slug)}`;
+            // Ouvrir la prévisualisation locale avec le slug
+            const previewUrl = `/preview.html?slug=${encodeURIComponent(slug)}`;
             window.open(previewUrl, '_blank');
         }
 
