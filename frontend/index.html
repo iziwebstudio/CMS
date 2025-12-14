@@ -3,40 +3,65 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>FootLooker - Agence de Recrutement de Talent Footballistique</title>
+    <title>QuantumHost - Cloud Hosting & Domain Registration</title>
     <!-- Tailwind CSS CDN -->
     <script src="https://cdn.tailwindcss.com"></script>
     <!-- HTMX CDN -->
     <script src="https://unpkg.com/htmx.org@1.9.10" integrity="sha384-hc9hxca3NgKfLzxzaWzXLdS7JmoU8+llFhRkjX03nkmOBrW1QEYF8T/UoJwAZJvJ" crossorigin="anonymous"></script>
     <style>
-        /* Optional custom styles or overrides if needed */
+        /* Custom styles for the futuristic black and purple theme with space night animation */
+        body {
+            font-family: 'Inter', sans-serif; /* A modern, clean font */
+            background-color: #0A0A0A; /* Deep black background */
+            color: #E0E7FF; /* Off-white / very light purple-blue for general text */
+            overflow-x: hidden; /* Prevent horizontal scroll due to animations */
+        }
+
+        /* Space Night Background Animation */
+        .futuristic-bg {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            z-index: -1; /* Send to background */
+            background: linear-gradient(135deg, #1A002A 0%, #050010 100%); /* Deep purple-black gradient */
+            background-size: 200% 200%; /* Make gradient larger than viewport */
+            animation: spaceNightGradient 30s ease infinite alternate; /* Slow, smooth animation */
+        }
+
+        @keyframes spaceNightGradient {
+            0% { background-position: 0% 0%; }
+            100% { background-position: 100% 100%; }
+        }
+
         .h-screen-minus-header-footer {
             min-height: calc(100vh - 128px); /* Adjust based on header/footer height */
         }
-        /* Tailwind's @tailwindcss/typography plugin would be ideal for prose content, but since we're using CDN and not full build, basic prose styling.
-           If a full build is available, add `class="prose prose-lg"` to content divs.
-           For this example, basic styling for {{content}} and {{description}} is implied by surrounding `prose` classes.
-           This means the backend would need to expand these {{content}} into actual rich text, which is default behavior.
-           */
+
+        /* Basic prose styling for dynamic content, mimicking @tailwindcss/typography */
         .prose h1, .prose h2, .prose h3, .prose h4, .prose h5, .prose h6 {
             font-weight: bold;
             margin-top: 1.5em;
             margin-bottom: 0.75em;
+            color: #C4B5FD; /* Lighter purple for headings */
         }
         .prose h1 { font-size: 2.25em; }
         .prose h2 { font-size: 1.875em; }
         .prose p {
             margin-bottom: 1.25em;
             line-height: 1.625;
+            color: #E0E7FF;
         }
         .prose ul, .prose ol {
             margin-left: 1.5em;
             margin-bottom: 1.25em;
+            color: #E0E7FF;
         }
         .prose ul li { list-style-type: disc; }
         .prose ol li { list-style-type: decimal; }
         .prose a {
-            color: #10b981; /* teal-500 */
+            color: #A78BFA; /* purple-400 */
             text-decoration: underline;
         }
         .prose img {
@@ -45,40 +70,43 @@
             border-radius: 0.5rem;
             margin-top: 1.5em;
             margin-bottom: 1.5em;
+            box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
         }
     </style>
 </head>
-<body class="font-sans antialiased text-gray-800 bg-gray-50">
+<body class="font-sans antialiased">
+
+    <!-- Space Night Background -->
+    <div class="futuristic-bg"></div>
 
     <!-- Header -->
-    <header class="bg-gray-900 text-white p-4 shadow-lg sticky top-0 z-50">
+    <header class="bg-gray-900 bg-opacity-80 backdrop-blur-sm text-white p-4 shadow-xl sticky top-0 z-50 border-b border-purple-800">
         <div class="container mx-auto flex justify-between items-center">
-            <a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true" class="text-3xl font-bold text-teal-400">FootLooker</a>
+            <a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true" class="text-3xl font-bold text-purple-400">QuantumHost</a>
             <nav>
                 <ul class="flex space-x-6">
-                    <li><a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Accueil</a></li>
-                    <li><a href="/blog" hx-get="/blog" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Actualités</a></li>
-                    <li><a href="/videos" hx-get="/videos" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Vidéos</a></li>
-                    <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Contact</a></li>
+                    <li><a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Accueil</a></li>
+                    <li><a href="/hosting" hx-get="/hosting" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Hébergement</a></li>
+                    <li><a href="/domains" hx-get="/domains" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Domaines</a></li>
+                    <li><a href="/pricing" hx-get="/pricing" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Tarifs</a></li>
+                    <li><a href="/contact" hx-get="/contact" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Contact</a></li>
                 </ul>
             </nav>
         </div>
     </header>
 
     <!-- Main Content Area - HTMX will load content here -->
-    <main id="main-content" class="container mx-auto p-6 min-h-screen-minus-header-footer">
+    <main id="main-content" class="container mx-auto p-6 min-h-screen-minus-header-footer relative z-10">
         <!-- Initial content will be loaded here by the backend (tpl-home) or HTMX for subsequent navigation -->
-        <!-- When the page is first loaded at '/', the StackPages backend will render the `tpl-home` content directly into this `#main-content` div. -->
-        <!-- For subsequent navigation via HTMX links, HTMX will fetch the content for the target route and swap it into this div. -->
     </main>
 
     <!-- Footer -->
-    <footer class="bg-gray-900 text-white p-6 mt-8 shadow-inner">
+    <footer class="bg-gray-900 bg-opacity-80 backdrop-blur-sm text-white p-6 mt-8 shadow-inner relative z-10 border-t border-purple-800">
         <div class="container mx-auto text-center">
-            <p>&copy; 2023 FootLooker. Tous droits réservés.</p>
+            <p>&copy; 2023 QuantumHost. Tous droits réservés.</p>
             <div class="mt-4 space-x-4">
-                <a href="/privacy" hx-get="/privacy" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Politique de Confidentialité</a>
-                <a href="/terms" hx-get="/terms" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-400 transition-colors duration-300">Conditions d'Utilisation</a>
+                <a href="/privacy" hx-get="/privacy" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Politique de Confidentialité</a>
+                <a href="/terms" hx-get="/terms" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Conditions d'Utilisation</a>
             </div>
         </div>
     </footer>
@@ -87,235 +115,321 @@
 
     <!-- Template for the Home Page -->
     <template id="tpl-home">
-        <section class="text-center py-20 bg-gradient-to-r from-gray-900 to-gray-700 text-white rounded-lg shadow-xl mb-12">
-            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-teal-400 leading-tight">FootLooker</h1>
-            <p class="text-xl md:text-2xl mb-8 font-light max-w-2xl mx-auto">Découvrez les talents de demain. Connectez les joueurs aux clubs d'élite.</p>
-            <a href="/contact" hx-get="/contact" hx-target="#main-content" hx-push-url="true" class="inline-block bg-teal-500 hover:bg-teal-600 text-white font-bold py-3 px-8 rounded-full text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
-                Nous Contacter
-            </a>
-        </section>
+        <section class="text-center py-20 mb-12 relative z-10">
+            <h1 class="text-5xl md:text-6xl font-extrabold mb-4 text-purple-400 leading-tight drop-shadow-lg">QuantumHost</h1>
+            <p class="text-xl md:text-2xl mb-8 font-light max-w-3xl mx-auto text-gray-200">Votre portail vers un hébergement cloud puissant et des noms de domaine innovants.</p>
 
-        <!-- Latest News Section -->
-        <section class="mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Dernières Actualités</h2>
-            <div id="latest-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                 hx-get="/api/posts?limit=3" hx-trigger="load" hx-swap="outerHTML">
-                <!-- Blog cards will be loaded here dynamically by HTMX.
-                     The /api/posts endpoint should return HTML fragments composed of tpl-blog-card instances. -->
-                <p class="col-span-full text-center text-gray-500">Chargement des actualités...</p>
-            </div>
-            <div class="text-center mt-8">
-                <a href="/blog" hx-get="/blog" hx-target="#main-content" hx-push-url="true" class="inline-block bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-full transition-colors duration-300">Voir toutes les actualités</a>
-            </div>
-        </section>
-
-        <!-- Featured Videos Section -->
-        <section class="mb-12">
-            <h2 class="text-4xl font-bold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Vidéos Phares</h2>
-            <div id="featured-videos-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-                 hx-get="/api/videos?limit=3" hx-trigger="load" hx-swap="outerHTML">
-                <!-- Video cards will be loaded here dynamically by HTMX.
-                     The /api/videos endpoint should return HTML fragments composed of tpl-video-card instances. -->
-                <p class="col-span-full text-center text-gray-500">Chargement des vidéos...</p>
-            </div>
-            <div class="text-center mt-8">
-                <a href="/videos" hx-get="/videos" hx-target="#main-content" hx-push-url="true" class="inline-block bg-gray-800 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-full transition-colors duration-300">Voir toutes les vidéos</a>
-            </div>
-        </section>
-
-        <!-- About Us/Services Section -->
-        <section class="bg-gray-100 p-8 rounded-lg shadow-inner">
-            <h2 class="text-4xl font-bold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Notre Mission</h2>
-            <div class="grid md:grid-cols-2 gap-8 items-center">
-                <div class="text-lg leading-relaxed text-gray-700">
-                    <p class="mb-4">Chez FootLooker, nous sommes passionnés par le football et dédiés à la découverte et au développement des futurs talents du ballon rond. Notre agence agit comme un pont essentiel entre les jeunes joueurs prometteurs et les clubs professionnels à travers le monde.</p>
-                    <p class="mb-4">Nous offrons un accompagnement personnalisé, des analyses de performance approfondies et des opportunités uniques de mise en relation. Notre objectif est de maximiser le potentiel de chaque athlète et de faciliter leur parcours vers le succès professionnel.</p>
+            <!-- Domain Reservation Interface -->
+            <div class="bg-gray-800 bg-opacity-70 backdrop-blur-md p-8 rounded-lg shadow-2xl max-w-3xl mx-auto border border-purple-700 mt-12">
+                <h2 class="text-3xl font-bold text-purple-300 mb-6">Trouvez votre nom de domaine parfait</h2>
+                <form hx-post="/api/domain-check" hx-target="#domain-search-results" hx-swap="outerHTML" class="flex flex-col sm:flex-row gap-4">
+                    <input type="text" name="domain" placeholder="Ex: mon-super-projet"
+                           class="flex-grow p-4 rounded-md bg-gray-900 text-gray-100 border border-purple-600 focus:ring-purple-500 focus:border-purple-500 text-lg shadow-inner"
+                           required>
+                    <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-4 px-8 rounded-md text-lg transition-all duration-300 transform hover:scale-105 shadow-lg">
+                        Rechercher
+                    </button>
+                </form>
+                <div id="domain-search-results" class="mt-6 text-gray-300">
+                    <!-- HTMX will swap results here. Example of what it might return: -->
+                    <!-- <p class="text-green-400">mon-super-projet.com est disponible!</p> -->
+                    <!-- <p class="text-red-400">mon-super-projet.com est déjà pris.</p> -->
+                    <p>Entrez un nom pour vérifier sa disponibilité.</p>
                 </div>
-                <div class="flex justify-center">
-                    <img src="https://via.placeholder.com/600x400/10B981/ffffff?text=FootLooker+Talent" alt="Talent Scouting" class="rounded-lg shadow-xl object-cover">
+            </div>
+        </section>
+
+        <!-- Featured Hosting Plans (using tpl-blog-card for layout) -->
+        <section class="mb-12 relative z-10">
+            <h2 class="text-4xl font-bold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Nos Solutions d'Hébergement Cloud</h2>
+            <div id="latest-posts-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                 hx-get="/api/hosting-plans?limit=3" hx-trigger="load" hx-swap="innerHTML">
+                <p class="col-span-full text-center text-gray-400">Chargement des plans d'hébergement...</p>
+            </div>
+            <div class="text-center mt-12">
+                <a href="/hosting" hx-get="/hosting" hx-target="#main-content" hx-push-url="true" class="inline-block bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-300 shadow-md">Voir tous les plans d'hébergement</a>
+            </div>
+        </section>
+
+        <!-- Featured Domain Extensions (using tpl-video-card for layout) -->
+        <section class="mb-12 relative z-10">
+            <h2 class="text-4xl font-bold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Extensions de Domaine Populaires</h2>
+            <div id="featured-videos-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
+                 hx-get="/api/domain-offers?limit=3" hx-trigger="load" hx-swap="innerHTML">
+                <p class="col-span-full text-center text-gray-400">Chargement des offres de domaines...</p>
+            </div>
+            <div class="text-center mt-12">
+                <a href="/domains" hx-get="/domains" hx-target="#main-content" hx-push-url="true" class="inline-block bg-purple-700 hover:bg-purple-800 text-white font-semibold py-3 px-8 rounded-full transition-colors duration-300 shadow-md">Voir toutes les extensions</a>
+            </div>
+        </section>
+
+        <!-- Why Choose Us Section -->
+        <section class="bg-gray-900 bg-opacity-70 p-10 rounded-lg shadow-2xl border border-purple-700 relative z-10">
+            <h2 class="text-4xl font-bold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Pourquoi Choisir QuantumHost ?</h2>
+            <div class="grid md:grid-cols-3 gap-8 text-center">
+                <div class="p-6 bg-gray-800 rounded-lg shadow-xl border border-purple-600">
+                    <svg class="w-16 h-16 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 10V3L4 14h7v7l9-11h-7z"></path></svg>
+                    <h3 class="text-2xl font-semibold text-purple-200 mb-2">Performances Ultra-Rapides</h3>
+                    <p class="text-gray-300">Des serveurs optimisés pour une vitesse et une réactivité maximales de vos applications.</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-xl border border-purple-600">
+                    <svg class="w-16 h-16 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.01 12.01 0 002 12c0 2.75 1.09 5.25 2.872 7.07l.006.006a12.01 12.01 0 0017.036 0L22 19.07c1.782-1.82 2.872-4.32 2.872-7.07 0-4.992-3.65-9.112-8.482-9.843z"></path></svg>
+                    <h3 class="text-2xl font-semibold text-purple-200 mb-2">Sécurité Inégalée</h3>
+                    <p class="text-gray-300">Protection avancée contre les menaces, sauvegardes régulières et surveillance 24/7.</p>
+                </div>
+                <div class="p-6 bg-gray-800 rounded-lg shadow-xl border border-purple-600">
+                    <svg class="w-16 h-16 text-purple-400 mx-auto mb-4" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M18.364 5.636l-3.536 3.536m0 0a2.5 2.5 0 10-3.536-3.536 2.5 2.5 0 003.536 3.536zm0 0L9.51 14.146m0 0a2.5 2.5 0 10-3.536-3.536 2.5 2.5 0 003.536 3.536zm0 0L5.636 18.364m0 0a2.5 2.5 0 10-3.536-3.536 2.5 2.5 0 003.536 3.536z"></path></svg>
+                    <h3 class="text-2xl font-semibold text-purple-200 mb-2">Support Expert 24/7</h3>
+                    <p class="text-gray-300">Notre équipe d'experts est toujours prête à vous assister, jour et nuit.</p>
                 </div>
             </div>
         </section>
     </template>
 
-    <!-- Template for a single Blog Post Card -->
+    <!-- Template for a single Hosting Plan Card (repurposing tpl-blog-card) -->
     <template id="tpl-blog-card">
-        <article class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full">
-            <img src="{{image}}" alt="{{title}}" class="w-full h-48 object-cover">
-            <div class="p-6 flex flex-col flex-grow">
-                <h3 class="text-xl font-semibold mb-2 text-gray-900">
-                    <a href="/post/{{slug}}" hx-get="/post/{{slug}}" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-600 transition-colors duration-300">{{title}}</a>
+        <article class="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full border border-purple-700 hover:border-purple-500">
+            <img src="{{image}}" alt="{{title}} Icon" class="w-full h-48 object-cover object-center p-4">
+            <div class="p-6 flex flex-col flex-grow bg-gray-900">
+                <h3 class="text-2xl font-semibold mb-2 text-purple-300">
+                    <a href="/hosting/{{slug}}" hx-get="/hosting/{{slug}}" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">{{title}}</a>
                 </h3>
-                <p class="text-gray-600 text-sm mb-4 flex-grow line-clamp-3">{{description}}</p>
-                <div class="flex justify-between items-center text-sm text-gray-500 mt-auto pt-4 border-t border-gray-100">
-                    <span>Par {{author}}</span>
-                    <span>{{date}}</span>
+                <p class="text-gray-400 text-sm mb-4 flex-grow line-clamp-3">{{description}}</p>
+                <div class="flex justify-between items-center text-md text-gray-300 mt-auto pt-4 border-t border-gray-700">
+                    <span class="font-bold text-purple-400">{{date}}</span> <!-- Repurposed as Price -->
+                    <span>{{author}}</span> <!-- Repurposed as Key Spec -->
                 </div>
             </div>
         </article>
     </template>
 
-    <!-- Template for a single Video Card -->
+    <!-- Template for a single Domain Offer Card (repurposing tpl-video-card) -->
     <template id="tpl-video-card">
-        <div class="bg-white rounded-lg shadow-md hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full">
-            <div class="relative w-full h-48 bg-gray-200 flex items-center justify-center">
-                <img src="{{thumbnail}}" alt="{{title}}" class="w-full h-full object-cover">
+        <div class="bg-gray-800 rounded-lg shadow-lg hover:shadow-xl transition-shadow duration-300 overflow-hidden flex flex-col h-full border border-purple-700 hover:border-purple-500">
+            <div class="relative w-full h-48 bg-gray-900 flex items-center justify-center p-4">
+                <img src="{{thumbnail}}" alt="{{title}} Icon" class="w-24 h-24 object-contain">
                 <div class="absolute inset-0 bg-black bg-opacity-40 flex items-center justify-center">
-                    <a href="/video/{{link}}" hx-get="/video/{{link}}" hx-target="#main-content" hx-push-url="true" class="text-white text-6xl opacity-80 hover:opacity-100 transition-opacity duration-300">
-                        <!-- Play icon -->
-                        <svg class="w-16 h-16" fill="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M8 5v14l11-7z"></path>
-                        </svg>
+                    <a href="/domains/{{link}}" hx-get="/domains/{{link}}" hx-target="#main-content" hx-push-url="true" class="text-white text-4xl opacity-80 hover:opacity-100 transition-opacity duration-300 font-bold">
+                        .{{title}}
                     </a>
                 </div>
             </div>
-            <div class="p-4 flex flex-col flex-grow">
-                <h3 class="text-lg font-semibold mb-2 text-gray-900">
-                    <a href="/video/{{link}}" hx-get="/video/{{link}}" hx-target="#main-content" hx-push-url="true" class="hover:text-teal-600 transition-colors duration-300">{{title}}</a>
+            <div class="p-4 flex flex-col flex-grow bg-gray-900">
+                <h3 class="text-xl font-semibold mb-2 text-purple-300">
+                    <a href="/domains/{{link}}" hx-get="/domains/{{link}}" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-400 transition-colors duration-300">Enregistrer un .{{title}}</a>
                 </h3>
-                <p class="text-gray-500 text-sm mt-auto pt-2 border-t border-gray-100">{{date}}</p>
+                <p class="text-purple-400 text-md mt-auto pt-2 border-t border-gray-700 font-bold">{{date}}</p> <!-- Repurposed as Price -->
             </div>
         </div>
     </template>
 
-    <!-- Template for a full Blog Post Detail Page -->
+    <!-- Template for a full Hosting Plan Detail Page (repurposing tpl-post-detail) -->
     <template id="tpl-post-detail">
-        <article class="bg-white p-8 rounded-lg shadow-xl max-w-4xl mx-auto mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-gray-900 leading-tight">{{title}}</h1>
-            <p class="text-gray-600 text-sm mb-6 flex justify-between items-center">
-                <span>Par <span class="font-semibold text-gray-700">{{author}}</span></span>
-                <span>Publié le {{date}}</span>
+        <article class="bg-gray-900 p-8 rounded-lg shadow-xl max-w-4xl mx-auto mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-4 text-purple-300 leading-tight drop-shadow-lg">{{title}}</h1>
+            <p class="text-gray-400 text-sm mb-6 flex justify-between items-center">
+                <span>Ressources Incluses: <span class="font-semibold text-purple-400">{{author}}</span></span>
+                <span>Tarif: <span class="font-bold text-purple-400">{{date}}</span></span>
             </p>
-            <img src="{{image}}" alt="{{title}}" class="w-full h-80 object-cover rounded-lg mb-8 shadow-md">
-            <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed custom-content">
-                <!-- The backend will render the 'content' variable directly here. -->
+            <img src="{{image}}" alt="{{title}}" class="w-full h-80 object-cover object-center rounded-lg mb-8 shadow-md border border-purple-600">
+            <div class="prose prose-lg max-w-none text-gray-200 leading-relaxed custom-content">
+                <!-- The backend will render the 'content' variable directly here (detailed plan features). -->
                 {{content}}
             </div>
-            <div class="mt-10 pt-6 border-t border-gray-200">
-                <a href="/blog" hx-get="/blog" hx-target="#main-content" hx-push-url="true" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <div class="mt-10 pt-6 border-t border-gray-700">
+                <a href="/hosting" hx-get="/hosting" hx-target="#main-content" hx-push-url="true" class="inline-flex items-center px-6 py-3 border border-transparent text-md font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-300">
                     <!-- Back arrow SVG -->
                     <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                     </svg>
-                    Retour aux actualités
+                    Retour aux plans d'hébergement
                 </a>
             </div>
         </article>
     </template>
 
-    <!-- Template for a full Video Detail Page -->
+    <!-- Template for a full Domain TLD Detail Page (repurposing tpl-video-detail) -->
     <template id="tpl-video-detail">
-        <div class="bg-white p-8 rounded-lg shadow-xl max-w-5xl mx-auto mb-12">
-            <h1 class="text-4xl md:text-5xl font-extrabold mb-6 text-gray-900 leading-tight">{{title}}</h1>
-            <div class="aspect-w-16 aspect-h-9 bg-gray-200 rounded-lg overflow-hidden mb-8 shadow-md">
-                <!-- The backend will embed the video using the embedUrl -->
-                <iframe class="w-full h-full" src="{{embedUrl}}" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture" allowfullscreen></iframe>
+        <div class="bg-gray-900 p-8 rounded-lg shadow-xl max-w-5xl mx-auto mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl md:text-5xl font-extrabold mb-6 text-purple-300 leading-tight drop-shadow-lg">Détails sur l'Extension de Domaine .{{title}}</h1>
+            <div class="aspect-w-16 aspect-h-9 bg-gray-800 rounded-lg overflow-hidden mb-8 shadow-md border border-purple-600 flex items-center justify-center">
+                <!-- If embedUrl can be an image, use it, otherwise show a placeholder or TLD icon -->
+                <img src="{{embedUrl}}" alt="{{title}} TLD graphic" class="w-full h-full object-cover">
             </div>
-            <p class="text-gray-600 text-sm mb-4">Publié le: {{published}}</p>
-            <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed mb-8">
+            <p class="text-gray-400 text-sm mb-4">Prix annuel de renouvellement: <span class="font-bold text-purple-400">{{published}}</span></p>
+            <div class="prose prose-lg max-w-none text-gray-200 leading-relaxed mb-8">
                 {{description}}
             </div>
-            <p class="text-gray-700 mb-8">
-                Lien original: <a href="{{link}}" target="_blank" rel="noopener noreferrer" class="text-teal-600 hover:underline">{{link}}</a>
+            <p class="text-gray-300 mb-8">
+                Enregistrer votre .{{title}}: <a href="{{link}}" target="_blank" rel="noopener noreferrer" class="text-purple-400 hover:underline">{{link}}</a>
             </p>
-            <div class="mt-10 pt-6 border-t border-gray-200">
-                <a href="/videos" hx-get="/videos" hx-target="#main-content" hx-push-url="true" class="inline-flex items-center px-4 py-2 border border-transparent text-sm font-medium rounded-md shadow-sm text-white bg-gray-800 hover:bg-gray-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-gray-500">
+            <div class="mt-10 pt-6 border-t border-gray-700">
+                <a href="/domains" hx-get="/domains" hx-target="#main-content" hx-push-url="true" class="inline-flex items-center px-6 py-3 border border-transparent text-md font-medium rounded-md shadow-sm text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-300">
                     <!-- Back arrow SVG -->
                     <svg class="-ml-1 mr-2 h-5 w-5" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 20 20" fill="currentColor" aria-hidden="true">
                         <path fill-rule="evenodd" d="M9.707 14.707a1 1 0 01-1.414 0l-4-4a1 1 0 010-1.414l4-4a1 1 0 011.414 1.414L7.414 9H15a1 1 0 110 2H7.414l2.293 2.293a1 1 0 010 1.414z" clip-rule="evenodd" />
                     </svg>
-                    Retour aux vidéos
+                    Retour aux extensions de domaine
                 </a>
             </div>
         </div>
     </template>
 
-    <!-- Template for the Blog List Page -->
-    <template id="tpl-blog">
-        <h1 class="text-5xl font-extrabold text-gray-900 mb-10 text-center border-b-2 border-teal-500 pb-4">Toutes les Actualités</h1>
-        <div id="publications-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-             hx-get="/api/posts" hx-trigger="load" hx-swap="outerHTML">
-            <!-- Blog cards will be loaded here dynamically by HTMX -->
-            <p class="col-span-full text-center text-gray-500">Chargement des actualités...</p>
+    <!-- Template for the Hosting Plans List Page (new) -->
+    <template id="tpl-hosting">
+        <h1 class="text-5xl font-extrabold text-purple-300 mb-10 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg relative z-10">Toutes nos Solutions d'Hébergement Cloud</h1>
+        <div id="hosting-plans-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10"
+             hx-get="/api/hosting-plans" hx-trigger="load" hx-swap="innerHTML">
+            <!-- Hosting Plan cards (tpl-blog-card repurposed) will be loaded here dynamically by HTMX -->
+            <p class="col-span-full text-center text-gray-400">Chargement des plans d'hébergement...</p>
         </div>
     </template>
 
-    <!-- Template for the Video List Page -->
-    <template id="tpl-videos">
-        <h1 class="text-5xl font-extrabold text-gray-900 mb-10 text-center border-b-2 border-teal-500 pb-4">Toutes nos Vidéos</h1>
-        <div id="videos-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8"
-             hx-get="/api/videos" hx-trigger="load" hx-swap="outerHTML">
-            <!-- Video cards will be loaded here dynamically by HTMX -->
-            <p class="col-span-full text-center text-gray-500">Chargement des vidéos...</p>
+    <!-- Template for the Domain List Page (new) -->
+    <template id="tpl-domains">
+        <h1 class="text-5xl font-extrabold text-purple-300 mb-10 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg relative z-10">Toutes nos Extensions de Domaine</h1>
+        <p class="text-xl text-gray-300 text-center mb-8 relative z-10">Trouvez et enregistrez le nom de domaine idéal pour votre projet.</p>
+        <div class="bg-gray-800 bg-opacity-70 backdrop-blur-md p-6 rounded-lg shadow-xl max-w-2xl mx-auto mb-10 border border-purple-700 relative z-10">
+            <form hx-post="/api/domain-check-full" hx-target="#full-domain-search-results" hx-swap="outerHTML" class="flex flex-col sm:flex-row gap-4">
+                <input type="text" name="domain" placeholder="Rechercher un nom de domaine..."
+                       class="flex-grow p-3 rounded-md bg-gray-900 text-gray-100 border border-purple-600 focus:ring-purple-500 focus:border-purple-500 shadow-inner"
+                       required>
+                <button type="submit" class="bg-purple-600 hover:bg-purple-700 text-white font-bold py-3 px-6 rounded-md transition-all duration-300 shadow-lg">
+                    Rechercher
+                </button>
+            </form>
+            <div id="full-domain-search-results" class="mt-4 text-gray-300 text-center">
+                <p>Vérifiez la disponibilité de votre nom de domaine.</p>
+            </div>
+        </div>
+        <div id="domain-offers-container" class="grid md:grid-cols-2 lg:grid-cols-3 gap-8 relative z-10"
+             hx-get="/api/domain-offers" hx-trigger="load" hx-swap="innerHTML">
+            <!-- Domain offer cards (tpl-video-card repurposed) will be loaded here dynamically by HTMX -->
+            <p class="col-span-full text-center text-gray-400">Chargement des extensions de domaine...</p>
+        </div>
+    </template>
+
+    <!-- Template for a simple Pricing Page (new) -->
+    <template id="tpl-pricing">
+        <div class="max-w-4xl mx-auto bg-gray-900 bg-opacity-70 p-8 rounded-lg shadow-xl mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl font-extrabold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Nos Tarifs</h1>
+            <p class="text-lg text-gray-300 mb-8 text-center">Découvrez nos offres transparentes pour l'hébergement cloud et l'enregistrement de domaines.</p>
+
+            <h2 class="text-3xl font-bold text-purple-200 mb-6 border-b border-purple-600 pb-2">Hébergement Cloud</h2>
+            <div class="grid md:grid-cols-2 gap-8 mb-10">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-purple-600">
+                    <h3 class="text-2xl font-semibold text-purple-300 mb-2">Plan Essentiel</h3>
+                    <p class="text-gray-400 mb-4">Idéal pour les petits sites et les démarrages.</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 mb-4">
+                        <li>1 CPU Core</li>
+                        <li>2 Go RAM</li>
+                        <li>50 Go SSD</li>
+                        <li>500 Go Bande passante</li>
+                    </ul>
+                    <p class="text-3xl font-bold text-purple-400">9.99€ <span class="text-lg font-normal text-gray-400">/ mois</span></p>
+                    <a href="/hosting/essential" hx-get="/hosting/essential" hx-target="#main-content" hx-push-url="true" class="mt-4 block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">Choisir ce plan</a>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-purple-600">
+                    <h3 class="text-2xl font-semibold text-purple-300 mb-2">Plan Pro</h3>
+                    <p class="text-gray-400 mb-4">Parfait pour les applications en croissance et les entreprises.</p>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 mb-4">
+                        <li>4 CPU Cores</li>
+                        <li>8 Go RAM</li>
+                        <li>200 Go SSD</li>
+                        <li>2 To Bande passante</li>
+                    </ul>
+                    <p class="text-3xl font-bold text-purple-400">39.99€ <span class="text-lg font-normal text-gray-400">/ mois</span></p>
+                    <a href="/hosting/pro" hx-get="/hosting/pro" hx-target="#main-content" hx-push-url="true" class="mt-4 block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">Choisir ce plan</a>
+                </div>
+            </div>
+
+            <h2 class="text-3xl font-bold text-purple-200 mb-6 border-b border-purple-600 pb-2">Enregistrement de Domaines</h2>
+            <div class="grid md:grid-cols-2 gap-8">
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-purple-600">
+                    <h3 class="text-2xl font-semibold text-purple-300 mb-2">Extensions Populaires</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 mb-4">
+                        <li>.com: 12.99€ / an</li>
+                        <li>.net: 14.99€ / an</li>
+                        <li>.org: 11.99€ / an</li>
+                    </ul>
+                    <a href="/domains" hx-get="/domains" hx-target="#main-content" hx-push-url="true" class="mt-4 block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">Voir toutes les extensions</a>
+                </div>
+                <div class="bg-gray-800 p-6 rounded-lg shadow-md border border-purple-600">
+                    <h3 class="text-2xl font-semibold text-purple-300 mb-2">Extensions Premium</h3>
+                    <ul class="list-disc list-inside text-gray-300 space-y-1 mb-4">
+                        <li>.cloud: 29.99€ / an</li>
+                        <li>.io: 49.99€ / an</li>
+                        <li>.dev: 19.99€ / an</li>
+                    </ul>
+                    <a href="/domains" hx-get="/domains" hx-target="#main-content" hx-push-url="true" class="mt-4 block text-center bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-4 rounded-md transition-colors duration-300">Découvrir les Premium</a>
+                </div>
+            </div>
         </div>
     </template>
 
     <!-- Template for a simple Contact Page -->
     <template id="tpl-contact">
-        <div class="max-w-xl mx-auto bg-white p-8 rounded-lg shadow-xl mb-12">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Contactez-nous</h1>
-            <p class="text-lg text-gray-700 mb-6 text-center">Nous serions ravis de discuter de vos besoins. Remplissez le formulaire ci-dessous ou contactez-nous directement.</p>
+        <div class="max-w-xl mx-auto bg-gray-900 bg-opacity-70 p-8 rounded-lg shadow-xl mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl font-extrabold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Contactez Notre Équipe</h1>
+            <p class="text-lg text-gray-300 mb-6 text-center">Des questions sur l'hébergement, les domaines ou un support technique ? Remplissez le formulaire ci-dessous.</p>
 
             <form class="space-y-6">
                 <div>
-                    <label for="name" class="block text-sm font-medium text-gray-700">Nom Complet</label>
-                    <input type="text" id="name" name="name" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Votre nom">
+                    <label for="name" class="block text-sm font-medium text-gray-200">Nom Complet</label>
+                    <input type="text" id="name" name="name" class="mt-1 block w-full px-4 py-2 border border-purple-600 rounded-md shadow-sm bg-gray-800 text-gray-100 focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="Votre nom">
                 </div>
                 <div>
-                    <label for="email" class="block text-sm font-medium text-gray-700">Adresse Email</label>
-                    <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="votre@email.com">
+                    <label for="email" class="block text-sm font-medium text-gray-200">Adresse Email</label>
+                    <input type="email" id="email" name="email" class="mt-1 block w-full px-4 py-2 border border-purple-600 rounded-md shadow-sm bg-gray-800 text-gray-100 focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="votre@email.com">
                 </div>
                 <div>
-                    <label for="subject" class="block text-sm font-medium text-gray-700">Sujet</label>
-                    <input type="text" id="subject" name="subject" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Ex: Renseignement sur un joueur">
+                    <label for="subject" class="block text-sm font-medium text-gray-200">Sujet</label>
+                    <input type="text" id="subject" name="subject" class="mt-1 block w-full px-4 py-2 border border-purple-600 rounded-md shadow-sm bg-gray-800 text-gray-100 focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="Ex: Support technique, Ventes">
                 </div>
                 <div>
-                    <label for="message" class="block text-sm font-medium text-gray-700">Votre Message</label>
-                    <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-4 py-2 border border-gray-300 rounded-md shadow-sm focus:ring-teal-500 focus:border-teal-500 sm:text-sm" placeholder="Écrivez votre message ici..."></textarea>
+                    <label for="message" class="block text-sm font-medium text-gray-200">Votre Message</label>
+                    <textarea id="message" name="message" rows="5" class="mt-1 block w-full px-4 py-2 border border-purple-600 rounded-md shadow-sm bg-gray-800 text-gray-100 focus:ring-purple-500 focus:border-purple-500 sm:text-sm" placeholder="Écrivez votre message ici..."></textarea>
                 </div>
                 <div>
-                    <!-- Note: This form is purely cosmetic. A real form submission would require backend logic,
-                         e.g., hx-post to a /api/contact endpoint that handles the email. -->
-                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-teal-600 hover:bg-teal-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-teal-500">
+                    <button type="submit" class="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-lg font-medium text-white bg-purple-600 hover:bg-purple-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-purple-500 transition-colors duration-300">
                         Envoyer le Message
                     </button>
                 </div>
             </form>
-            <div class="mt-8 text-center text-gray-600">
-                <p>Ou par email direct: <a href="mailto:contact@footlooker.com" class="text-teal-600 hover:underline">contact@footlooker.com</a></p>
-                <p>Téléphone: <a href="tel:+1234567890" class="text-teal-600 hover:underline">+1 (234) 567-890</a></p>
+            <div class="mt-8 text-center text-gray-400">
+                <p>Ou par email direct: <a href="mailto:support@quantumhost.com" class="text-purple-400 hover:underline">support@quantumhost.com</a></p>
+                <p>Téléphone: <a href="tel:+1234567890" class="text-purple-400 hover:underline">+1 (234) 567-890</a></p>
             </div>
         </div>
     </template>
 
     <!-- Template for a simple Privacy Policy Page -->
     <template id="tpl-privacy">
-        <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-xl mb-12">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Politique de Confidentialité</h1>
-            <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-                <p>Ceci est un exemple de politique de confidentialité pour FootLooker. Nous nous engageons à protéger votre vie privée...</p>
-                <p><strong>Collecte d'informations:</strong> Nous collectons des informations lorsque vous vous inscrivez sur notre site, lorsque vous vous connectez à votre compte, faites un achat, participez à un concours, et/ou lorsque vous vous déconnectez. Les informations collectées incluent votre nom, votre adresse e-mail, numéro de téléphone, et/ou des informations bancaires.</p>
-                <p><strong>Utilisation des informations:</strong> Toutes les informations que nous recueillons auprès de vous peuvent être utilisées pour : Personnaliser votre expérience et répondre à vos besoins individuels ; Fournir un contenu publicitaire personnalisé ; Améliorer notre site Web ; Améliorer le service client et vos besoins de prise en charge ; Vous contacter par e-mail ; Administrer un concours, une promotion, ou une enquête.</p>
-                <p><strong>Confidentialité:</strong> Nous sommes les seuls propriétaires des informations recueillies sur ce site. Vos informations personnelles ne seront pas vendues, échangées, transférées, ou données à une autre société pour n'importe quelle raison, sans votre consentement, en dehors de ce qui est nécessaire pour répondre à une demande et/ou une transaction, comme par exemple pour expédier une commande.</p>
-                <p><strong>Divulgation à des tiers:</strong> Nous ne vendons, n'échangeons et ne transférons pas vos informations personnelles identifiables à des tiers. Cela ne comprend pas les tierce parties de confiance qui nous aident à exploiter notre site Web ou à mener nos affaires, tant que ces parties conviennent de garder ces informations confidentielles.</p>
-                <p><strong>Protection des informations:</strong> Nous mettons en œuvre une variété de mesures de sécurité pour préserver la sécurité de vos informations personnelles. Nous utilisons un cryptage à la pointe de la technologie pour protéger les informations sensibles transmises en ligne.</p>
-                <p>En utilisant notre site, vous consentez à notre politique de confidentialité.</p>
+        <div class="max-w-3xl mx-auto bg-gray-900 bg-opacity-70 p-8 rounded-lg shadow-xl mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl font-extrabold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Politique de Confidentialité</h1>
+            <div class="prose prose-lg max-w-none text-gray-200 leading-relaxed">
+                <p>Ceci est un exemple de politique de confidentialité pour QuantumHost. Nous nous engageons à protéger votre vie privée et vos données.</p>
+                <p><strong>Collecte d'informations:</strong> Nous collectons des informations lorsque vous vous inscrivez à nos services, enregistrez un domaine, achetez un plan d'hébergement, ou interagissez avec notre support. Les informations peuvent inclure votre nom, votre adresse e-mail, informations de facturation, et données techniques liées à votre utilisation de nos services.</p>
+                <p><strong>Utilisation des informations:</strong> Les informations recueillies sont utilisées pour : Fournir et maintenir nos services ; Traiter vos transactions ; Améliorer et personnaliser votre expérience utilisateur ; Communiquer avec vous concernant votre compte ou nos services ; Se conformer aux obligations légales.</p>
+                <p><strong>Confidentialité:</strong> Vos informations personnelles ne sont pas vendues, échangées ou transférées à des tiers sans votre consentement, sauf si nécessaire pour fournir les services que vous avez demandés (par exemple, enregistrement de domaine via un registraire tiers) ou si requis par la loi.</p>
+                <p><strong>Sécurité:</strong> Nous mettons en œuvre des mesures de sécurité robustes, y compris le cryptage SSL, pour protéger vos informations personnelles contre l'accès non autorisé, la divulgation, l'altération ou la destruction.</p>
+                <p>En utilisant nos services, vous acceptez notre politique de confidentialité.</p>
             </div>
         </div>
     </template>
 
     <!-- Template for a simple Terms of Use Page -->
     <template id="tpl-terms">
-        <div class="max-w-3xl mx-auto bg-white p-8 rounded-lg shadow-xl mb-12">
-            <h1 class="text-4xl font-extrabold text-gray-900 mb-8 text-center border-b-2 border-teal-500 pb-4">Conditions d'Utilisation</h1>
-            <div class="prose prose-lg max-w-none text-gray-800 leading-relaxed">
-                <p>Bienvenue sur le site web de FootLooker. En accédant à notre site ou en utilisant nos services, vous acceptez d'être lié par les présentes conditions générales d'utilisation.</p>
-                <p><strong>Propriété intellectuelle:</strong> Tout le contenu présent sur ce site, incluant les textes, images, vidéos, logos, et graphiques, est la propriété de FootLooker ou de ses concédants de licence et est protégé par les lois sur la propriété intellectuelle. Toute reproduction, distribution ou utilisation non autorisée est strictement interdite.</p>
-                <p><strong>Utilisation du site:</strong> Vous vous engagez à utiliser notre site de manière légale et appropriée, sans porter atteinte aux droits de tiers ou à la performance du site. Il est interdit de publier ou transmettre tout contenu illégal, diffamatoire, obscène ou nuisible.</p>
-                <p><strong>Limitation de responsabilité:</strong> FootLooker s'efforce d'assurer l'exactitude des informations diffusées sur ce site, mais ne peut garantir que le contenu est exempt d'erreurs ou toujours à jour. Nous déclinons toute responsabilité pour les dommages directs ou indirects résultant de l'utilisation de ce site ou de l'impossibilité de l'utiliser.</p>
-                <p><strong>Liens externes:</strong> Notre site peut contenir des liens vers des sites web tiers. Ces liens sont fournis pour votre commodité uniquement. FootLooker n'a aucun contrôle sur le contenu de ces sites et n'assume aucune responsabilité quant à leur contenu ou leurs pratiques de confidentialité.</p>
-                <p><strong>Modifications des conditions:</strong> FootLooker se réserve le droit de modifier les présentes conditions d'utilisation à tout moment. Il est de votre responsabilité de les consulter régulièrement. Votre utilisation continue du site après la publication des modifications constitue votre acceptation de ces modifications.</p>
-                <p>En cas de questions concernant ces conditions, veuillez nous contacter.</p>
+        <div class="max-w-3xl mx-auto bg-gray-900 bg-opacity-70 p-8 rounded-lg shadow-xl mb-12 border border-purple-700 relative z-10">
+            <h1 class="text-4xl font-extrabold text-purple-300 mb-8 text-center border-b-2 border-purple-500 pb-4 drop-shadow-lg">Conditions d'Utilisation</h1>
+            <div class="prose prose-lg max-w-none text-gray-200 leading-relaxed">
+                <p>Bienvenue sur le site web de QuantumHost. En utilisant nos services d'hébergement cloud et d'enregistrement de domaines, vous acceptez d'être lié par les présentes conditions générales.</p>
+                <p><strong>Services:</strong> QuantumHost fournit des services d'hébergement web, d'enregistrement de noms de domaine et des services connexes. L'utilisation de ces services est soumise à la présente politique et à nos politiques d'utilisation acceptable.</p>
+                <p><strong>Propriété intellectuelle:</strong> Tout le contenu et les matériaux disponibles sur ce site, y compris les logos, les designs et les textes, sont la propriété de QuantumHost ou de ses fournisseurs de licences et sont protégés par les lois sur la propriété intellectuelle.</p>
+                <p><strong>Obligations de l'utilisateur:</strong> Vous êtes responsable de l'utilisation de votre compte et du maintien de la confidentialité de vos informations de connexion. Vous vous engagez à ne pas utiliser nos services pour toute activité illégale ou abusive, y compris le spamming, le phishing, ou la distribution de logiciels malveillants.</p>
+                <p><strong>Limitation de responsabilité:</strong> QuantumHost s'efforce de fournir un service fiable et sécurisé, mais ne peut garantir une disponibilité ininterrompue ou l'absence d'erreurs. Nous ne sommes pas responsables des pertes de données, des interruptions de service ou des dommages directs ou indirects résultant de l'utilisation ou de l'incapacité d'utiliser nos services.</p>
+                <p><strong>Modifications:</strong> Nous nous réservons le droit de modifier les présentes conditions d'utilisation à tout moment. Les modifications prendront effet dès leur publication sur notre site web. Votre utilisation continue de nos services après ces modifications constitue votre acceptation des nouvelles conditions.</p>
+                <p>Pour toute question, veuillez contacter notre support.</p>
             </div>
         </div>
     </template>
