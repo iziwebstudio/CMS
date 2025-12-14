@@ -114,7 +114,9 @@ export async function onRequest(context) {
     // IMPORTANT : Cette vérification doit être AVANT toute autre logique
     
     // Route pour preview.html avec contenu dynamique
+    // IMPORTANT : Cette route doit être AVANT la logique SSR
     if (url.pathname === '/preview.html' || url.pathname === '/preview/') {
+        console.log(`[Preview Route] Intercepting preview.html request`);
         const slug = url.searchParams.get('slug');
         const path = url.searchParams.get('path') || '/';
         const isHtmx = request.headers.get('HX-Request') === 'true';
@@ -191,7 +193,19 @@ export async function onRequest(context) {
         }
         
         // Sinon, servir preview.html normalement (chargement initial depuis localStorage)
-        return env.ASSETS.fetch(request);
+        console.log(`[Preview Route] Serving preview.html static file`);
+        const previewResponse = await env.ASSETS.fetch(request);
+        
+        // Si le fichier n'est pas trouvé, retourner une erreur explicite
+        if (previewResponse.status !== 200) {
+            console.error(`[Preview Route] Failed to load preview.html. Status: ${previewResponse.status}`);
+            return new Response(
+                `preview.html not found. Please ensure the file exists at the root of the project.`,
+                { status: 404, headers: { 'Content-Type': 'text/plain' } }
+            );
+        }
+        
+        return previewResponse;
     }
     
     // Intercepter les requêtes HTMX depuis la prévisualisation API (ancien système)
@@ -334,6 +348,11 @@ export async function onRequest(context) {
     if (!WSTD_STAGING_URL) {
         // IMPORTANT : Toujours charger frontend/index.html en priorité
         // Ne jamais servir directement index.html racine
+        
+        // Exclure preview.html de la logique SSR (déjà géré plus haut)
+        if (url.pathname === '/preview.html' || url.pathname === '/preview/') {
+            return env.ASSETS.fetch(request);
+        }
         
         // Vérifier d'abord si c'est un asset statique (image, CSS, JS, etc.)
         // Si oui, servir directement sans SSR
