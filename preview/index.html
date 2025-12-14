@@ -46,6 +46,9 @@
                     const parser = new DOMParser();
                     const doc = parser.parseFromString(html, 'text/html');
                     
+                    // Debug: vérifier que le head et body sont bien parsés
+                    console.log('[Preview] Template parsed - Head elements:', doc.head ? doc.head.children.length : 0, 'Body elements:', doc.body ? doc.body.children.length : 0);
+                    
                     // Supprimer le loader
                     document.querySelector('.preview-loader')?.remove();
                     
@@ -143,20 +146,60 @@
                             currentHead.appendChild(cloned);
                         });
                         
+                        // IMPORTANT : S'assurer que les éléments cibles pour les swaps OOB existent avec les bons IDs
+                        // Ces éléments sont nécessaires pour que HTMX puisse faire les swaps OOB
+                        let titleEl = currentHead.querySelector('#site-title');
+                        if (!titleEl) {
+                            // Chercher par tag name si l'ID n'existe pas
+                            titleEl = currentHead.querySelector('title');
+                            if (titleEl) {
+                                titleEl.id = 'site-title';
+                            } else {
+                                titleEl = document.createElement('title');
+                                titleEl.id = 'site-title';
+                                currentHead.appendChild(titleEl);
+                            }
+                        }
+                        
+                        let metaDescEl = currentHead.querySelector('#meta-desc');
+                        if (!metaDescEl) {
+                            // Chercher par name si l'ID n'existe pas
+                            metaDescEl = currentHead.querySelector('meta[name="description"]');
+                            if (metaDescEl) {
+                                metaDescEl.id = 'meta-desc';
+                            } else {
+                                metaDescEl = document.createElement('meta');
+                                metaDescEl.id = 'meta-desc';
+                                metaDescEl.setAttribute('name', 'description');
+                                currentHead.appendChild(metaDescEl);
+                            }
+                        }
+                        
+                        let metaKeywordsEl = currentHead.querySelector('#meta-keywords');
+                        if (!metaKeywordsEl) {
+                            // Chercher par name si l'ID n'existe pas
+                            metaKeywordsEl = currentHead.querySelector('meta[name="keywords"]');
+                            if (metaKeywordsEl) {
+                                metaKeywordsEl.id = 'meta-keywords';
+                            } else {
+                                metaKeywordsEl = document.createElement('meta');
+                                metaKeywordsEl.id = 'meta-keywords';
+                                metaKeywordsEl.setAttribute('name', 'keywords');
+                                currentHead.appendChild(metaKeywordsEl);
+                            }
+                        }
+                        
                         // Mettre à jour le titre si disponible
                         if (metadata && metadata.title) {
-                            document.title = metadata.title + ' - Preview';
+                            titleEl.textContent = metadata.title + ' - Preview';
                         }
                         
                         // Mettre à jour les meta tags si disponibles
                         if (metadata && metadata.metaDesc) {
-                            let metaDesc = document.querySelector('meta[name="description"]');
-                            if (!metaDesc) {
-                                metaDesc = document.createElement('meta');
-                                metaDesc.setAttribute('name', 'description');
-                                currentHead.appendChild(metaDesc);
-                            }
-                            metaDesc.setAttribute('content', metadata.metaDesc);
+                            metaDescEl.setAttribute('content', metadata.metaDesc);
+                        }
+                        if (metadata && metadata.metaKeywords) {
+                            metaKeywordsEl.setAttribute('content', metadata.metaKeywords);
                         }
                     }
                     
@@ -194,7 +237,7 @@
                         fixRelativePaths(document.body);
                     } else {
                         // Fallback: injecter directement dans le body si pas de structure HTML complète
-                        document.body.innerHTML = html;
+                    document.body.innerHTML = html;
                         fixRelativePaths(document.body);
                     }
                     
@@ -274,6 +317,47 @@
                     // Initialiser HTMX après l'injection
                     if (typeof htmx !== 'undefined') {
                         htmx.process(document.body);
+                        
+                        // IMPORTANT : Gérer les swaps OOB manuellement si nécessaire
+                        // HTMX devrait normalement les gérer automatiquement, mais on s'assure qu'ils sont bien traités
+                        document.body.addEventListener('htmx:afterSwap', (event) => {
+                            // Vérifier si des éléments OOB sont présents dans le body (ils ne devraient pas y être)
+                            const oobElements = document.body.querySelectorAll('[hx-swap-oob="true"]');
+                            if (oobElements.length > 0) {
+                                console.log('[Preview] Moving OOB elements to head:', oobElements.length);
+                                oobElements.forEach(oobEl => {
+                                    const id = oobEl.id;
+                                    if (id) {
+                                        // Trouver l'élément cible dans le head
+                                        const target = document.head.querySelector(`#${id}`);
+                                        if (target) {
+                                            // Mettre à jour le contenu de l'élément cible
+                                            if (oobEl.tagName === 'TITLE') {
+                                                target.textContent = oobEl.textContent;
+                                            } else if (oobEl.tagName === 'META') {
+                                                // Copier tous les attributs
+                                                Array.from(oobEl.attributes).forEach(attr => {
+                                                    if (attr.name !== 'hx-swap-oob' && attr.name !== 'id') {
+                                                        target.setAttribute(attr.name, attr.value);
+                                                    }
+                                                });
+                                                // Pour les meta, copier aussi le content
+                                                if (oobEl.getAttribute('content')) {
+                                                    target.setAttribute('content', oobEl.getAttribute('content'));
+                                                }
+                                            }
+                                        } else {
+                                            // Si l'élément cible n'existe pas, le créer dans le head
+                                            const cloned = oobEl.cloneNode(true);
+                                            cloned.removeAttribute('hx-swap-oob');
+                                            document.head.appendChild(cloned);
+                                        }
+                                        // Supprimer l'élément OOB du body
+                                        oobEl.remove();
+                                    }
+                                });
+                            }
+                        });
                     }
                 } catch (e) {
                     document.body.innerHTML = `
