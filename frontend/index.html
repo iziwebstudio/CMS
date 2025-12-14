@@ -990,7 +990,7 @@ export default {
                             </div>
                             <div class="mt-6">
                                 <a href="/cms" hx-get="/cms" hx-target="#main-content" hx-push-url="true"
-                                    class="block w-full py-3 bg-gradient-purple text-white text-center font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30">
+                                    class="block w-full py-3 gradient-purple text-white text-center font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30">
                                     Learn More About CMS
                                 </a>
                             </div>
@@ -1027,7 +1027,7 @@ export default {
                             </div>
                             <div class="mt-6">
                                 <a href="/ai-workers" hx-get="/ai-workers" hx-target="#main-content" hx-push-url="true"
-                                    class="block w-full py-3 bg-gradient-purple text-white text-center font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30">
+                                    class="block w-full py-3 gradient-purple text-white text-center font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30">
                                     Learn More About AI Workers
                                 </a>
                             </div>
@@ -1144,6 +1144,346 @@ export default {
         </section>
     </template>
 
+    <!-- CMS Page Template -->
+    <template id="tpl-cms">
+        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div class="w-20 h-20 bg-gradient-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-database text-white text-4xl"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+                        WebSuite <span class="text-gradient">CMS</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        A modern headless CMS that aggregates content from multiple sources. Perfect for content creators who publish across platforms.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Features Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-rss text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">RSS Aggregation</h3>
+                            <p class="text-gray-600">
+                                Automatically pull content from Substack, YouTube, Podcasts, and more. One unified API for all your content sources.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-code text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">REST API</h3>
+                            <p class="text-gray-600">
+                                Full REST API for programmatic access to your content. Integrate with any frontend framework or mobile app.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-bolt text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">HTMX Support</h3>
+                            <p class="text-gray-600">
+                                Server-side rendering with HTMX for fast, dynamic pages. No JavaScript framework required.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-database text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Smart Caching</h3>
+                            <p class="text-gray-600">
+                                Intelligent caching with Cloudflare KV for instant content delivery. Your content loads in milliseconds.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- How It Works -->
+                    <div class="bg-gradient-purple rounded-2xl p-12 text-white mb-16">
+                        <h2 class="text-3xl font-bold mb-8 text-center">How It Works</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-3xl font-black">1</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Connect Sources</h3>
+                                <p class="text-purple-100">Add your RSS feeds from Substack, YouTube, Podcasts, and more</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-3xl font-black">2</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Automatic Sync</h3>
+                                <p class="text-purple-100">Content is automatically fetched, parsed, and cached on Cloudflare's edge</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
+                                    <span class="text-3xl font-black">3</span>
+                                </div>
+                                <h3 class="text-xl font-bold mb-2">Use Anywhere</h3>
+                                <p class="text-purple-100">Access your content via REST API or HTMX. Use with any frontend framework</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center">
+                        <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
+                            class="inline-block px-8 py-4 bg-gradient-purple text-white font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30 text-lg">
+                            Get Started with CMS
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- AI Workers Page Template -->
+    <template id="tpl-ai-workers">
+        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div class="w-20 h-20 bg-gradient-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-robot text-white text-4xl"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+                        AI <span class="text-gradient">Workers</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        Intelligent automation agents that connect your services and automate workflows. Powered by AI.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Features Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-plug text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">30+ Integrations</h3>
+                            <p class="text-gray-600">
+                                Connect to GitHub, Gmail, Slack, Stripe, and more. Expand your automation possibilities with our growing list of integrations.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-brain text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">AI-Powered</h3>
+                            <p class="text-gray-600">
+                                Intelligent agents that understand context and make decisions. Let AI handle complex workflows automatically.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-cloud text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Serverless Functions</h3>
+                            <p class="text-gray-600">
+                                Run on Cloudflare's edge network for global performance. Your automations execute instantly, anywhere in the world.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-sitemap text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Visual Builder</h3>
+                            <p class="text-gray-600">
+                                Create workflows with our intuitive interface. No coding required. Drag, drop, and automate.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Example Workflow -->
+                    <div class="bg-gray-900 rounded-2xl p-10 text-white mb-16">
+                        <h2 class="text-3xl font-bold mb-8 text-center">Example Workflow</h2>
+                        <div class="space-y-6 max-w-3xl mx-auto">
+                            <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-bell text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold mb-1">Trigger: New blog post published</div>
+                                    <div class="text-sm text-gray-400">When a new post is detected in your RSS feed</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <i class="fas fa-arrow-down text-purple-500 text-2xl"></i>
+                            </div>
+                            <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fab fa-twitter text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold mb-1">Action: Post to Twitter</div>
+                                    <div class="text-sm text-gray-400">Automatically share your new post on Twitter</div>
+                                </div>
+                            </div>
+                            <div class="flex justify-center">
+                                <i class="fas fa-arrow-down text-purple-500 text-2xl"></i>
+                            </div>
+                            <div class="flex items-center gap-4 bg-gray-800 rounded-lg p-4">
+                                <div class="w-12 h-12 bg-purple-600 rounded-lg flex items-center justify-center flex-shrink-0">
+                                    <i class="fas fa-envelope text-white"></i>
+                                </div>
+                                <div class="flex-1">
+                                    <div class="font-semibold mb-1">Action: Send email notification</div>
+                                    <div class="text-sm text-gray-400">Notify your subscribers via email</div>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center">
+                        <a href="/integrations" hx-get="/integrations" hx-target="#main-content" hx-push-url="true"
+                            class="inline-block px-8 py-4 bg-gradient-purple text-white font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30 text-lg mr-4">
+                            View All Integrations
+                        </a>
+                        <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
+                            class="inline-block px-8 py-4 bg-white border-2 border-purple-600 text-purple-600 font-semibold rounded-lg hover:bg-purple-50 transition-all text-lg">
+                            Get Started
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <!-- IDE / Page Builder Template -->
+    <template id="tpl-ide">
+        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50">
+            <div class="container mx-auto px-6">
+                <div class="max-w-4xl mx-auto text-center">
+                    <div class="w-20 h-20 bg-gradient-purple rounded-2xl flex items-center justify-center mx-auto mb-6">
+                        <i class="fas fa-code text-white text-4xl"></i>
+                    </div>
+                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+                        IDE / <span class="text-gradient">Page Builder</span>
+                    </h1>
+                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                        A powerful visual page builder with code editor. Build, preview, and deploy your frontend in one place.
+                    </p>
+                </div>
+            </div>
+        </section>
+
+        <section class="py-20 bg-white">
+            <div class="container mx-auto px-6">
+                <div class="max-w-6xl mx-auto">
+                    <!-- Features Grid -->
+                    <div class="grid grid-cols-1 md:grid-cols-2 gap-8 mb-16">
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-code text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Monaco Editor</h3>
+                            <p class="text-gray-600">
+                                VS Code's editor in your browser with syntax highlighting, autocomplete, and IntelliSense. The same editor you know and love.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-magic text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">AI Code Generation</h3>
+                            <p class="text-gray-600">
+                                Generate code with Google Gemini integration. Describe what you want, and AI writes the code for you.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-eye text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">Live Preview</h3>
+                            <p class="text-gray-600">
+                                See your changes in real-time before deploying. Preview your pages instantly as you code.
+                            </p>
+                        </div>
+                        <div class="bg-gray-50 p-8 rounded-xl border border-gray-200">
+                            <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-rocket text-2xl text-purple-600"></i>
+                            </div>
+                            <h3 class="text-2xl font-bold mb-3">One-Click Deploy</h3>
+                            <p class="text-gray-600">
+                                Deploy directly to GitHub or Cloudflare Pages. Your changes go live in seconds.
+                            </p>
+                        </div>
+                    </div>
+
+                    <!-- Editor Preview -->
+                    <div class="bg-gray-900 rounded-2xl p-8 mb-16">
+                        <div class="flex items-center gap-2 mb-4">
+                            <div class="w-3 h-3 bg-red-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-yellow-500 rounded-full"></div>
+                            <div class="w-3 h-3 bg-green-500 rounded-full"></div>
+                            <span class="ml-4 text-gray-400 text-sm">IDE Editor</span>
+                        </div>
+                        <div class="bg-gray-800 rounded-lg p-6 font-mono text-sm">
+                            <div class="text-green-400"><span class="text-purple-400">&lt;</span><span class="text-blue-400">template</span> <span class="text-yellow-400">id</span>=<span class="text-orange-400">"tpl-home"</span><span class="text-purple-400">&gt;</span></div>
+                            <div class="text-gray-300 pl-4"><span class="text-purple-400">&lt;</span><span class="text-blue-400">h1</span><span class="text-purple-400">&gt;</span>Welcome to WebSuite<span class="text-purple-400">&lt;/</span><span class="text-blue-400">h1</span><span class="text-purple-400">&gt;</span></div>
+                            <div class="text-green-400"><span class="text-purple-400">&lt;/</span><span class="text-blue-400">template</span><span class="text-purple-400">&gt;</span></div>
+                        </div>
+                    </div>
+
+                    <!-- Workflow Steps -->
+                    <div class="bg-gradient-purple rounded-2xl p-12 text-white mb-16">
+                        <h2 class="text-3xl font-bold mb-8 text-center">Your Workflow</h2>
+                        <div class="grid grid-cols-1 md:grid-cols-4 gap-6">
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-edit"></i>
+                                </div>
+                                <h3 class="font-bold mb-2">1. Code</h3>
+                                <p class="text-sm text-purple-100">Write or generate code with AI</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-eye"></i>
+                                </div>
+                                <h3 class="font-bold mb-2">2. Preview</h3>
+                                <p class="text-sm text-purple-100">See your changes in real-time</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-save"></i>
+                                </div>
+                                <h3 class="font-bold mb-2">3. Save</h3>
+                                <p class="text-sm text-purple-100">Save as draft or publish</p>
+                            </div>
+                            <div class="text-center">
+                                <div class="w-12 h-12 bg-white/20 rounded-lg flex items-center justify-center mx-auto mb-3">
+                                    <i class="fas fa-rocket"></i>
+                                </div>
+                                <h3 class="font-bold mb-2">4. Deploy</h3>
+                                <p class="text-sm text-purple-100">Deploy to production instantly</p>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CTA -->
+                    <div class="text-center">
+                        <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
+                            class="inline-block px-8 py-4 bg-gradient-purple text-white font-semibold rounded-lg hover:opacity-90 transition-all shadow-lg shadow-purple-500/30 text-lg">
+                            Start Building
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </section>
+    </template>
 
     <template id="tpl-integrations">
         <!-- Hero Section -->
