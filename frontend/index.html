@@ -159,6 +159,15 @@
         .dark a.nav-active {
             color: rgb(196 181 253) !important;
         }
+
+        /* Pour les boutons (mega menu) */
+        button.nav-active {
+            color: rgb(168 85 247) !important;
+        }
+
+        .dark button.nav-active {
+            color: rgb(196 181 253) !important;
+        }
     </style>
 </head>
 
@@ -2307,16 +2316,6 @@ export default {
         function updateActiveNav() {
             const currentPath = window.location.pathname;
             
-            // Retirer toutes les classes actives des liens de navigation
-            document.querySelectorAll('header a[href^="/"], nav a[href^="/"], footer a[href^="/"]').forEach(link => {
-                // Ne pas toucher aux liens qui sont des boutons ou des CTA
-                if (!link.classList.contains('bg-gradient') && 
-                    !link.classList.contains('bg-white') && 
-                    !link.closest('.gradient-purple')) {
-                    link.classList.remove('nav-active');
-                }
-            });
-            
             // Fonction helper pour normaliser les chemins
             function normalizePath(path) {
                 return path.replace(/\/$/, '') || '/';
@@ -2324,15 +2323,39 @@ export default {
             
             const normalizedCurrent = normalizePath(currentPath);
             
+            // Liste des pages de composants pour le mega menu
+            const componentPages = ['/components', '/cms', '/ai-workers', '/ide'];
+            const isComponentPage = componentPages.some(page => normalizedCurrent === normalizePath(page));
+            
+            // Retirer toutes les classes actives des liens de navigation
+            document.querySelectorAll('header a[href^="/"], nav a[href^="/"], footer a[href^="/"], #components-menu button').forEach(link => {
+                // Ne pas toucher aux liens qui sont des boutons CTA ou dans des sections gradient
+                const isCTA = link.classList.contains('bg-gradient-to-r') || 
+                             link.classList.contains('bg-white') ||
+                             (link.tagName === 'A' && link.closest('section.gradient-purple'));
+                
+                if (!isCTA) {
+                    link.classList.remove('nav-active');
+                }
+            });
+            
+            // Marquer le bouton "Components" comme actif si on est sur une page de composant
+            const componentsButton = document.querySelector('#components-menu button');
+            if (componentsButton && isComponentPage) {
+                componentsButton.classList.add('nav-active');
+            }
+            
             // Ajouter la classe active au lien correspondant
             document.querySelectorAll('header a[href^="/"], nav a[href^="/"], footer a[href^="/"]').forEach(link => {
                 const href = link.getAttribute('href');
                 if (!href) return;
                 
-                // Ignorer les liens CTA et boutons
-                if (link.classList.contains('bg-gradient') || 
-                    link.classList.contains('bg-white') || 
-                    link.closest('.gradient-purple')) {
+                // Ignorer les liens CTA et boutons (mais pas ceux du mega menu)
+                const isCTA = link.classList.contains('bg-gradient-to-r') || 
+                             (link.classList.contains('bg-white') && link.classList.contains('text-purple-600')) ||
+                             (link.tagName === 'A' && link.closest('section.gradient-purple'));
+                
+                if (isCTA) {
                     return;
                 }
                 
@@ -2351,8 +2374,9 @@ export default {
             // Gestion spéciale pour la page d'accueil
             if (normalizedCurrent === '/') {
                 document.querySelectorAll('a[href="/"], a[href="/index.html"]').forEach(link => {
-                    if (!link.classList.contains('bg-gradient') && 
-                        !link.classList.contains('bg-white')) {
+                    const isCTA = link.classList.contains('bg-gradient-to-r') || 
+                                 (link.classList.contains('bg-white') && link.classList.contains('text-purple-600'));
+                    if (!isCTA) {
                         link.classList.add('nav-active');
                     }
                 });
