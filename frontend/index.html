@@ -104,9 +104,9 @@
     </style>
 </head>
 
-<body class="bg-white text-gray-900">
+<body class="bg-white text-gray-900 dark:bg-slate-950 dark:text-slate-50 transition-colors duration-300">
     <!-- Header -->
-    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200">
+    <header class="fixed top-0 left-0 right-0 z-50 bg-white border-b border-gray-200 dark:bg-slate-900 dark:border-slate-800 transition-colors duration-300">
         <nav class="container mx-auto px-6 py-4 flex items-center justify-between">
             <a href="/" class="flex items-center gap-3">
                 <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
@@ -116,7 +116,7 @@
                 <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">.cc</span>
             </a>
 
-            <div class="hidden md:flex items-center gap-8">
+            <div class="hidden md:flex items-center gap-6">
                 <a href="/" hx-get="/" hx-target="#main-content" hx-push-url="true"
                     class="text-sm font-medium text-gray-700 hover:text-purple-500 transition-colors">Home</a>
                 
@@ -172,6 +172,12 @@
                     class="text-sm font-medium text-gray-700 hover:text-purple-500 transition-colors">Integrations</a>
                 <a href="/serverless" hx-get="/serverless" hx-target="#main-content" hx-push-url="true"
                     class="text-sm font-medium text-gray-700 hover:text-purple-500 transition-colors">Serverless</a>
+                
+                <!-- Dark mode toggle -->
+                <button id="theme-toggle" class="w-9 h-9 border border-gray-300 dark:border-slate-600 rounded-full flex items-center justify-center text-gray-600 dark:text-slate-200 hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-300 transition-colors"
+                    aria-label="Toggle dark mode">
+                    <i id="theme-toggle-icon" class="fas fa-moon text-sm"></i>
+                </button>
                 <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
                     class="px-6 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg shadow-purple-500/30">Get
                     Started</a>
@@ -217,11 +223,11 @@
 
     <main id="main-content" class="pt-16"></main>
 
-    <footer class="bg-gray-50 border-t border-gray-200 py-16">
+    <footer class="bg-gray-50 border-t border-gray-200 dark:bg-slate-900 dark:border-slate-800 py-16 transition-colors duration-300">
         <div class="container mx-auto px-6">
             <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
                 <!-- Column 1: Brand -->
-                <div>
+                <div class="dark:text-slate-100">
                     <div class="flex items-center gap-3 mb-6">
                         <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
                             <i class="fas fa-plus text-white"></i>
@@ -244,7 +250,7 @@
                 </div>
                 
                 <!-- Column 2: Platform -->
-                <div>
+                <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Platform</h4>
                     <ul class="space-y-3 text-gray-600">
                         <li><a href="/components" hx-get="/components" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Components</a></li>
@@ -255,7 +261,7 @@
                 </div>
                 
                 <!-- Column 3: Components -->
-                <div>
+                <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Components</h4>
                     <ul class="space-y-3 text-gray-600">
                         <li><a href="/components" hx-get="/components" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">All Components</a></li>
@@ -266,7 +272,7 @@
                 </div>
                 
                 <!-- Column 4: Resources -->
-                <div>
+                <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Resources</h4>
                     <ul class="space-y-3 text-gray-600">
                         <li><a href="/announcements" hx-get="/announcements" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Announcements</a></li>
@@ -289,7 +295,7 @@
 
     <template id="tpl-home">
         <!-- Hero + Serverless Logos -->
-        <section class="pt-20 pb-24 bg-gradient-to-b from-white to-gray-50">
+        <section class="pt-20 pb-24 bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:to-slate-900 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="max-w-4xl mx-auto text-center">
                     <p class="text-2xl md:text-3xl bg-purple-40 text-gray-700 mb-4 font-medium">
@@ -310,7 +316,7 @@
                             Start Building
                         </a>
                         <a href="/components" hx-get="/components" hx-target="#main-content" hx-push-url="true"
-                            class="px-8 py-4 bg-white border-2 border-gray-300 text-gray-900 font-semibold rounded-md hover:border-purple-600 transition-colors">
+                            class="px-8 py-4 bg-white dark:bg-slate-900 border-2 border-gray-300 dark:border-slate-700 text-gray-900 dark:text-slate-100 font-semibold rounded-md hover:border-purple-600 transition-colors">
                             Explore Components
                         </a>
                     </div>
@@ -360,7 +366,7 @@
         </section>
 
         <!-- Serverless Advantages (Section 2) -->
-        <section class="py-24 gradient-purple">
+        <section class="py-24 gradient-purple dark:from-slate-900 dark:to-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl md:text-5xl font-bold text-white mb-4">Serverless Advantages</h2>
@@ -401,7 +407,7 @@
         </section>
 
         <!-- AI Automation Integrations Preview (Section 3) -->
-        <section class="py-20 bg-white overflow-hidden">
+        <section class="py-20 bg-white dark:bg-slate-950 overflow-hidden transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl md:text-5xl font-bold mb-4">AI Automation Integrations</h2>
@@ -505,7 +511,7 @@
                 </div>
                 <div class="grid grid-cols-1 md:grid-cols-3 gap-8 max-w-6xl mx-auto">
                     <!-- CMS Component -->
-                    <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-purple-500 transition-all group shadow-lg hover:shadow-xl">
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all group shadow-lg hover:shadow-xl">
                         <div class="w-16 h-16 gradient-purple rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-database text-white text-2xl"></i>
                     </div>
@@ -542,7 +548,7 @@
                     </div>
 
                     <!-- IDE Component -->
-                    <div class="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-purple-500 transition-all group shadow-lg hover:shadow-xl">
+                    <div class="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all group shadow-lg hover:shadow-xl">
                         <div class="w-16 h-16 gradient-purple rounded-xl flex items-center justify-center mb-6 group-hover:scale-110 transition-transform">
                             <i class="fas fa-code text-white text-2xl"></i>
                         </div>
@@ -704,7 +710,7 @@
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-8 max-w-5xl mx-auto mb-20">
                     <!-- Self Git Hosted -->
                     <div
-                        class="bg-white p-8 rounded-2xl border-2 border-gray-200 hover:border-purple-500 transition-all group relative overflow-hidden">
+                        class="bg-white dark:bg-slate-900 p-8 rounded-2xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all group relative overflow-hidden">
                         <div
                             class="absolute top-0 right-0 bg-gray-100 text-gray-600 text-xs font-bold px-3 py-1 rounded-bl-lg">
                             OPEN SOURCE</div>
@@ -1675,7 +1681,7 @@ export default {
             <div class="container mx-auto px-6">
                 <div class="grid grid-cols-2 sm:grid-cols-3 md:grid-cols-4 lg:grid-cols-5 gap-6">
                     <!-- Supabase -->
-                    <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-purple-500 transition-all group cursor-pointer">
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all group cursor-pointer">
                         <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-gray-50 rounded-lg group-hover:bg-purple-50 transition-colors">
                             <img src="https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg" alt="Supabase" class="w-10 h-10">
                         </div>
@@ -1683,7 +1689,7 @@ export default {
                     </div>
 
                     <!-- Gemini -->
-                    <div class="bg-white p-6 rounded-xl border-2 border-gray-200 hover:border-purple-500 transition-all group cursor-pointer">
+                    <div class="bg-white dark:bg-slate-900 p-6 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all group cursor-pointer">
                         <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-gray-50 rounded-lg group-hover:bg-purple-50 transition-colors">
                             <img src="https://cdn.worldvectorlogo.com/logos/gemini-icon-logo.svg" alt="Gemini" class="w-10 h-10">
                         </div>
@@ -2007,6 +2013,48 @@ export default {
         if (mobileMenuButton) mobileMenuButton.addEventListener('click', toggleMenu);
         if (closeMobileMenu) closeMobileMenu.addEventListener('click', toggleMenu);
         if (mobileMenuOverlay) mobileMenuOverlay.addEventListener('click', toggleMenu);
+
+        // Theme toggle (light / dark)
+        const themeToggle = document.getElementById('theme-toggle');
+        const themeIcon = document.getElementById('theme-toggle-icon');
+        const root = document.documentElement;
+
+        function applyTheme(theme) {
+            if (theme === 'dark') {
+                root.classList.add('dark');
+                if (themeIcon) {
+                    themeIcon.classList.remove('fa-moon');
+                    themeIcon.classList.add('fa-sun');
+                }
+            } else {
+                root.classList.remove('dark');
+                if (themeIcon) {
+                    themeIcon.classList.remove('fa-sun');
+                    themeIcon.classList.add('fa-moon');
+                }
+            }
+        }
+
+        // Initial theme from localStorage or prefers-color-scheme
+        (function initTheme() {
+            const saved = localStorage.getItem('websuite_theme');
+            if (saved === 'dark' || saved === 'light') {
+                applyTheme(saved);
+            } else if (window.matchMedia && window.matchMedia('(prefers-color-scheme: dark)').matches) {
+                applyTheme('dark');
+            } else {
+                applyTheme('light');
+            }
+        })();
+
+        if (themeToggle) {
+            themeToggle.addEventListener('click', () => {
+                const isDark = root.classList.contains('dark');
+                const next = isDark ? 'light' : 'dark';
+                localStorage.setItem('websuite_theme', next);
+                applyTheme(next);
+            });
+        }
 
         // Load More Logic - Pagination côté client
         // Toutes les données sont déjà chargées, on gère juste l'affichage
