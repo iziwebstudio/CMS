@@ -603,15 +603,24 @@ export function generatePublicationsContent(fullTemplate, posts) {
             
             // Ajouter une classe pour la pagination côté client (masquer après les 4 premiers)
             const itemClass = index >= 4 ? 'blog-item blog-item-hidden' : 'blog-item';
-            // Ajouter la classe au premier élément (article ou div)
-            cardHtml = cardHtml.replace(/<(article|div)([^>]*)>/i, (match, tag, attrs) => {
-                // Si l'élément a déjà une classe, l'ajouter, sinon créer l'attribut
+            // Ajouter la classe au premier élément (a, article, div, etc.)
+            // Utiliser une approche qui détecte le premier tag, quel qu'il soit
+            const firstTagMatch = cardHtml.match(/^<([a-zA-Z]+)([^>]*)>/);
+            if (firstTagMatch) {
+                const tag = firstTagMatch[1];
+                const attrs = firstTagMatch[2];
+                let newAttrs = attrs;
+                
                 if (attrs.includes('class=')) {
-                    return `<${tag}${attrs.replace(/class=["']([^"']*)["']/, `class="$1 ${itemClass}"`)}>`;
+                    // Ajouter la classe à l'attribut class existant
+                    newAttrs = attrs.replace(/class=["']([^"']*)["']/, `class="$1 ${itemClass}"`);
                 } else {
-                    return `<${tag}${attrs} class="${itemClass}">`;
+                    // Ajouter un nouvel attribut class
+                    newAttrs = attrs + ` class="${itemClass}"`;
                 }
-            });
+                
+                cardHtml = cardHtml.replace(/^<([a-zA-Z]+)([^>]*)>/, `<${tag}${newAttrs}>`);
+            }
             
             itemsHtml += cardHtml;
         });
@@ -678,15 +687,24 @@ export function generateVideosContent(fullTemplate, videos) {
             
             // Ajouter une classe pour la pagination côté client (masquer après les 4 premiers)
             const itemClass = index >= 4 ? 'video-item video-item-hidden' : 'video-item';
-            // Ajouter la classe au premier élément (div ou article)
-            cardHtml = cardHtml.replace(/<(div|article)([^>]*)>/i, (match, tag, attrs) => {
-                // Si l'élément a déjà une classe, l'ajouter, sinon créer l'attribut
+            // Ajouter la classe au premier élément (a, div, article, etc.)
+            // Utiliser une approche qui détecte le premier tag, quel qu'il soit
+            const firstTagMatch = cardHtml.match(/^<([a-zA-Z]+)([^>]*)>/);
+            if (firstTagMatch) {
+                const tag = firstTagMatch[1];
+                const attrs = firstTagMatch[2];
+                let newAttrs = attrs;
+                
                 if (attrs.includes('class=')) {
-                    return `<${tag}${attrs.replace(/class=["']([^"']*)["']/, `class="$1 ${itemClass}"`)}>`;
+                    // Ajouter la classe à l'attribut class existant
+                    newAttrs = attrs.replace(/class=["']([^"']*)["']/, `class="$1 ${itemClass}"`);
                 } else {
-                    return `<${tag}${attrs} class="${itemClass}">`;
+                    // Ajouter un nouvel attribut class
+                    newAttrs = attrs + ` class="${itemClass}"`;
                 }
-            });
+                
+                cardHtml = cardHtml.replace(/^<([a-zA-Z]+)([^>]*)>/, `<${tag}${newAttrs}>`);
+            }
             
             itemsHtml += cardHtml;
         });

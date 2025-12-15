@@ -54,9 +54,20 @@
         }
 
         /* Pagination côté client - Masquer les items cachés */
+        a.blog-item-hidden,
+        article.blog-item-hidden,
+        div.blog-item-hidden,
         .blog-item-hidden,
+        a.video-item-hidden,
+        article.video-item-hidden,
+        div.video-item-hidden,
         .video-item-hidden {
             display: none !important;
+            visibility: hidden !important;
+            height: 0 !important;
+            overflow: hidden !important;
+            margin: 0 !important;
+            padding: 0 !important;
         }
 
         /* Scrolling animations */
@@ -1988,22 +1999,39 @@ export default {
         
         // Initialiser la pagination au chargement de la page
         function initPagination() {
-            // Masquer tous les items après les 4 premiers pour les articles
-            const blogItems = document.querySelectorAll('.blog-item, .blog-item-hidden');
-            blogItems.forEach((item, index) => {
-                if (index >= itemsPerPage) {
-                    item.classList.add('blog-item-hidden');
-                    item.style.display = 'none';
-                }
+            // Les classes sont déjà ajoutées par le serveur, on s'assure juste qu'elles sont appliquées
+            // Masquer tous les items avec la classe -hidden pour les articles
+            const blogHiddenItems = document.querySelectorAll('.blog-item-hidden');
+            blogHiddenItems.forEach((item) => {
+                item.style.display = 'none';
+                item.style.visibility = 'hidden';
+                item.style.height = '0';
+                item.style.overflow = 'hidden';
             });
             
-            // Masquer tous les items après les 4 premiers pour les vidéos
-            const videoItems = document.querySelectorAll('.video-item, .video-item-hidden');
-            videoItems.forEach((item, index) => {
-                if (index >= itemsPerPage) {
-                    item.classList.add('video-item-hidden');
-                    item.style.display = 'none';
-                }
+            // Afficher les items sans la classe -hidden pour les articles
+            const blogVisibleItems = document.querySelectorAll('.blog-item:not(.blog-item-hidden)');
+            blogVisibleItems.forEach((item) => {
+                item.style.display = '';
+                item.style.visibility = '';
+                item.style.height = '';
+            });
+            
+            // Masquer tous les items avec la classe -hidden pour les vidéos
+            const videoHiddenItems = document.querySelectorAll('.video-item-hidden');
+            videoHiddenItems.forEach((item) => {
+                item.style.display = 'none';
+                item.style.visibility = 'hidden';
+                item.style.height = '0';
+                item.style.overflow = 'hidden';
+            });
+            
+            // Afficher les items sans la classe -hidden pour les vidéos
+            const videoVisibleItems = document.querySelectorAll('.video-item:not(.video-item-hidden)');
+            videoVisibleItems.forEach((item) => {
+                item.style.display = '';
+                item.style.visibility = '';
+                item.style.height = '';
             });
             
             // Vérifier si on doit afficher les boutons "Load More"
@@ -2043,6 +2071,9 @@ export default {
             for (let i = 0; i < itemsToShow; i++) {
                 hiddenItems[i].classList.remove('blog-item-hidden');
                 hiddenItems[i].style.display = '';
+                hiddenItems[i].style.visibility = '';
+                hiddenItems[i].style.height = '';
+                hiddenItems[i].style.overflow = '';
             }
             
             updateLoadMoreButtons();
@@ -2055,6 +2086,9 @@ export default {
             for (let i = 0; i < itemsToShow; i++) {
                 hiddenItems[i].classList.remove('video-item-hidden');
                 hiddenItems[i].style.display = '';
+                hiddenItems[i].style.visibility = '';
+                hiddenItems[i].style.height = '';
+                hiddenItems[i].style.overflow = '';
             }
             
             updateLoadMoreButtons();
