@@ -97,6 +97,35 @@
             animation: scroll-right 30s linear infinite;
         }
 
+        /* Neon hero animations */
+        @keyframes pulse-slow {
+            0%, 100% { opacity: 0.4; transform: scale(1); }
+            50% { opacity: 0.8; transform: scale(1.1); }
+        }
+
+        @keyframes pulse-slower {
+            0%, 100% { opacity: 0.2; transform: scale(1); }
+            50% { opacity: 0.6; transform: scale(1.15); }
+        }
+
+        @keyframes neon-orbit {
+            0% { transform: translate(-50%, 0) rotate(0deg) scale(1); }
+            50% { transform: translate(-50%, -10px) rotate(180deg) scale(1.05); }
+            100% { transform: translate(-50%, 0) rotate(360deg) scale(1); }
+        }
+
+        .animate-pulse-slow {
+            animation: pulse-slow 8s ease-in-out infinite;
+        }
+
+        .animate-pulse-slower {
+            animation: pulse-slower 14s ease-in-out infinite;
+        }
+
+        .animate-neon-orbit {
+            animation: neon-orbit 18s linear infinite;
+        }
+
         /* Mega Menu Styles */
         #components-menu .group:hover .fa-chevron-down {
             transform: rotate(180deg);
@@ -112,8 +141,8 @@
                 <div class="w-10 h-10 bg-gradient-to-br from-purple-600 to-purple-800 rounded-lg flex items-center justify-center">
                     <i class="fas fa-plus text-white"></i>
                 </div>
-                <span id="header-site-name" class="text-xl font-bold text-gray-900">WebSuite</span>
-                <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">.cc</span>
+                <span id="header-site-name" class="text-xl font-bold text-gray-900 dark:text-purple-200">WebSuite</span>
+                <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 dark:bg-purple-900/60 dark:text-purple-200 rounded-full font-semibold">.cc</span>
             </a>
 
             <div class="hidden md:flex items-center gap-6">
@@ -140,7 +169,7 @@
                                     </div>
                                     <div>
                                         <div class="font-semibold text-gray-900 group-hover/item:text-purple-600 transition-colors">WebSuite CMS</div>
-                                        <div class="text-xs text-gray-600 mt-1">Headless CMS with RSS aggregation</div>
+                                        <div class="text-xs text-gray-600 dark:text-purple-200 mt-1">Headless CMS with RSS aggregation</div>
                                     </div>
                                 </a>
                                 <a href="/ai-workers" hx-get="/ai-workers" hx-target="#main-content" hx-push-url="true"
@@ -150,7 +179,7 @@
                                     </div>
                                     <div>
                                         <div class="font-semibold text-gray-900 group-hover/item:text-purple-600 transition-colors">AI Workers</div>
-                                        <div class="text-xs text-gray-600 mt-1">Intelligent automation agents</div>
+                                        <div class="text-xs text-gray-600 dark:text-purple-200 mt-1">Intelligent automation agents</div>
                                     </div>
                                 </a>
                                 <a href="/ide" hx-get="/ide" hx-target="#main-content" hx-push-url="true"
@@ -160,7 +189,7 @@
                                     </div>
                                     <div>
                                         <div class="font-semibold text-gray-900 group-hover/item:text-purple-600 transition-colors">IDE / Page Builder</div>
-                                        <div class="text-xs text-gray-600 mt-1">Visual editor with Monaco</div>
+                                        <div class="text-xs text-gray-600 dark:text-purple-200 mt-1">Visual editor with Monaco</div>
                                     </div>
                                 </a>
                             </div>
@@ -235,7 +264,7 @@
                         <span class="text-xl font-bold text-gray-900">WebSuite</span>
                         <span class="text-xs px-2 py-1 bg-purple-100 text-purple-700 rounded-full font-semibold">.cc</span>
                     </div>
-                    <p class="text-gray-600 mb-6 text-sm">The complete web platform for modern development. CMS, AI Workers, and IDE - all powered by Cloudflare.</p>
+                    <p class="text-gray-600 dark:text-purple-200 mb-6 text-sm">The complete web platform for modern development. CMS, AI Workers, and IDE - all powered by Cloudflare.</p>
                     <div class="flex gap-4">
                         <a href="#"
                             class="w-10 h-10 bg-gray-200 rounded-lg flex items-center justify-center hover:bg-gradient-to-br hover:from-purple-600 hover:to-purple-800 hover:text-white transition-all"><i
@@ -252,7 +281,7 @@
                 <!-- Column 2: Platform -->
                 <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Platform</h4>
-                    <ul class="space-y-3 text-gray-600">
+                    <ul class="space-y-3 text-gray-600 dark:text-purple-200">
                         <li><a href="/components" hx-get="/components" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Components</a></li>
                         <li><a href="/integrations" hx-get="/integrations" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Integrations</a></li>
                         <li><a href="/serverless" hx-get="/serverless" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Serverless</a></li>
@@ -263,7 +292,7 @@
                 <!-- Column 3: Components -->
                 <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Components</h4>
-                    <ul class="space-y-3 text-gray-600">
+                    <ul class="space-y-3 text-gray-600 dark:text-purple-200">
                         <li><a href="/components" hx-get="/components" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">All Components</a></li>
                         <li><a href="/cms" hx-get="/cms" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Headless CMS</a></li>
                         <li><a href="/ai-workers" hx-get="/ai-workers" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">AI Workers</a></li>
@@ -274,7 +303,7 @@
                 <!-- Column 4: Resources -->
                 <div class="dark:text-slate-100">
                     <h4 class="font-bold mb-4">Resources</h4>
-                    <ul class="space-y-3 text-gray-600">
+                    <ul class="space-y-3 text-gray-600 dark:text-purple-200">
                         <li><a href="/announcements" hx-get="/announcements" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Announcements</a></li>
                         <li><a href="/tutorials" hx-get="/tutorials" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-500 transition-colors">Tutorials</a></li>
                         <li><a href="https://docs.websuite.cc" target="_blank" class="hover:text-purple-500 transition-colors">Documentation</a></li>
@@ -295,7 +324,14 @@
 
     <template id="tpl-home">
         <!-- Hero + Serverless Logos -->
-        <section class="pt-20 pb-24 bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:to-slate-900 transition-colors duration-300">
+        <section class="relative pt-20 pb-32 overflow-hidden bg-gradient-to-b from-white via-purple-50 to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
+            <!-- Neon glow orbs -->
+            <div class="pointer-events-none absolute inset-0 opacity-60 dark:opacity-80">
+                <div class="absolute -top-32 -left-24 w-72 h-72 bg-purple-500/40 blur-3xl rounded-full animate-pulse-slow"></div>
+                <div class="absolute -bottom-40 -right-24 w-80 h-80 bg-fuchsia-500/30 blur-3xl rounded-full animate-pulse-slower"></div>
+                <div class="absolute top-1/3 left-1/2 -translate-x-1/2 w-64 h-64 bg-cyan-400/25 blur-3xl rounded-full animate-neon-orbit"></div>
+            </div>
+
             <div class="container mx-auto px-6">
                 <div class="max-w-4xl mx-auto text-center">
                     <p class="text-2xl md:text-3xl bg-purple-40 text-gray-700 mb-4 font-medium">
@@ -307,7 +343,7 @@
                         <span class="text-purple-600">Platform</span>
                         and Go huge !
                     </h1>
-                    <p class="text-xl text-gray-600 mb-12 max-w-3xl mx-auto">
+                    <p class="text-xl text-gray-600 dark:text-purple-200 mb-12 max-w-3xl mx-auto">
                         Build, deploy, and automate with our all-in-one platform. CMS, AI Workers, and IDE - all powered by Cloudflare's global network.
                     </p>
                     <div class="flex flex-col sm:flex-row gap-4 justify-center">
@@ -411,7 +447,7 @@
             <div class="container mx-auto px-6">
                 <div class="text-center mb-12">
                     <h2 class="text-4xl md:text-5xl font-bold mb-4">AI Automation Integrations</h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <p class="text-xl text-gray-600 dark:text-purple-200 max-w-2xl mx-auto">
                         Connect to 30+ services and automate your workflows with AI Workers
                     </p>
                 </div>
@@ -824,68 +860,68 @@
     </div>
 
     <template id="tpl-serverless">
-        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50">
+        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="max-w-4xl mx-auto text-center mb-16">
-                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8 text-gray-900 dark:text-slate-50">
                         Serverless <span class="text-gradient">Architecture</span>
                     </h1>
-                    <p class="text-xl text-gray-600 max-w-3xl mx-auto">
+                    <p class="text-xl text-gray-600 dark:text-purple-200 max-w-3xl mx-auto">
                         WebSuite is built entirely on Cloudflare Workers, providing a global, high-performance, and secure foundation for your content.
                     </p>
                 </div>
             </div>
         </section>
 
-        <section class="py-20 bg-white">
+        <section class="py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="text-center mb-16">
-                    <h2 class="text-3xl font-bold mb-4">Why Serverless?</h2>
-                    <p class="text-xl text-gray-600 max-w-2xl mx-auto">
+                    <h2 class="text-3xl font-bold mb-4 text-gray-900 dark:text-slate-50">Why Serverless?</h2>
+                    <p class="text-xl text-gray-600 dark:text-purple-200 max-w-2xl mx-auto">
                         Built on Cloudflare's edge network for unmatched performance and scalability
                     </p>
                 </div>
 
                 <div class="grid grid-cols-1 md:grid-cols-2 gap-12 mb-20">
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-globe text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Edge Rendering</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Edge Rendering</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             Unlike traditional servers, our Worker runs on Cloudflare's global network.
                             Every request is handled by the data center closest to the user, ensuring near-zero latency.
                             HTML is generated dynamically at the edge, combining static templates with dynamic content.
                         </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-bolt text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Zero Cold Starts</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Zero Cold Starts</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             Cloudflare Workers run on V8 isolates, not containers. This means instant startup times
                             with no cold start delays. Your functions execute immediately, every time, anywhere in the world.
                         </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-rss text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Universal Feed Parser</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Universal Feed Parser</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             The Worker acts as a universal adapter. It fetches RSS feeds from Substack, YouTube, and
                             Podcast hosts,
                             parses the XML, and transforms it into a unified JSON structure.
                             This allows you to use any content source without changing your frontend code.
                         </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-code text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">HTMX Native</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">HTMX Native</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             The backend is aware of HTMX. When it detects an `HX-Request` header, it returns only the
                             necessary HTML fragment
                             (like a card or a list) instead of the full page. This creates a Single Page Application
@@ -893,12 +929,12 @@
                             without the complexity of client-side frameworks.
                         </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-database text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Smart Caching</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Smart Caching</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             To minimize latency and avoid hitting rate limits on external APIs, the Worker implements a
                             smart caching strategy.
                             Parsed feed data is cached using the Cache API and KV storage, ensuring that your site
@@ -906,12 +942,12 @@
                             even if the source feeds are slow or down.
                         </p>
                     </div>
-                    <div class="bg-gray-50 p-8 rounded-xl border border-gray-200 hover:border-purple-500 transition-all">
+                    <div class="bg-gray-50 dark:bg-slate-900 p-8 rounded-xl border border-gray-200 dark:border-slate-700 hover:border-purple-500 transition-all">
                         <div class="w-12 h-12 bg-purple-100 rounded-lg flex items-center justify-center mb-6">
                             <i class="fas fa-dollar-sign text-2xl text-purple-500"></i>
                         </div>
-                        <h3 class="text-2xl font-bold mb-4">Cost Effective</h3>
-                        <p class="text-gray-600 leading-relaxed">
+                        <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Cost Effective</h3>
+                        <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
                             Pay only for what you use. No idle server costs, no infrastructure management.
                             Cloudflare Workers free tier includes 100,000 requests per day, perfect for most projects.
                             Scale automatically without worrying about server capacity.
@@ -957,7 +993,7 @@ export default {
         </section>
 
         <!-- CTA Section -->
-        <section class="py-20 gradient-purple">
+        <section class="py-20 gradient-purple dark:from-slate-900 dark:to-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="max-w-3xl mx-auto text-center">
                     <h2 class="text-3xl md:text-4xl font-bold text-white mb-4">Ready to Go Serverless?</h2>
@@ -975,13 +1011,13 @@ export default {
 
     <!-- Components Page Template -->
     <template id="tpl-components">
-        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50">
+        <section class="pt-20 pb-12 bg-gradient-to-b from-white to-gray-50 dark:from-slate-950 dark:via-slate-900 dark:to-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="max-w-4xl mx-auto text-center">
-                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8">
+                    <h1 class="text-5xl md:text-7xl font-extrabold leading-tight mb-8 text-gray-900 dark:text-slate-50">
                         WebSuite <span class="text-gradient">Components</span>
                     </h1>
-                    <p class="text-xl text-gray-600 mb-8 max-w-2xl mx-auto">
+                    <p class="text-xl text-gray-600 dark:text-purple-200 mb-8 max-w-2xl mx-auto">
                         Three powerful components working together to give you everything you need for modern web development.
                     </p>
                 </div>
@@ -989,7 +1025,7 @@ export default {
         </section>
 
         <!-- Detailed Components -->
-        <section class="py-20 bg-white">
+        <section class="py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
             <div class="container mx-auto px-6">
                 <div class="max-w-6xl mx-auto space-y-20">
                     <!-- CMS Detail -->
