@@ -86,7 +86,7 @@ export function generatePostCards(fullTemplate, posts) {
         cardsHtml += replacePlaceholders(cardTpl, {
             title: post.title,
             description: post.description ? post.description.substring(0, 120) + '...' : '',
-            author: post.author || 'Inconnu',
+            author: post.author || defaultAuthor,
             date: postDate,
             image: post.image || 'https://via.placeholder.com/600x400/edf2f7/4a5568?text=Image+Article',
             slug: post.slug,
@@ -426,7 +426,10 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
             // Si l'API retourne un tableau (même vide), on génère le contenu
             if (Array.isArray(items)) {
                 // Le générateur cherche automatiquement le bon template dans le HTML
-                const content = apiConfig.generator(fullTemplate, items);
+                // Passer siteConfig pour l'auteur par défaut
+                const content = contentType === 'posts'
+                    ? generatePublicationsContent(fullTemplate, items, siteConfig)
+                    : apiConfig.generator(fullTemplate, items);
                 
                 // Si le contenu généré contient encore {{items}}, c'est qu'aucun template n'a été trouvé
                 // Dans ce cas, on retourne null pour laisser le catch-all gérer
@@ -553,7 +556,8 @@ export function generateHomeContent(fullTemplate, metadata) {
 /**
  * Génère le contenu de la page des publications/articles
  */
-export function generatePublicationsContent(fullTemplate, posts) {
+export function generatePublicationsContent(fullTemplate, posts, siteConfig = {}) {
+    const defaultAuthor = siteConfig?.author || siteConfig?.site?.author || 'Admin';
     // Cherche automatiquement un template de liste pour les articles
     // Essaie plusieurs noms possibles pour être générique
     let listTpl = extractTemplate(fullTemplate, 'tpl-announcements') || 
@@ -599,7 +603,7 @@ export function generatePublicationsContent(fullTemplate, posts) {
             let cardHtml = replacePlaceholders(cardTpl, {
                 title: post.title,
                 description: post.description ? post.description.substring(0, 120) + '...' : '',
-                author: post.author || 'Inconnu',
+                author: post.author || defaultAuthor,
                 date: postDate,
                 image: post.image || 'https://via.placeholder.com/600x400/edf2f7/4a5568?text=Image+Article',
                 slug: post.slug,
@@ -781,15 +785,16 @@ export function generateVideoDetailContent(fullTemplate, video, currentUrl = '')
 /**
  * Génère le contenu de détail d'un article
  */
-export function generatePostContent(fullTemplate, post, currentUrl = '') {
+export function generatePostContent(fullTemplate, post, currentUrl = '', siteConfig = {}) {
     const tpl = extractTemplate(fullTemplate, 'tpl-post-detail');
     if (!tpl) return "<p>Template 'tpl-post-detail' not found.</p>";
 
     const postDate = new Date(post.pubDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    const defaultAuthor = siteConfig?.author || siteConfig?.site?.author || 'Admin';
 
     return replacePlaceholders(tpl, {
         title: post.title,
-        author: post.author || 'Inconnu',
+        author: post.author || defaultAuthor,
         date: postDate,
         image: post.image || 'https://via.placeholder.com/800x400/edf2f7/4a5568?text=Image+de+Couverture',
         content: post.content,
