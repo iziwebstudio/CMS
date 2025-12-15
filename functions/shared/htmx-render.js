@@ -289,36 +289,11 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
     const siteDescription = siteConfig?.seo?.metaDescription || "";
     const siteKeywords = siteConfig?.seo?.keywords || "";
     
-    // Détecter le type de contenu attendu en fonction du slug
-    // STRICT : On n'utilise les APIs que si la route correspond explicitement à un type de contenu
-    // Sinon, on retourne null pour laisser le catch-all gérer les pages statiques
-    const slugLower = slug.toLowerCase();
-    let contentType = null;
-    
-    // Routes explicites pour les vidéos
-    if (slugLower === 'videos' || slugLower === 'tutorials' || slugLower === 'video' || slugLower === 'tutorial') {
-        contentType = 'videos';
-    }
-    // Routes explicites pour les articles
-    else if (slugLower === 'posts' || slugLower === 'articles' || slugLower === 'announcements' || 
-             slugLower === 'publications' || slugLower === 'post' || slugLower === 'article' || 
-             slugLower === 'announcement' || slugLower === 'publication') {
-        contentType = 'posts';
-    }
-    // Routes explicites pour les podcasts
-    else if (slugLower === 'podcasts' || slugLower === 'podcast') {
-        contentType = 'podcasts';
-    }
-    
-    // Si aucune route de contenu n'est détectée, retourner null pour laisser le catch-all gérer
-    if (!contentType) {
-        return null;
-    }
-    
     // ====================================================================
-    // DÉTECTION DES ROUTES DE DÉTAIL (item unique)
+    // DÉTECTION DES ROUTES DE DÉTAIL (item unique) - PRIORITAIRE
     // ====================================================================
     // Détecte automatiquement les patterns : /post/[slug], /video/[id], /podcast/[id]
+    // Cette détection doit être AVANT la détection des routes de liste
     const detailPatterns = [
         { 
             pattern: /^post\/(.+)$/, 
@@ -377,13 +352,43 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
                 }
             } catch (error) {
                 console.error(`Error loading ${type}:`, error);
+                // En cas d'erreur, continuer pour essayer les autres patterns
             }
         }
     }
     
+    // Si on arrive ici, aucune route de détail n'a été trouvée
+    // Passer à la détection des routes de liste
+    
     // ====================================================================
     // DÉTECTION DES ROUTES DE LISTE (collections)
     // ====================================================================
+    // Détecter le type de contenu attendu en fonction du slug
+    // STRICT : On n'utilise les APIs que si la route correspond explicitement à un type de contenu
+    // Sinon, on retourne null pour laisser le catch-all gérer les pages statiques
+    const slugLower = slug.toLowerCase();
+    let contentType = null;
+    
+    // Routes explicites pour les vidéos
+    if (slugLower === 'videos' || slugLower === 'tutorials' || slugLower === 'video' || slugLower === 'tutorial') {
+        contentType = 'videos';
+    }
+    // Routes explicites pour les articles
+    else if (slugLower === 'posts' || slugLower === 'articles' || slugLower === 'announcements' || 
+             slugLower === 'publications' || slugLower === 'post' || slugLower === 'article' || 
+             slugLower === 'announcement' || slugLower === 'publication') {
+        contentType = 'posts';
+    }
+    // Routes explicites pour les podcasts
+    else if (slugLower === 'podcasts' || slugLower === 'podcast') {
+        contentType = 'podcasts';
+    }
+    
+    // Si aucune route de contenu n'est détectée, retourner null pour laisser le catch-all gérer
+    if (!contentType) {
+        return null;
+    }
+    
     // On utilise SEULEMENT l'API correspondant au type détecté
     // Pas de test de toutes les APIs, on est strict
     const apiMap = {
@@ -763,6 +768,7 @@ export function generateVideoDetailContent(fullTemplate, video, currentUrl = '')
 
     return replacePlaceholders(detailTpl, {
         title: video.title,
+        date: videoDate,  // Le template utilise {{date}} pas {{published}}
         published: videoDate,
         description: video.description || 'Aucune description disponible.',
         embedUrl: embedUrl,
