@@ -181,7 +181,7 @@ export function htmxResponse(request, htmlGenerator, jsonGenerator, data, metada
  * });
  * if (htmxCatchAll) return htmxCatchAll;
  */
-export function handleHtmxCatchAll(request, path, fullTemplate, siteConfig = {}, fallbackHandler = null) {
+export async function handleHtmxCatchAll(request, path, fullTemplate, siteConfig = {}, fallbackHandler = null, env = null) {
     // Ne traite que les requêtes HTMX
     if (!isHtmxRequest(request)) {
         return null;
@@ -204,6 +204,63 @@ export function handleHtmxCatchAll(request, path, fullTemplate, siteConfig = {},
     // Ex: "/ma-page" -> "ma-page" -> "tpl-ma-page"
     const slug = path.substring(1).replace(/\/$/, ''); // Enlever le slash initial et final
     const tplId = `tpl-${slug}`;
+
+    // Routes spéciales nécessitant des données dynamiques
+    if (slug === 'announcements' || slug === 'publications') {
+        try {
+            // Récupérer les articles depuis l'API
+            const apiUrl = new URL('/api/posts', request.url);
+            const postsResponse = await fetch(apiUrl.toString());
+            const posts = postsResponse.ok ? await postsResponse.json() : [];
+            
+            // Générer le contenu avec les données réelles
+            const content = generatePublicationsContent(fullTemplate, posts);
+            
+            // Générer les métadonnées
+            const siteName = siteConfig?.site?.name || "WebSuite";
+            const siteDescription = siteConfig?.seo?.metaDescription || "";
+            const metadata = {
+                title: `Announcements - ${siteName}`,
+                description: siteDescription,
+                keywords: siteConfig?.seo?.keywords || "",
+                siteName: siteName
+            };
+            
+            const oob = generateOOB(metadata, request);
+            return htmlResponse(content + oob);
+        } catch (error) {
+            console.error('Error loading announcements:', error);
+            // Fallback sur le template brut si erreur
+        }
+    }
+    
+    if (slug === 'tutorials' || slug === 'videos') {
+        try {
+            // Récupérer les vidéos depuis l'API
+            const apiUrl = new URL('/api/videos', request.url);
+            const videosResponse = await fetch(apiUrl.toString());
+            const videos = videosResponse.ok ? await videosResponse.json() : [];
+            
+            // Générer le contenu avec les données réelles
+            const content = generateVideosContent(fullTemplate, videos);
+            
+            // Générer les métadonnées
+            const siteName = siteConfig?.site?.name || "WebSuite";
+            const siteDescription = siteConfig?.seo?.metaDescription || "";
+            const metadata = {
+                title: `Video Tutorials - ${siteName}`,
+                description: siteDescription,
+                keywords: siteConfig?.seo?.keywords || "",
+                siteName: siteName
+            };
+            
+            const oob = generateOOB(metadata, request);
+            return htmlResponse(content + oob);
+        } catch (error) {
+            console.error('Error loading videos:', error);
+            // Fallback sur le template brut si erreur
+        }
+    }
 
     // Chercher le template correspondant
     const templateContent = extractTemplate(fullTemplate, tplId);
@@ -279,7 +336,7 @@ export function generateHomeContent(fullTemplate, metadata) {
  * Génère le contenu de la page des publications/articles
  */
 export function generatePublicationsContent(fullTemplate, posts) {
-    let listTpl = extractTemplate(fullTemplate, 'tpl-annoucements') || extractTemplate(fullTemplate, 'tpl-blog-list');
+    let listTpl = extractTemplate(fullTemplate, 'tpl-announcements') || extractTemplate(fullTemplate, 'tpl-blog-list');
     let cardTpl = extractTemplate(fullTemplate, 'tpl-blog-card');
 
     // FALLBACKS for Modern/AI Themes

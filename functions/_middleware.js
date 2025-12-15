@@ -182,7 +182,7 @@ export async function onRequest(context) {
                 }
                 
                 // Utiliser handleHtmxCatchAll pour les autres routes
-                const content = handleHtmxCatchAll(request, path, templateHtml, siteConfig);
+                const content = await handleHtmxCatchAll(request, path, templateHtml, siteConfig, null, env);
                 if (content) {
                     return content;
                 }
@@ -239,7 +239,7 @@ export async function onRequest(context) {
                 
                 // Utiliser handleHtmxCatchAll pour générer le contenu HTMX
                 // avec le template du cache au lieu de frontend/index.html
-                const content = handleHtmxCatchAll(request, url.pathname, templateHtml, {});
+                const content = await handleHtmxCatchAll(request, url.pathname, templateHtml, {}, null, env);
                 if (content) {
                     return htmlResponse(content);
                 }
@@ -517,7 +517,7 @@ export async function onRequest(context) {
         }
         
         // Utiliser handleHtmxCatchAll pour les requêtes HTMX (gère toutes les routes dynamiquement)
-        const htmxCatchAll = handleHtmxCatchAll(request, path, template, siteConfig);
+        const htmxCatchAll = await handleHtmxCatchAll(request, path, template, siteConfig, null, env);
         if (htmxCatchAll) {
             // handleHtmxCatchAll retourne déjà un 404 si la page n'existe pas
             return htmxCatchAll;
@@ -532,6 +532,48 @@ export async function onRequest(context) {
             path !== '/index.html') {
             
             const slug = path.substring(1).replace(/\/$/, '');
+            
+            // Routes spéciales nécessitant des données dynamiques
+            if (slug === 'announcements' || slug === 'publications') {
+                try {
+                    const apiUrl = new URL('/api/posts', request.url);
+                    const postsResponse = await fetch(apiUrl.toString());
+                    const posts = postsResponse.ok ? await postsResponse.json() : [];
+                    
+                    const content = generatePublicationsContent(template, posts);
+                    const metadata = {
+                        title: `Announcements - ${siteName}`,
+                        description: siteDescription,
+                        keywords: siteKeywords,
+                        siteName: siteName
+                    };
+                    
+                    return htmlResponse(injectContent(template, content, metadata));
+                } catch (error) {
+                    console.error('Error loading announcements:', error);
+                }
+            }
+            
+            if (slug === 'tutorials' || slug === 'videos') {
+                try {
+                    const apiUrl = new URL('/api/videos', request.url);
+                    const videosResponse = await fetch(apiUrl.toString());
+                    const videos = videosResponse.ok ? await videosResponse.json() : [];
+                    
+                    const content = generateVideosContent(template, videos);
+                    const metadata = {
+                        title: `Video Tutorials - ${siteName}`,
+                        description: siteDescription,
+                        keywords: siteKeywords,
+                        siteName: siteName
+                    };
+                    
+                    return htmlResponse(injectContent(template, content, metadata));
+                } catch (error) {
+                    console.error('Error loading videos:', error);
+                }
+            }
+            
             const tplId = `tpl-${slug}`;
             const tplContent = extractTemplate(template, tplId);
             
