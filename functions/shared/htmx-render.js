@@ -289,6 +289,21 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
     const siteDescription = siteConfig?.seo?.metaDescription || "";
     const siteKeywords = siteConfig?.seo?.keywords || "";
     
+    // Détecter le type de contenu attendu en fonction du slug
+    // Cela permet d'utiliser la bonne API même si plusieurs APIs retournent des données
+    const slugLower = slug.toLowerCase();
+    let preferredContentType = null;
+    
+    if (slugLower.includes('video') || slugLower.includes('tutorial') || slugLower === 'videos' || slugLower === 'tutorials') {
+        preferredContentType = 'videos';
+    } else if (slugLower.includes('post') || slugLower.includes('article') || slugLower.includes('announcement') || 
+               slugLower.includes('publication') || slugLower === 'posts' || slugLower === 'articles' || 
+               slugLower === 'announcements' || slugLower === 'publications') {
+        preferredContentType = 'posts';
+    } else if (slugLower.includes('podcast')) {
+        preferredContentType = 'podcasts';
+    }
+    
     // ====================================================================
     // DÉTECTION DES ROUTES DE DÉTAIL (item unique)
     // ====================================================================
@@ -358,37 +373,52 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
     // ====================================================================
     // DÉTECTION DES ROUTES DE LISTE (collections)
     // ====================================================================
-    // Essaie intelligemment de détecter quelle API correspond à cette route
-    // en testant les APIs disponibles et en utilisant celle qui retourne des données
+    // Détecte intelligemment quelle API correspond à cette route
+    // en utilisant d'abord le type préféré détecté, puis en essayant les autres
     const listApis = [
         { 
             api: '/api/posts', 
             generator: generatePublicationsContent, 
             type: 'posts', 
-            title: 'Articles',
-            // Cherche des templates avec des noms variés
-            templateIds: ['tpl-announcements', 'tpl-publications', 'tpl-blog-list', 'tpl-posts', 'tpl-articles']
+            title: 'Articles'
         },
         { 
             api: '/api/videos', 
             generator: generateVideosContent, 
             type: 'videos', 
-            title: 'Vidéos',
-            templateIds: ['tpl-tutorials', 'tpl-videos', 'tpl-video-list']
+            title: 'Vidéos'
         },
         { 
             api: '/api/podcasts', 
             generator: null, // TODO: créer generatePodcastsContent si nécessaire
             type: 'podcasts', 
-            title: 'Podcasts',
-            templateIds: ['tpl-podcasts', 'tpl-podcast-list']
+            title: 'Podcasts'
         }
     ];
     
-    // Pour chaque API, on vérifie si elle retourne des données
+    // Réorganiser les APIs pour prioriser le type de contenu détecté
+    let orderedApis = [...listApis];
+    if (preferredContentType) {
+        const preferredIndex = orderedApis.findIndex(api => api.type === preferredContentType);
+        if (preferredIndex > 0) {
+            // Déplacer l'API préférée en premier
+            const preferred = orderedApis.splice(preferredIndex, 1)[0];
+            orderedApis.unshift(preferred);
+        }
+    }
+    
+    // Pour chaque API (en commençant par celle préférée), on vérifie si elle retourne des données
     // Si oui, on génère le contenu avec le template disponible (quel que soit son nom)
-    for (const { api, generator, type, title } of listApis) {
+    for (const { api, generator, type, title } of orderedApis) {
         if (!generator) continue;
+        
+        // Si on a un type préféré et que ce n'est pas celui-ci, on skip cette API
+        // (sauf si on a déjà essayé le type préféré et qu'il n'a pas fonctionné)
+        if (preferredContentType && type !== preferredContentType) {
+            // On skip seulement si on est sûr que le type préféré devrait être utilisé
+            // Pour l'instant, on essaie quand même toutes les APIs pour être sûr
+            // mais on priorise le résultat du type préféré
+        }
         
         try {
             const apiUrl = new URL(api, request.url);
@@ -402,16 +432,36 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
                     const content = generator(fullTemplate, items);
                     
                     // Si le contenu généré contient encore {{items}}, c'est qu'aucun template n'a été trouvé
-                    // Dans ce cas, on ne retourne pas ce résultat
+                    // Dans ce cas, on ne retourne pas ce résultat et on essaie la prochaine API
                     if (content && !content.includes('{{items}}')) {
-                        const metadata = {
-                            title: `${title} - ${siteName}`,
-                            description: siteDescription,
-                            keywords: siteKeywords,
-                            siteName: siteName
-                        };
-                        
-                        return { content, metadata };
+                        // Si on a un type préféré, on retourne immédiatement si c'est le bon type
+                        // Sinon, on continue pour voir si on trouve mieux
+                        if (preferredContentType) {
+                            if (type === preferredContentType) {
+                                // C'est le bon type, on retourne immédiatement
+                                const metadata = {
+                                    title: `${title} - ${siteName}`,
+                                    description: siteDescription,
+                                    keywords: siteKeywords,
+                                    siteName: siteName
+                                };
+                                
+                                return { content, metadata };
+                            } else {
+                                // Ce n'est pas le bon type, on continue pour trouver le bon
+                                continue;
+                            }
+                        } else {
+                            // Pas de type préféré, on retourne le premier résultat valide
+                            const metadata = {
+                                title: `${title} - ${siteName}`,
+                                description: siteDescription,
+                                keywords: siteKeywords,
+                                siteName: siteName
+                            };
+                            
+                            return { content, metadata };
+                        }
                     }
                 }
             }
