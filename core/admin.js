@@ -312,13 +312,17 @@ async function loadConfig() {
         if (builderBtn) {
             if (config.frontendBuilderUrl) {
                 builderBtn.href = config.frontendBuilderUrl;
+                builderBtn.setAttribute('target', '_blank');
                 builderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                builderBtn.querySelector('span').textContent = "Ouvrir le Builder";
+                builderBtn.onclick = null; // Remove any previous onclick handler
             } else {
-                builderBtn.href = "#";
-                builderBtn.removeAttribute('target');
-                builderBtn.classList.add('opacity-50', 'cursor-not-allowed');
-                builderBtn.querySelector('span').textContent = "Builder non configuré";
-                builderBtn.onclick = (e) => { e.preventDefault(); alert("Veuillez configurer FRONTEND_BUILDER_URL"); };
+                // Point vers la page de paiement Stripe pour Webstudio Builder Pro
+                builderBtn.href = "https://buy.stripe.com/7sYbIU6zj3tc87Lc5edMI0e"; // URL à ajuster selon votre page Stripe
+                builderBtn.setAttribute('target', '_blank');
+                builderBtn.classList.remove('opacity-50', 'cursor-not-allowed');
+                builderBtn.querySelector('span').textContent = "Obtenir Webstudio Builder Pro";
+                builderBtn.onclick = null; // Remove any previous onclick handler
             }
         }
 
