@@ -177,6 +177,33 @@
         .dark a.nav-active.mega-menu-card {
             background-color: rgba(88, 28, 135, 0.3) !important; /* purple-900/30 */
         }
+
+        /* Transitions fluides pour le contenu principal */
+        #main-content {
+            transition: opacity 0.25s ease-in-out;
+            opacity: 1;
+        }
+
+        /* Animation fade-out lors du swap */
+        #main-content.page-transitioning {
+            opacity: 0;
+        }
+
+        /* Animation d'entrée pour le nouveau contenu */
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(15px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        #main-content > * {
+            animation: fadeInUp 0.35s ease-out;
+        }
     </style>
 </head>
 
@@ -2412,20 +2439,72 @@ export default {
             updateActiveNav();
         }
 
+        // Fonction pour scroller vers le haut de manière fluide
+        function scrollToTop() {
+            window.scrollTo({
+                top: 0,
+                behavior: 'smooth'
+            });
+        }
+
+        const mainContent = document.getElementById('main-content');
+
+        // Gérer les transitions fluides entre les pages
+        document.body.addEventListener('htmx:beforeSwap', function() {
+            // Ajouter la classe de transition avant le swap
+            if (mainContent) {
+                mainContent.classList.add('page-transitioning');
+            }
+        });
+
+        // Retirer la classe de transition si la requête échoue
+        document.body.addEventListener('htmx:responseError', function() {
+            if (mainContent) {
+                mainContent.classList.remove('page-transitioning');
+            }
+        });
+
+        document.body.addEventListener('htmx:sendError', function() {
+            if (mainContent) {
+                mainContent.classList.remove('page-transitioning');
+            }
+        });
+
         // Mettre à jour après chaque navigation HTMX
         document.body.addEventListener('htmx:afterSwap', function() {
+            // Retirer la classe de transition et réinitialiser l'opacité
+            if (mainContent) {
+                mainContent.classList.remove('page-transitioning');
+                // Forcer un reflow pour que l'animation fonctionne
+                void mainContent.offsetWidth;
+            }
             setTimeout(updateActiveNav, 50);
+            // Scroller vers le haut après le swap
+            setTimeout(scrollToTop, 100);
         });
         
         document.body.addEventListener('htmx:historyRestore', function() {
             setTimeout(updateActiveNav, 50);
+            // Scroller vers le haut lors de la restauration de l'historique
+            setTimeout(scrollToTop, 100);
         });
 
         // Mettre à jour lors des changements d'URL (navigation navigateur)
-        window.addEventListener('popstate', updateActiveNav);
+        window.addEventListener('popstate', function() {
+            updateActiveNav();
+            setTimeout(scrollToTop, 100);
+        });
         
         // Écouter aussi les changements d'URL via HTMX
-        document.body.addEventListener('htmx:pushedIntoHistory', updateActiveNav);
+        document.body.addEventListener('htmx:pushedIntoHistory', function() {
+            updateActiveNav();
+            setTimeout(scrollToTop, 100);
+        });
+
+        // Scroller vers le haut au chargement initial si on n'est pas déjà en haut
+        if (window.scrollY > 0) {
+            scrollToTop();
+        }
     </script>
     
     <!-- GTranslate Widget -->
