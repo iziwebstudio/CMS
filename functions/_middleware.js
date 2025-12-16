@@ -450,9 +450,9 @@ export async function onRequest(context) {
         if (url.pathname.includes('.') && 
             !url.pathname.endsWith('.html') && 
             !url.pathname.startsWith('/frontend/')) {
-            return env.ASSETS.fetch(request);
-        }
-        
+        return env.ASSETS.fetch(request);
+    }
+
         // Charger le template frontend/index.html
         const template = await loadFrontendTemplate();
         
@@ -716,61 +716,61 @@ export async function onRequest(context) {
 
     // Si WSTD_STAGING_URL est défini, proxy vers Webstudio
     if (WSTD_STAGING_URL) {
-        try {
-            // Construire l'URL Webstudio
-            const webstudioUrl = new URL(url.pathname + url.search, WSTD_STAGING_URL);
+    try {
+        // Construire l'URL Webstudio
+        const webstudioUrl = new URL(url.pathname + url.search, WSTD_STAGING_URL);
 
-            // Créer de nouveaux headers sans Referer/Origin du worker
-            const proxyHeaders = new Headers(request.headers);
-            proxyHeaders.delete('referer');
-            proxyHeaders.delete('origin');
-            proxyHeaders.set('host', new URL(WSTD_STAGING_URL).hostname);
+        // Créer de nouveaux headers sans Referer/Origin du worker
+        const proxyHeaders = new Headers(request.headers);
+        proxyHeaders.delete('referer');
+        proxyHeaders.delete('origin');
+        proxyHeaders.set('host', new URL(WSTD_STAGING_URL).hostname);
 
-            // Créer une nouvelle requête vers Webstudio
-            const webstudioRequest = new Request(webstudioUrl, {
-                method: request.method,
-                headers: proxyHeaders,
-                body: request.body,
-                redirect: 'follow'
-            });
+        // Créer une nouvelle requête vers Webstudio
+        const webstudioRequest = new Request(webstudioUrl, {
+            method: request.method,
+            headers: proxyHeaders,
+            body: request.body,
+            redirect: 'follow'
+        });
 
-            // Fetch depuis Webstudio
-            const webstudioResponse = await fetch(webstudioRequest);
+        // Fetch depuis Webstudio
+        const webstudioResponse = await fetch(webstudioRequest);
 
-            // Créer de nouveaux headers avec CORS ajoutés
-            const newHeaders = new Headers(webstudioResponse.headers);
+        // Créer de nouveaux headers avec CORS ajoutés
+        const newHeaders = new Headers(webstudioResponse.headers);
 
-            // Ajouter les headers CORS pour permettre le chargement cross-origin
-            newHeaders.set('Access-Control-Allow-Origin', '*');
-            newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
-            newHeaders.set('Access-Control-Allow-Headers', 'Content-Type, X-Auth-Key');
+        // Ajouter les headers CORS pour permettre le chargement cross-origin
+        newHeaders.set('Access-Control-Allow-Origin', '*');
+        newHeaders.set('Access-Control-Allow-Methods', 'GET, POST, OPTIONS');
+        newHeaders.set('Access-Control-Allow-Headers', 'Content-Type, X-Auth-Key');
 
-            // Content Security Policy : autoriser images de TOUTES sources
-            newHeaders.set('Content-Security-Policy',
-                "default-src 'self'; " +
-                "img-src * data: blob: 'unsafe-inline'; " +  // Toutes les images OK
-                "media-src * data: blob:; " +                 // Toutes les vidéos OK
-                "font-src * data:; " +                        // Toutes les polices OK
-                "style-src 'self' 'unsafe-inline' *; " +     // Tous les styles OK
-                "script-src 'self' 'unsafe-inline' 'unsafe-eval' *; " + // Scripts OK
-                "connect-src *; " +                           // Fetch/XHR vers toutes sources
-                "frame-src *;"                                // iframes OK
-            );
+        // Content Security Policy : autoriser images de TOUTES sources
+        newHeaders.set('Content-Security-Policy',
+            "default-src 'self'; " +
+            "img-src * data: blob: 'unsafe-inline'; " +  // Toutes les images OK
+            "media-src * data: blob:; " +                 // Toutes les vidéos OK
+            "font-src * data:; " +                        // Toutes les polices OK
+            "style-src 'self' 'unsafe-inline' *; " +     // Tous les styles OK
+            "script-src 'self' 'unsafe-inline' 'unsafe-eval' *; " + // Scripts OK
+            "connect-src *; " +                           // Fetch/XHR vers toutes sources
+            "frame-src *;"                                // iframes OK
+        );
 
-            // Supprimer le CSP restrictif existant si présent
-            newHeaders.delete('X-Content-Security-Policy');
-            newHeaders.delete('X-WebKit-CSP');
+        // Supprimer le CSP restrictif existant si présent
+        newHeaders.delete('X-Content-Security-Policy');
+        newHeaders.delete('X-WebKit-CSP');
 
-            // Pour TOUS les types de contenu (HTML, images, CSS, JS, etc.)
-            // Retourner avec headers CORS
-            return new Response(webstudioResponse.body, {
-                status: webstudioResponse.status,
-                statusText: webstudioResponse.statusText,
-                headers: newHeaders
-            });
+        // Pour TOUS les types de contenu (HTML, images, CSS, JS, etc.)
+        // Retourner avec headers CORS
+        return new Response(webstudioResponse.body, {
+            status: webstudioResponse.status,
+            statusText: webstudioResponse.statusText,
+            headers: newHeaders
+        });
 
-        } catch (error) {
-            console.error('Erreur proxy Webstudio:', error);
+    } catch (error) {
+        console.error('Erreur proxy Webstudio:', error);
             // En cas d'erreur avec Webstudio, retourner une erreur plutôt que de servir index.html racine
             return new Response(
                 `Webstudio proxy error: ${error.message}\n` +

@@ -3060,6 +3060,8 @@ export default {
                 });
             });
             
+            const processedElements = new Set();
+            
             allElements.forEach(element => {
                 // Ignorer si dans la liste d'exclusion
                 if (excludeElements.has(element)) return;
@@ -3074,28 +3076,52 @@ export default {
                 // Ignorer si c'est déjà traduit (a l'attribut data-translated)
                 if (element.hasAttribute('data-translated')) return;
                 
-                // Récupérer le texte complet de l'élément
-                const text = element.textContent ? element.textContent.trim() : '';
+                // Ignorer si un parent est déjà dans la liste à traduire (éviter les doublons)
+                let hasParentInList = false;
+                let checkParent = element.parentElement;
+                while (checkParent && checkParent !== document.body) {
+                    if (processedElements.has(checkParent)) {
+                        hasParentInList = true;
+                        break;
+                    }
+                    checkParent = checkParent.parentElement;
+                }
+                if (hasParentInList) return;
+                
+                // Récupérer le texte direct (sans les enfants)
+                const directText = getDirectText(element);
+                
+                // Vérifier si l'élément a des enfants avec du texte significatif
+                const hasTextChildren = Array.from(element.children).some(child => {
+                    const childText = child.textContent ? child.textContent.trim() : '';
+                    return childText.length > 3 && !isUrlOrCode(childText) && !/^\d+$/.test(childText);
+                });
+                
+                // Si l'élément a des enfants avec du texte, on ne traduit que le texte direct
+                // Sinon, on traduit le texte complet
+                const textToTranslate = hasTextChildren ? directText : (element.textContent ? element.textContent.trim() : '');
                 
                 // Ignorer si pas de texte ou seulement des espaces
-                if (!text || text.length === 0) return;
+                if (!textToTranslate || textToTranslate.length === 0) return;
                 
                 // Ignorer si c'est une URL, email, ou code
-                if (isUrlOrCode(text)) return;
+                if (isUrlOrCode(textToTranslate)) return;
                 
                 // Ignorer si c'est un nombre seul
-                if (/^\d+$/.test(text)) return;
+                if (/^\d+$/.test(textToTranslate)) return;
                 
                 // Ignorer les textes trop courts (probablement des icônes ou symboles)
-                if (text.length < 2) return;
+                if (textToTranslate.length < 3) return;
                 
                 // Ignorer si le texte contient seulement des caractères spéciaux
-                if (/^[^\w\s]+$/.test(text)) return;
+                if (/^[^\w\s]+$/.test(textToTranslate)) return;
                 
                 elementsToTranslate.push({
                     element: element,
-                    text: text
+                    text: textToTranslate,
+                    isDirectText: hasTextChildren
                 });
+                processedElements.add(element);
             });
             
             return elementsToTranslate;
@@ -3210,12 +3236,39 @@ export default {
                 elementsToTranslate = elementsToTranslate.slice(0, MAX_ELEMENTS);
             }
             
-            // Traduire séquentiellement (un par un) pour respecter les rate limits
+            // Sauvegarder les textes originaux et préparer les traductions
+            const translations = [];
+            
+            // Étape 1: Sauvegarder tous les textes originaux et préparer les requêtes
+            for (const { element, text, isDirectText } of elementsToTranslate) {
+                let originalText = element.getAttribute('data-original-text');
+                if (!originalText) {
+                    originalText = text;
+                    element.setAttribute('data-original-text', originalText);
+                }
+                
+                translations.push({
+                    element,
+                    originalText,
+                    isDirectText,
+                    translated: null
+                });
+            }
+            
+            // Étape 2: Traduire tous les textes en batch (avec délais pour respecter les rate limits)
             let successCount = 0;
             let errorCount = 0;
             let rateLimitHit = false;
             
-            for (const { element, text } of elementsToTranslate) {
+            // Masquer visuellement les éléments pendant la traduction
+            translations.forEach(({ element }) => {
+                element.style.opacity = '0.5';
+                element.style.transition = 'opacity 0.3s';
+            });
+            
+            for (let i = 0; i < translations.length; i++) {
+                const translation = translations[i];
+                
                 // Arrêter si on a atteint le rate limit
                 if (rateLimitHit) {
                     console.warn('[Translation] Rate limit reached, stopping translation');
@@ -3223,117 +3276,115 @@ export default {
                 }
                 
                 try {
-                        // Vérifier si on a déjà le texte original sauvegardé
-                        let originalText = element.getAttribute('data-original-text');
-                        if (!originalText) {
-                            originalText = text;
-                            element.setAttribute('data-original-text', originalText);
-                        }
-                        
-                        // Traduire
-                        const translated = await translateText(originalText, targetLang);
-                        
-                        // Remplacer le texte si traduit
-                        if (translated && translated !== originalText) {
-                            // Sauvegarder la structure HTML si elle existe
-                            const hasHtmlChildren = element.children.length > 0;
-                            
-                            if (hasHtmlChildren) {
-                                // Pour les éléments avec enfants HTML, remplacer seulement les nœuds texte
-                                // en gardant la structure HTML intacte
-                                const walker = document.createTreeWalker(
-                                    element,
-                                    NodeFilter.SHOW_TEXT,
-                                    null,
-                                    false
-                                );
-                                
-                                let node;
-                                let replaced = false;
-                                while (node = walker.nextNode()) {
-                                    if (node.textContent.trim() === originalText.trim()) {
-                                        node.textContent = translated;
-                                        replaced = true;
-                                        break;
-                                    }
-                                }
-                                
-                                // Si pas trouvé, remplacer le premier nœud texte
-                                if (!replaced) {
-                                    const firstTextNode = Array.from(element.childNodes).find(
-                                        n => n.nodeType === Node.TEXT_NODE && n.textContent.trim()
-                                    );
-                                    if (firstTextNode) {
-                                        firstTextNode.textContent = translated;
-                                    }
-                                }
-                            } else {
-                                // Si l'élément n'a pas d'enfants HTML, remplacer tout le contenu
-                                element.textContent = translated;
-                            }
-                            
-                            // Marquer comme traduit
-                            element.setAttribute('data-translated', 'true');
-                            successCount++;
-                        }
-                    } catch (error) {
-                        console.error('Error translating element:', error, element);
-                        errorCount++;
-                        
-                        // Si erreur 429 (rate limit), arrêter la traduction
-                        const errorMsg = error.message || error.toString() || '';
-                        if (errorMsg.includes('429') || errorMsg.includes('Rate limit')) {
-                            rateLimitHit = true;
-                            console.error('[Translation] Rate limit (429) reached. Stopping translation.');
-                            
-                            // Afficher un message discret au lieu d'une alerte
-                            const selector = document.getElementById('language-selector');
-                            if (selector) {
-                                const originalValue = selector.value;
-                                selector.value = currentLanguage; // Remettre la langue précédente
-                                
-                                // Afficher un message temporaire dans le footer
-                                showRateLimitMessage();
-                            }
-                            break;
-                        }
-                        // Continuer pour les autres erreurs
-                    }
+                    // Traduire
+                    const translated = await translateText(translation.originalText, targetLang);
                     
-                    // Délai entre chaque élément pour respecter les rate limits
-                    // DeepL gratuit: ~5 requêtes/seconde, donc on peut être plus rapide
-                    await new Promise(resolve => setTimeout(resolve, 500)); // 0.5 secondes entre chaque requête
+                    if (translated && translated !== translation.originalText) {
+                        translation.translated = translated;
+                        successCount++;
+                    }
+                } catch (error) {
+                    console.error('Error translating element:', error, translation.element);
+                    errorCount++;
+                    
+                    // Si erreur 429 (rate limit), arrêter la traduction
+                    const errorMsg = error.message || error.toString() || '';
+                    if (errorMsg.includes('429') || errorMsg.includes('Rate limit')) {
+                        rateLimitHit = true;
+                        console.error('[Translation] Rate limit (429) reached. Stopping translation.');
+                        
+                        // Afficher un message discret
+                        const selector = document.getElementById('language-selector');
+                        if (selector) {
+                            selector.value = currentLanguage;
+                            showRateLimitMessage();
+                        }
+                        break;
+                    }
                 }
                 
-            // Fonction pour afficher un message discret de rate limit
-            function showRateLimitMessage() {
-                    // Créer ou récupérer un élément de message
-                    let messageEl = document.getElementById('translation-rate-limit-message');
-                    if (!messageEl) {
-                        messageEl = document.createElement('div');
-                        messageEl.id = 'translation-rate-limit-message';
-                        messageEl.className = 'fixed bottom-4 right-4 bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
-                        messageEl.innerHTML = `
-                            <div class="flex items-center gap-2">
-                                <i class="fas fa-exclamation-triangle"></i>
-                                <span class="text-sm font-medium">Translation limit reached. Please try again in a few minutes.</span>
-                                <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
-                                    <i class="fas fa-times"></i>
-                                </button>
-                            </div>
-                        `;
-                        document.body.appendChild(messageEl);
-                        
-                        // Supprimer automatiquement après 10 secondes
-                        setTimeout(() => {
-                            if (messageEl && messageEl.parentElement) {
-                                messageEl.remove();
-                            }
-                        }, 10000);
-                    }
+                // Délai entre chaque requête pour respecter les rate limits
+                if (i < translations.length - 1) {
+                    await new Promise(resolve => setTimeout(resolve, 300));
                 }
+            }
+            
+            // Étape 3: Appliquer toutes les traductions d'un coup (en une seule opération)
+            // Utiliser requestAnimationFrame pour appliquer toutes les traductions simultanément
+            requestAnimationFrame(() => {
+                translations.forEach(({ element, originalText, translated, isDirectText }) => {
+                    // Restaurer l'opacité même si pas traduit
+                    if (!translated) {
+                        element.style.opacity = '1';
+                        return;
+                    }
+                    
+                    try {
+                        if (isDirectText) {
+                            // Pour les éléments avec enfants, remplacer seulement le texte direct
+                            // Chercher le premier nœud texte qui correspond
+                            const firstTextNode = Array.from(element.childNodes).find(
+                                n => n.nodeType === Node.TEXT_NODE && n.textContent.trim()
+                            );
+                            
+                            if (firstTextNode) {
+                                // Vérifier si le texte correspond
+                                const nodeText = firstTextNode.textContent.trim();
+                                if (nodeText === originalText.trim() || 
+                                    (originalText.includes(nodeText) && nodeText.length > 0)) {
+                                    firstTextNode.textContent = translated;
+                                } else {
+                                    // Si le texte ne correspond pas exactement, remplacer quand même
+                                    firstTextNode.textContent = translated;
+                                }
+                            }
+                        } else {
+                            // Si l'élément n'a pas d'enfants HTML, remplacer tout le contenu
+                            element.textContent = translated;
+                        }
+                        
+                        // Marquer comme traduit
+                        element.setAttribute('data-translated', 'true');
+                        
+                        // Restaurer l'opacité
+                        element.style.opacity = '1';
+                    } catch (error) {
+                        console.error('Error applying translation:', error, element);
+                        element.style.opacity = '1';
+                    }
+                });
+            });
             
             console.log(`[Translation] Completed: ${successCount} successful, ${errorCount} errors`);
+            hideTranslationLoading();
+        }
+        
+        // Fonction pour afficher un message discret de rate limit
+        function showRateLimitMessage() {
+            // Créer ou récupérer un élément de message
+            let messageEl = document.getElementById('translation-rate-limit-message');
+            if (!messageEl) {
+                messageEl = document.createElement('div');
+                messageEl.id = 'translation-rate-limit-message';
+                messageEl.className = 'fixed bottom-4 right-4 bg-yellow-500 dark:bg-yellow-600 text-white px-4 py-3 rounded-lg shadow-lg z-50 max-w-sm';
+                messageEl.innerHTML = `
+                    <div class="flex items-center gap-2">
+                        <i class="fas fa-exclamation-triangle"></i>
+                        <span class="text-sm font-medium">Translation limit reached. Please try again in a few minutes.</span>
+                        <button onclick="this.parentElement.parentElement.remove()" class="ml-2 text-white hover:text-gray-200">
+                            <i class="fas fa-times"></i>
+                        </button>
+                    </div>
+                `;
+                document.body.appendChild(messageEl);
+                
+                // Supprimer automatiquement après 10 secondes
+                setTimeout(() => {
+                    if (messageEl && messageEl.parentElement) {
+                        messageEl.remove();
+                    }
+                }, 10000);
+            }
         }
         
         // Initialiser au chargement
