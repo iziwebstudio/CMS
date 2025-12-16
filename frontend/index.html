@@ -1901,7 +1901,7 @@ export default {
         </section>
 
         <!-- Filter Menu -->
-        <section class="py-8 bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800 sticky top-16 z-40">
+        <section class="filter-menu-section py-8 bg-white dark:bg-slate-950 border-b border-gray-200 dark:border-slate-800 sticky top-16 z-40">
             <div class="container mx-auto px-6">
                 <div class="flex items-center gap-3 overflow-x-auto scrollbar-hide pb-2 -mx-6 px-6 md:justify-center md:overflow-x-visible">
                     <button class="filter-btn active px-4 py-2 rounded-lg font-medium text-sm transition-all bg-purple-600 text-white hover:bg-purple-700 whitespace-nowrap flex-shrink-0" data-category="all">
@@ -2811,11 +2811,21 @@ export default {
                 button.addEventListener('click', function() {
                     const category = this.getAttribute('data-category');
                     
-                    // Scroll to top smoothly when filter changes
-                    window.scrollTo({
-                        top: 0,
-                        behavior: 'smooth'
-                    });
+                    // Scroll to filter menu section if user is below it
+                    // Since the filter menu is sticky, we just need to scroll to its position
+                    const filterSection = document.querySelector('.filter-menu-section');
+                    if (filterSection) {
+                        const headerHeight = 64; // Height of sticky header (top-16 = 4rem = 64px)
+                        const filterSectionTop = filterSection.offsetTop - headerHeight;
+                        const currentScroll = window.pageYOffset;
+                        // Only scroll if we're below the filter section
+                        if (currentScroll > filterSectionTop) {
+                            window.scrollTo({
+                                top: filterSectionTop,
+                                behavior: 'smooth'
+                            });
+                        }
+                    }
                     
                     // Update active state of buttons
                     filterButtons.forEach(btn => {
