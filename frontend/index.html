@@ -771,9 +771,10 @@
                 <h2 class="text-4xl font-bold text-center mb-16 text-gray-900 dark:text-slate-50">Announcements</h2>
                 <div id="publications-container" class="space-y-6 max-w-5xl mx-auto">{{items}}</div>
                 <div id="blog-load-more" class="text-center mt-12 mb-20">
-                    <button onclick="loadMoreBlogs()"
-                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all">
-                        Load More Articles
+                    <button id="load-more-blogs-btn" onclick="loadMoreBlogs()"
+                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+                        <span id="load-more-blogs-text">Load More Articles</span>
+                        <i id="load-more-blogs-spinner" class="fas fa-spinner fa-spin hidden"></i>
                     </button>
                 </div>
             </div>
@@ -808,9 +809,10 @@
                 <h2 class="text-4xl font-bold text-center mb-16 text-gray-900 dark:text-slate-50">Video Tutorials</h2>
                 <div id="videos-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">{{items}}</div>
                 <div id="video-load-more" class="text-center mt-12 mb-20">
-                    <button onclick="loadMoreVideos()"
-                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all">
-                        Load More Videos
+                    <button id="load-more-videos-btn" onclick="loadMoreVideos()"
+                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+                        <span id="load-more-videos-text">Load More Videos</span>
+                        <i id="load-more-videos-spinner" class="fas fa-spinner fa-spin hidden"></i>
                     </button>
                 </div>
             </div>
@@ -2466,33 +2468,97 @@ export default {
         }
         
         function loadMoreBlogs() {
+            const btn = document.getElementById('load-more-blogs-btn');
+            const spinner = document.getElementById('load-more-blogs-spinner');
+            const text = document.getElementById('load-more-blogs-text');
             const hiddenItems = document.querySelectorAll('.blog-item-hidden');
             const itemsToShow = Math.min(itemsPerPage, hiddenItems.length);
             
-            for (let i = 0; i < itemsToShow; i++) {
-                hiddenItems[i].classList.remove('blog-item-hidden');
-                hiddenItems[i].style.display = '';
-                hiddenItems[i].style.visibility = '';
-                hiddenItems[i].style.height = '';
-                hiddenItems[i].style.overflow = '';
-            }
+            if (itemsToShow === 0 || btn.disabled) return;
             
-            updateLoadMoreButtons();
+            // Désactiver le bouton et afficher le spinner
+            btn.disabled = true;
+            if (spinner) spinner.classList.remove('hidden');
+            if (text) text.textContent = 'Chargement...';
+            
+            // Simuler un délai pour rendre l'animation plus fluide
+            setTimeout(() => {
+                // Afficher les éléments avec animation
+                for (let i = 0; i < itemsToShow; i++) {
+                    const item = hiddenItems[i];
+                    item.classList.remove('blog-item-hidden');
+                    item.style.display = '';
+                    item.style.visibility = '';
+                    item.style.height = '';
+                    item.style.overflow = '';
+                    
+                    // Animation d'apparition fluide
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                    
+                    // Déclencher l'animation
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, i * 50); // Délai progressif pour un effet cascade
+                }
+                
+                // Réactiver le bouton et masquer le spinner
+                setTimeout(() => {
+                    btn.disabled = false;
+                    if (spinner) spinner.classList.add('hidden');
+                    if (text) text.textContent = 'Load More Articles';
+                    updateLoadMoreButtons();
+                }, itemsToShow * 50 + 200);
+            }, 300);
         }
         
         function loadMoreVideos() {
+            const btn = document.getElementById('load-more-videos-btn');
+            const spinner = document.getElementById('load-more-videos-spinner');
+            const text = document.getElementById('load-more-videos-text');
             const hiddenItems = document.querySelectorAll('.video-item-hidden');
             const itemsToShow = Math.min(itemsPerPage, hiddenItems.length);
             
-            for (let i = 0; i < itemsToShow; i++) {
-                hiddenItems[i].classList.remove('video-item-hidden');
-                hiddenItems[i].style.display = '';
-                hiddenItems[i].style.visibility = '';
-                hiddenItems[i].style.height = '';
-                hiddenItems[i].style.overflow = '';
-            }
+            if (itemsToShow === 0 || btn.disabled) return;
             
-            updateLoadMoreButtons();
+            // Désactiver le bouton et afficher le spinner
+            btn.disabled = true;
+            if (spinner) spinner.classList.remove('hidden');
+            if (text) text.textContent = 'Chargement...';
+            
+            // Simuler un délai pour rendre l'animation plus fluide
+            setTimeout(() => {
+                // Afficher les éléments avec animation
+                for (let i = 0; i < itemsToShow; i++) {
+                    const item = hiddenItems[i];
+                    item.classList.remove('video-item-hidden');
+                    item.style.display = '';
+                    item.style.visibility = '';
+                    item.style.height = '';
+                    item.style.overflow = '';
+                    
+                    // Animation d'apparition fluide
+                    item.style.opacity = '0';
+                    item.style.transform = 'translateY(20px)';
+                    item.style.transition = 'opacity 0.4s ease-out, transform 0.4s ease-out';
+                    
+                    // Déclencher l'animation
+                    setTimeout(() => {
+                        item.style.opacity = '1';
+                        item.style.transform = 'translateY(0)';
+                    }, i * 50); // Délai progressif pour un effet cascade
+                }
+                
+                // Réactiver le bouton et masquer le spinner
+                setTimeout(() => {
+                    btn.disabled = false;
+                    if (spinner) spinner.classList.add('hidden');
+                    if (text) text.textContent = 'Load More Videos';
+                    updateLoadMoreButtons();
+                }, itemsToShow * 50 + 200);
+            }, 300);
         }
         
         // Initialiser la pagination au chargement
