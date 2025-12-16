@@ -178,6 +178,25 @@
             background-color: rgba(88, 28, 135, 0.3) !important; /* purple-900/30 */
         }
 
+        /* Tooltip pour le toggle de thème */
+        #theme-tooltip {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #theme-tooltip::after {
+            content: '';
+            position: absolute;
+            top: 100%;
+            left: 50%;
+            transform: translateX(-50%);
+            border: 4px solid transparent;
+            border-top-color: rgb(17 24 39); /* gray-900 */
+        }
+
+        .dark #theme-tooltip::after {
+            border-top-color: rgb(30 41 59); /* slate-800 */
+        }
+
         /* Transitions fluides pour le contenu principal */
         #main-content {
             transition: opacity 0.25s ease-in-out;
@@ -277,9 +296,12 @@
                     class="text-sm font-medium text-gray-700 dark:text-slate-100 hover:text-purple-500 dark:hover:text-purple-300 transition-colors">Serverless</a>
                 
                 <!-- Theme toggle (light / dark / auto) -->
-                <button id="theme-toggle" class="w-9 h-9 border border-gray-300 dark:border-slate-600 rounded-full flex items-center justify-center text-gray-600 dark:text-slate-200 hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-300 transition-colors"
+                <button id="theme-toggle" class="relative w-9 h-9 border border-gray-300 dark:border-slate-600 rounded-full flex items-center justify-center text-gray-600 dark:text-slate-200 hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-300 transition-colors group"
                     aria-label="Toggle theme mode">
                     <i id="theme-toggle-icon" class="fas fa-laptop text-sm"></i>
+                    <span id="theme-tooltip" class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-slate-800 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
+                        Mode automatique
+                    </span>
                 </button>
                 <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
                     class="px-6 py-2 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all shadow-lg shadow-purple-500/30">Get
@@ -2165,6 +2187,7 @@ export default {
         // Theme toggle (light / dark / auto)
         const themeToggle = document.getElementById('theme-toggle');
         const themeIcon = document.getElementById('theme-toggle-icon');
+        const themeTooltip = document.getElementById('theme-tooltip');
         const root = document.documentElement;
         let currentThemeMode = 'auto'; // 'light', 'dark', or 'auto'
         let systemThemeListener = null;
@@ -2183,9 +2206,26 @@ export default {
             
             if (effectiveTheme === 'dark') {
                 root.classList.add('dark');
-            } else {
+                    } else {
                 root.classList.remove('dark');
             }
+        }
+
+        // Fonction pour mettre à jour le tooltip
+        function updateThemeTooltip() {
+            if (!themeTooltip) return;
+            
+            let tooltipText = '';
+            if (currentThemeMode === 'light') {
+                tooltipText = 'Mode clair';
+            } else if (currentThemeMode === 'dark') {
+                tooltipText = 'Mode sombre';
+            } else if (currentThemeMode === 'auto') {
+                const systemTheme = getSystemTheme();
+                tooltipText = `Mode automatique (${systemTheme === 'dark' ? 'sombre' : 'clair'})`;
+            }
+            
+            themeTooltip.textContent = tooltipText;
         }
 
         // Fonction pour mettre à jour l'icône du toggle
@@ -2202,6 +2242,9 @@ export default {
             } else if (currentThemeMode === 'auto') {
                 themeIcon.classList.add('fa-laptop');
             }
+            
+            // Mettre à jour le tooltip
+            updateThemeTooltip();
         }
 
         // Fonction pour appliquer le thème et mettre à jour l'icône
@@ -2229,6 +2272,7 @@ export default {
         function handleSystemThemeChange(e) {
             if (currentThemeMode === 'auto') {
                 applyEffectiveTheme();
+                updateThemeTooltip(); // Mettre à jour le tooltip pour refléter le nouveau thème système
             }
         }
 
@@ -2237,7 +2281,7 @@ export default {
             const saved = localStorage.getItem('websuite_theme');
             if (saved === 'dark' || saved === 'light' || saved === 'auto') {
                 applyTheme(saved);
-            } else {
+                } else {
                 // Par défaut, utiliser le mode auto
                 applyTheme('auto');
             }
