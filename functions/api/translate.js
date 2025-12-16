@@ -1,17 +1,8 @@
-// POST /api/translate - LibreTranslate API
+// POST /api/translate - MyMemory Translation API
 import { corsHeaders, jsonResponse, errorResponse } from '../shared/utils.js';
 
 /**
- * Liste des instances LibreTranslate publiques (fallback si une est down)
- */
-const LIBRETRANSLATE_INSTANCES = [
-    'https://translate.argosopentech.com/translate',
-    'https://libretranslate.de/translate',
-    'https://translate.fortytwo-it.com/translate'
-];
-
-/**
- * Traduit un texte en utilisant MyMemory API (plus fiable que LibreTranslate)
+ * Traduit un texte en utilisant MyMemory API
  */
 async function translateWithMyMemory(text, targetLanguage, sourceLanguage = 'auto') {
     try {
@@ -50,83 +41,6 @@ async function translateWithMyMemory(text, targetLanguage, sourceLanguage = 'aut
     }
 }
 
-/**
- * Traduit un texte en utilisant LibreTranslate (fallback)
- */
-async function translateWithLibreTranslate(text, targetLanguage, sourceLanguage = 'auto', instanceIndex = 0) {
-    if (instanceIndex >= LIBRETRANSLATE_INSTANCES.length) {
-        throw new Error('All LibreTranslate instances failed');
-    }
-    
-    const instanceUrl = LIBRETRANSLATE_INSTANCES[instanceIndex];
-    
-    try {
-        // Timeout de 10 secondes pour éviter les attentes infinies
-        const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 10000);
-        
-        const response = await fetch(instanceUrl, {
-            method: 'POST',
-            headers: {
-                'Content-Type': 'application/json',
-            },
-            body: JSON.stringify({
-                q: text,
-                source: sourceLanguage === 'auto' ? 'auto' : sourceLanguage,
-                target: targetLanguage,
-                format: 'text'
-            }),
-            signal: controller.signal
-        });
-        
-        clearTimeout(timeoutId);
-        
-        if (!response.ok) {
-            const errorText = await response.text().catch(() => 'Unknown error');
-            console.error(`LibreTranslate instance ${instanceIndex} error: ${response.status} - ${errorText}`);
-            
-            // Si erreur, essayer l'instance suivante
-            if (instanceIndex < LIBRETRANSLATE_INSTANCES.length - 1) {
-                return translateWithLibreTranslate(text, targetLanguage, sourceLanguage, instanceIndex + 1);
-            }
-            throw new Error(`HTTP ${response.status}: ${errorText}`);
-        }
-        
-        const data = await response.json();
-        
-        if (data.error) {
-            console.error(`LibreTranslate API error: ${data.error}`);
-            // Si erreur API, essayer l'instance suivante
-            if (instanceIndex < LIBRETRANSLATE_INSTANCES.length - 1) {
-                return translateWithLibreTranslate(text, targetLanguage, sourceLanguage, instanceIndex + 1);
-            }
-            throw new Error(data.error);
-        }
-        
-        if (!data.translatedText) {
-            throw new Error('No translated text in response');
-        }
-        
-        return {
-            translatedText: data.translatedText,
-            detectedLanguage: data.detectedSourceLanguage || sourceLanguage
-        };
-        
-    } catch (error) {
-        if (error.name === 'AbortError') {
-            console.error(`LibreTranslate instance ${instanceIndex} timeout`);
-        } else {
-            console.error(`LibreTranslate instance ${instanceIndex} error:`, error.message);
-        }
-        
-        // Si erreur réseau, essayer l'instance suivante
-        if (instanceIndex < LIBRETRANSLATE_INSTANCES.length - 1) {
-            return translateWithLibreTranslate(text, targetLanguage, sourceLanguage, instanceIndex + 1);
-        }
-        throw error;
-    }
-}
-
 export async function onRequestPost(context) {
     const { request } = context;
     
@@ -155,31 +69,10 @@ export async function onRequestPost(context) {
             return errorResponse("Text too long. Maximum 5000 characters.", 400);
         }
         
-        // Essayer d'abord MyMemory (plus fiable), puis LibreTranslate en fallback
-        let result;
-        let usedService = 'unknown';
-        
-        try {
-            console.log(`[MyMemory] Translating: "${text.substring(0, 50)}..." to ${targetLanguage}`);
-            result = await translateWithMyMemory(text, targetLanguage, sourceLanguage);
-            usedService = 'MyMemory';
-            console.log(`[MyMemory] Translation result: "${result.translatedText.substring(0, 50)}..."`);
-        } catch (myMemoryError) {
-            console.warn(`[MyMemory] Failed, trying LibreTranslate:`, myMemoryError.message);
-            
-            try {
-                console.log(`[LibreTranslate] Translating: "${text.substring(0, 50)}..." to ${targetLanguage}`);
-                result = await translateWithLibreTranslate(text, targetLanguage, sourceLanguage);
-                usedService = 'LibreTranslate';
-                console.log(`[LibreTranslate] Translation result: "${result.translatedText.substring(0, 50)}..."`);
-            } catch (libreError) {
-                console.error("Both translation services failed:", {
-                    myMemory: myMemoryError.message,
-                    libreTranslate: libreError.message
-                });
-                throw new Error(`Translation services unavailable: ${myMemoryError.message}`);
-            }
-        }
+        // Traduire avec MyMemory API
+        console.log(`[MyMemory] Translating: "${text.substring(0, 50)}..." to ${targetLanguage}`);
+        const result = await translateWithMyMemory(text, targetLanguage, sourceLanguage);
+        console.log(`[MyMemory] Translation result: "${result.translatedText.substring(0, 50)}..."`);
         
         return jsonResponse({
             success: true,
@@ -187,7 +80,7 @@ export async function onRequestPost(context) {
             detectedLanguage: result.detectedLanguage,
             targetLanguage: targetLanguage,
             sourceLanguage: result.detectedLanguage,
-            service: usedService
+            service: 'MyMemory'
         });
         
     } catch (error) {
@@ -211,23 +104,7 @@ export async function onRequestGet(context) {
     const { request } = context;
     
     try {
-        // Essayer de récupérer les langues depuis une instance LibreTranslate
-        const response = await fetch('https://translate.argosopentech.com/languages', {
-            method: 'GET',
-            headers: {
-                'Content-Type': 'application/json',
-            }
-        });
-        
-        if (response.ok) {
-            const languages = await response.json();
-            return jsonResponse({
-                success: true,
-                languages: languages
-            });
-        }
-        
-        // Fallback: liste des langues courantes
+        // MyMemory supporte 179 langues, retourner la liste des langues courantes
         const fallbackLanguages = [
             { code: 'en', name: 'English' },
             { code: 'fr', name: 'Français' },
