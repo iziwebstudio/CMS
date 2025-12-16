@@ -186,15 +186,15 @@
         #theme-tooltip::after {
             content: '';
             position: absolute;
-            top: 100%;
+            bottom: 100%;
             left: 50%;
             transform: translateX(-50%);
             border: 4px solid transparent;
-            border-top-color: rgb(17 24 39); /* gray-900 */
+            border-bottom-color: rgb(17 24 39); /* gray-900 */
         }
 
         .dark #theme-tooltip::after {
-            border-top-color: rgb(30 41 59); /* slate-800 */
+            border-bottom-color: rgb(30 41 59); /* slate-800 */
         }
 
         /* Transitions fluides pour le contenu principal */
@@ -299,7 +299,7 @@
                 <button id="theme-toggle" class="relative w-9 h-9 border border-gray-300 dark:border-slate-600 rounded-full flex items-center justify-center text-gray-600 dark:text-slate-200 hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-300 transition-colors group"
                     aria-label="Toggle theme mode">
                     <i id="theme-toggle-icon" class="fas fa-laptop text-sm"></i>
-                    <span id="theme-tooltip" class="absolute bottom-full left-1/2 transform -translate-x-1/2 mb-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-slate-800 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
+                    <span id="theme-tooltip" class="absolute top-full left-1/2 transform -translate-x-1/2 mt-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-slate-800 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
                         Mode automatique
                     </span>
                 </button>
