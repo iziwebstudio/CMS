@@ -1,20 +1,80 @@
-// POST /api/translate - MyMemory Translation API
+// POST /api/translate - DeepL Translation API
 import { corsHeaders, jsonResponse, errorResponse } from '../shared/utils.js';
 
 /**
- * Traduit un texte en utilisant MyMemory API
+ * Mappe les codes de langue vers les codes DeepL
  */
-async function translateWithMyMemory(text, targetLanguage, sourceLanguage = 'auto') {
+function mapLanguageToDeepL(langCode) {
+    const langMap = {
+        'en': 'EN',
+        'fr': 'FR',
+        'es': 'ES',
+        'de': 'DE',
+        'it': 'IT',
+        'pt': 'PT',
+        'ru': 'RU',
+        'ja': 'JA',
+        'zh': 'ZH',
+        'ar': 'AR',
+        'pl': 'PL',
+        'nl': 'NL',
+        'sv': 'SV',
+        'da': 'DA',
+        'fi': 'FI',
+        'cs': 'CS',
+        'hu': 'HU',
+        'ro': 'RO',
+        'bg': 'BG',
+        'sk': 'SK',
+        'sl': 'SL',
+        'et': 'ET',
+        'lv': 'LV',
+        'lt': 'LT',
+        'mt': 'MT',
+        'el': 'EL'
+    };
+    return langMap[langCode.toLowerCase()] || 'EN';
+}
+
+/**
+ * Traduit un texte en utilisant DeepL API
+ */
+async function translateWithDeepL(text, targetLanguage, sourceLanguage = 'auto', context = null) {
     try {
-        // MyMemory API - gratuit jusqu'à 10K mots/jour, pas de clé requise
-        const langPair = sourceLanguage === 'auto' ? `en|${targetLanguage}` : `${sourceLanguage}|${targetLanguage}`;
-        const apiUrl = `https://api.mymemory.translated.net/get?q=${encodeURIComponent(text)}&langpair=${langPair}`;
+        // Récupérer la clé API depuis les variables d'environnement
+        const apiKey = context?.env?.DEEPL_API_KEY || process.env.DEEPL_API_KEY;
+        
+        if (!apiKey) {
+            throw new Error('DeepL API key not configured. Please set DEEPL_API_KEY environment variable.');
+        }
+        
+        // Mapper les codes de langue vers DeepL
+        const targetLang = mapLanguageToDeepL(targetLanguage);
+        const sourceLang = sourceLanguage === 'auto' ? null : mapLanguageToDeepL(sourceLanguage);
+        
+        // DeepL API endpoint
+        const apiUrl = 'https://api-free.deepl.com/v2/translate';
+        
+        // Préparer les paramètres
+        const params = new URLSearchParams({
+            'auth_key': apiKey,
+            'text': text,
+            'target_lang': targetLang
+        });
+        
+        if (sourceLang) {
+            params.append('source_lang', sourceLang);
+        }
         
         const controller = new AbortController();
-        const timeoutId = setTimeout(() => controller.abort(), 8000);
+        const timeoutId = setTimeout(() => controller.abort(), 10000);
         
         const response = await fetch(apiUrl, {
-            method: 'GET',
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/x-www-form-urlencoded'
+            },
+            body: params.toString(),
             signal: controller.signal
         });
         
@@ -25,22 +85,27 @@ async function translateWithMyMemory(text, targetLanguage, sourceLanguage = 'aut
             if (response.status === 429) {
                 throw new Error(`Rate limit exceeded. Please wait before making more requests.`);
             }
-            throw new Error(`MyMemory API error: ${response.status}`);
+            // Gérer les erreurs de quota (456)
+            if (response.status === 456) {
+                throw new Error(`Quota exceeded. Monthly character limit reached.`);
+            }
+            const errorText = await response.text();
+            throw new Error(`DeepL API error: ${response.status} - ${errorText}`);
         }
         
         const data = await response.json();
         
-        if (data.responseStatus === 200 && data.responseData && data.responseData.translatedText) {
+        if (data.translations && data.translations.length > 0) {
             return {
-                translatedText: data.responseData.translatedText,
-                detectedLanguage: data.responseData.detectedSourceLanguage || sourceLanguage
+                translatedText: data.translations[0].text,
+                detectedLanguage: data.translations[0].detected_source_language || sourceLanguage
             };
         }
         
-        throw new Error('MyMemory API returned invalid response');
+        throw new Error('DeepL API returned invalid response');
         
     } catch (error) {
-        console.error('MyMemory translation error:', error.message);
+        console.error('DeepL translation error:', error.message);
         throw error;
     }
 }
@@ -73,10 +138,10 @@ export async function onRequestPost(context) {
             return errorResponse("Text too long. Maximum 5000 characters.", 400);
         }
         
-        // Traduire avec MyMemory API
-        console.log(`[MyMemory] Translating: "${text.substring(0, 50)}..." to ${targetLanguage}`);
-        const result = await translateWithMyMemory(text, targetLanguage, sourceLanguage);
-        console.log(`[MyMemory] Translation result: "${result.translatedText.substring(0, 50)}..."`);
+        // Traduire avec DeepL API
+        console.log(`[DeepL] Translating: "${text.substring(0, 50)}..." to ${targetLanguage}`);
+        const result = await translateWithDeepL(text, targetLanguage, sourceLanguage, context);
+        console.log(`[DeepL] Translation result: "${result.translatedText.substring(0, 50)}..."`);
         
         return jsonResponse({
             success: true,
@@ -84,7 +149,7 @@ export async function onRequestPost(context) {
             detectedLanguage: result.detectedLanguage,
             targetLanguage: targetLanguage,
             sourceLanguage: result.detectedLanguage,
-            service: 'MyMemory'
+            service: 'DeepL'
         });
         
     } catch (error) {
@@ -108,8 +173,8 @@ export async function onRequestGet(context) {
     const { request } = context;
     
     try {
-        // MyMemory supporte 179 langues, retourner la liste des langues courantes
-        const fallbackLanguages = [
+        // DeepL supporte 31 langues, retourner la liste des langues supportées
+        const supportedLanguages = [
             { code: 'en', name: 'English' },
             { code: 'fr', name: 'Français' },
             { code: 'es', name: 'Español' },
@@ -119,12 +184,23 @@ export async function onRequestGet(context) {
             { code: 'ru', name: 'Русский' },
             { code: 'ja', name: '日本語' },
             { code: 'zh', name: '中文' },
-            { code: 'ar', name: 'العربية' }
+            { code: 'pl', name: 'Polski' },
+            { code: 'nl', name: 'Nederlands' },
+            { code: 'sv', name: 'Svenska' },
+            { code: 'da', name: 'Dansk' },
+            { code: 'fi', name: 'Suomi' },
+            { code: 'cs', name: 'Čeština' },
+            { code: 'hu', name: 'Magyar' },
+            { code: 'ro', name: 'Română' },
+            { code: 'bg', name: 'Български' },
+            { code: 'sk', name: 'Slovenčina' },
+            { code: 'sl', name: 'Slovenščina' },
+            { code: 'el', name: 'Ελληνικά' }
         ];
         
         return jsonResponse({
             success: true,
-            languages: fallbackLanguages
+            languages: supportedLanguages
         });
         
     } catch (error) {
