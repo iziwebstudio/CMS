@@ -1,15 +1,15 @@
 {
-  "siteName": "WebSuite",
+  "siteName": "WebSuite CCP",
   "author": "Ange Kacou Oi",
   "blogRssUrl": "https://kacouoi.substack.com/feed",
   "youtubeRssUrl": "https://www.youtube.com/feeds/videos.xml?channel_id=UCJENBUs-Ij9ECImP0Ap7P9g",
   "frontendBuilderUrl": "",
   "podcastFeedUrl": "https://api.substack.com/feed/podcast/4620368.rss",
-  "wstdStagingUrl": "Non configurÃ© (fichiers locaux)",
+  "wstdStagingUrl": "Non configurÃÂ© (fichiers locaux)",
   "analyticsEmbedUrl": "",
   "seo": {
-    "metaTitle": "MON SIte",
-    "metaDescription": "",
-    "metaKeywords": ""
+    "metaTitle": "WebSuite CCP",
+    "metaDescription": "The OpenSource Serverless AI Toolbox for modern development. CMS, AI Workers, and IDE - Built with Bun.js & powered by Cloudflare.",
+    "metaKeywords": "AI, MCP, ServerLess, AI Workers, WorkFlow, WebSuite, Cloud Computing"
   }
 }
