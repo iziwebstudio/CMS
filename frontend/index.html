@@ -197,6 +197,25 @@
             border-bottom-color: rgb(30 41 59); /* slate-800 */
         }
 
+        /* Tooltip pour le toggle de thème mobile */
+        #theme-tooltip-mobile {
+            box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+        }
+
+        #theme-tooltip-mobile::after {
+            content: '';
+            position: absolute;
+            right: 100%;
+            top: 50%;
+            transform: translateY(-50%);
+            border: 4px solid transparent;
+            border-right-color: rgb(17 24 39); /* gray-900 */
+        }
+
+        .dark #theme-tooltip-mobile::after {
+            border-right-color: rgb(30 41 59); /* slate-800 */
+        }
+
         /* Transitions fluides pour le contenu principal */
         #main-content {
             transition: opacity 0.25s ease-in-out;
@@ -341,6 +360,20 @@
                         class="block text-xl font-bold hover:text-purple-500 dark:hover:text-purple-300">Serverless</a>
                     <a href="/get-started" hx-get="/get-started" hx-target="#main-content" hx-push-url="true"
                         class="block text-xl font-bold hover:text-purple-500 dark:hover:text-purple-300">Get Started</a>
+                    
+                    <!-- Theme toggle pour mobile -->
+                    <div class="pt-6 border-t border-gray-200 dark:border-slate-700">
+                        <div class="flex items-center justify-between">
+                            <span class="text-lg font-semibold text-gray-900 dark:text-slate-50">Thème</span>
+                            <button id="theme-toggle-mobile" class="relative w-10 h-10 border border-gray-300 dark:border-slate-600 rounded-full flex items-center justify-center text-gray-600 dark:text-slate-200 hover:border-purple-500 hover:text-purple-500 dark:hover:text-purple-300 transition-colors group"
+                                aria-label="Toggle theme mode">
+                                <i id="theme-toggle-icon-mobile" class="fas fa-laptop text-sm"></i>
+                                <span id="theme-tooltip-mobile" class="absolute left-full ml-2 px-2 py-1 text-xs font-medium text-white bg-gray-900 dark:bg-slate-800 rounded-md opacity-0 invisible group-hover:opacity-100 group-hover:visible transition-all duration-200 whitespace-nowrap pointer-events-none z-50">
+                                    Mode automatique
+                                </span>
+                            </button>
+                        </div>
+                    </div>
                 </div>
             </div>
         </div>
@@ -2186,8 +2219,11 @@ export default {
 
         // Theme toggle (light / dark / auto)
         const themeToggle = document.getElementById('theme-toggle');
+        const themeToggleMobile = document.getElementById('theme-toggle-mobile');
         const themeIcon = document.getElementById('theme-toggle-icon');
+        const themeIconMobile = document.getElementById('theme-toggle-icon-mobile');
         const themeTooltip = document.getElementById('theme-tooltip');
+        const themeTooltipMobile = document.getElementById('theme-tooltip-mobile');
         const root = document.documentElement;
         let currentThemeMode = 'auto'; // 'light', 'dark', or 'auto'
         let systemThemeListener = null;
@@ -2213,8 +2249,6 @@ export default {
 
         // Fonction pour mettre à jour le tooltip
         function updateThemeTooltip() {
-            if (!themeTooltip) return;
-            
             let tooltipText = '';
             if (currentThemeMode === 'light') {
                 tooltipText = 'Mode clair';
@@ -2225,25 +2259,37 @@ export default {
                 tooltipText = `Mode automatique (${systemTheme === 'dark' ? 'sombre' : 'clair'})`;
             }
             
-            themeTooltip.textContent = tooltipText;
+            if (themeTooltip) {
+                themeTooltip.textContent = tooltipText;
+            }
+            if (themeTooltipMobile) {
+                themeTooltipMobile.textContent = tooltipText;
+            }
         }
 
         // Fonction pour mettre à jour l'icône du toggle
         function updateThemeIcon() {
-            if (!themeIcon) return;
-            
-            // Retirer toutes les classes d'icônes
-            themeIcon.classList.remove('fa-moon', 'fa-lightbulb', 'fa-laptop');
-            
-            if (currentThemeMode === 'light') {
-                themeIcon.classList.add('fa-moon');
-            } else if (currentThemeMode === 'dark') {
-                themeIcon.classList.add('fa-lightbulb');
-            } else if (currentThemeMode === 'auto') {
-                themeIcon.classList.add('fa-laptop');
+            // Fonction helper pour mettre à jour une icône
+            function updateIcon(iconElement) {
+                if (!iconElement) return;
+                
+                // Retirer toutes les classes d'icônes
+                iconElement.classList.remove('fa-moon', 'fa-lightbulb', 'fa-laptop');
+                
+                if (currentThemeMode === 'light') {
+                    iconElement.classList.add('fa-moon');
+                } else if (currentThemeMode === 'dark') {
+                    iconElement.classList.add('fa-lightbulb');
+                } else if (currentThemeMode === 'auto') {
+                    iconElement.classList.add('fa-laptop');
+                }
             }
             
-            // Mettre à jour le tooltip
+            // Mettre à jour les deux icônes (desktop et mobile)
+            updateIcon(themeIcon);
+            updateIcon(themeIconMobile);
+            
+            // Mettre à jour les tooltips
             updateThemeTooltip();
         }
 
@@ -2287,19 +2333,26 @@ export default {
             }
         })();
 
+        // Fonction pour gérer le clic sur le toggle
+        function handleThemeToggle() {
+            // Cycle: light -> dark -> auto -> light
+            let next;
+            if (currentThemeMode === 'light') {
+                next = 'dark';
+            } else if (currentThemeMode === 'dark') {
+                next = 'auto';
+            } else {
+                next = 'light';
+            }
+            applyTheme(next);
+        }
+
         if (themeToggle) {
-            themeToggle.addEventListener('click', () => {
-                // Cycle: light -> dark -> auto -> light
-                let next;
-                if (currentThemeMode === 'light') {
-                    next = 'dark';
-                } else if (currentThemeMode === 'dark') {
-                    next = 'auto';
-                } else {
-                    next = 'light';
-                }
-                applyTheme(next);
-            });
+            themeToggle.addEventListener('click', handleThemeToggle);
+        }
+
+        if (themeToggleMobile) {
+            themeToggleMobile.addEventListener('click', handleThemeToggle);
         }
 
         // Contact modal (Get Started)
