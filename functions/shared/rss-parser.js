@@ -205,3 +205,69 @@ export function parsePodcastRSS(xmlText) {
 
     return items;
 }
+
+/**
+ * Parse les événements d'un flux RSS Meetup
+ * Format RSS 2.0 standard avec contenu riche dans la description
+ */
+export function parseMeetupEventsRSS(xmlText) {
+    const items = [];
+    const itemRe = /<item[^>]*>((.|[\r\n])*?)<\/item>/gi;
+    let m;
+
+    while ((m = itemRe.exec(xmlText)) !== null) {
+        const block = m[1];
+        
+        const getTag = (tag) => {
+            const re = new RegExp(`<${tag}[^>]*>((.|[\\r\\n])*?)<\\/${tag}>`, 'i');
+            const found = block.match(re);
+            if (!found) return "";
+            let content = found[1].trim();
+            if (content.startsWith('<![CDATA[')) {
+                content = content.slice(9, -3).trim();
+            }
+            return decodeHTMLEntities(content);
+        };
+
+        const title = getTag('title');
+        const link = getTag('link');
+        const guid = getTag('guid');
+        const pubDate = getTag('pubDate');
+        const description = getTag('description');
+
+        // Extraire l'image depuis enclosure ou depuis la description
+        let image = extractEnclosureImage(block);
+        if (!image) {
+            image = extractFirstImage(description);
+        }
+
+        // Extraire les informations structurées depuis la description (optionnel)
+        // Meetup utilise des emojis et du formatage pour structurer les infos
+        const locationMatch = description.match(/(?:📍|Lieu|Location)[:\s]+(?:<strong>)?([^<\n]+)/i);
+        const feeMatch = description.match(/(?:💶|Prix|Fee)[:\s]+(?:<strong>)?([^<\n]+)/i);
+        const contactMatch = description.match(/(?:📱|Contact)[:\s]+(?:<strong>)?([^<\n]+)/i);
+
+        // Nettoyer le contenu HTML
+        const contentFull = cleanHtmlContent(description);
+
+        items.push({
+            title,
+            link,
+            pubDate,
+            description: contentFull.substring(0, 300) + (contentFull.length > 300 ? '...' : ''), // Description courte
+            slug: slugify(title),
+            content: contentFull, // Contenu complet
+            image,
+            guid: guid || link,
+            location: locationMatch ? locationMatch[1].trim() : null,
+            fee: feeMatch ? feeMatch[1].trim() : null,
+            contact: contactMatch ? contactMatch[1].trim() : null,
+            type: 'event'
+        });
+    }
+
+    // Trier par date (plus récent d'abord, comme les articles)
+    items.sort((a, b) => new Date(b.pubDate) - new Date(a.pubDate));
+
+    return items;
+}

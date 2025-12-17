@@ -23,6 +23,7 @@ const appState = {
     posts: [],
     videos: [],
     podcasts: [],
+    events: [],
     metadata: {},
     config: {}
 };
@@ -89,6 +90,10 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('search-podcasts')?.addEventListener('input', () => {
         currentPodcastPage = 1;
         renderPodcasts();
+    });
+    document.getElementById('search-events')?.addEventListener('input', () => {
+        currentEventPage = 1;
+        renderEvents();
     });
 });
 
@@ -203,12 +208,14 @@ async function loadData() {
         const loadPosts = fetch(buildApiUrl('/api/posts')).then(res => res.ok ? res.json() : []).catch(e => { console.error("Posts fetch error:", e); return []; });
         const loadVideos = fetch(buildApiUrl('/api/videos')).then(res => res.ok ? res.json() : []).catch(e => { console.error("Videos fetch error:", e); return []; });
         const loadPodcasts = fetch(buildApiUrl('/api/podcasts')).then(res => res.ok ? res.json() : []).catch(e => { console.error("Podcasts fetch error:", e); return []; });
+        const loadEvents = fetch(buildApiUrl('/api/events')).then(res => res.ok ? res.json() : []).catch(e => { console.error("Events fetch error:", e); return []; });
 
-        const [posts, videos, podcasts] = await Promise.all([loadPosts, loadVideos, loadPodcasts]);
+        const [posts, videos, podcasts, events] = await Promise.all([loadPosts, loadVideos, loadPodcasts, loadEvents]);
 
         appState.posts = posts;
         appState.videos = videos;
         appState.podcasts = podcasts;
+        appState.events = events;
 
         // Update Stats
         const statPostsEl = document.getElementById('stat-posts-count');
@@ -223,6 +230,9 @@ async function loadData() {
 
         const statPodcastsEl = document.getElementById('stat-podcasts-count');
         if (statPodcastsEl) statPodcastsEl.textContent = appState.podcasts.length;
+
+        const statEventsEl = document.getElementById('stat-events-count');
+        if (statEventsEl) statEventsEl.textContent = appState.events.length;
 
 
         // Feed status UI (only if element exists)
@@ -244,6 +254,7 @@ async function loadData() {
         renderContentTable();
         renderVideos();
         renderPodcasts(); // Call renderPodcasts here
+        renderEvents(); // Call renderEvents here
 
     } catch (e) {
         console.error("Erreur de chargement:", e);
@@ -461,6 +472,25 @@ function renderDashboard() {
             `).join('');
         }
     }
+
+    // Recent Events
+    const eventsTbody = document.getElementById('dashboard-recent-events');
+    if (eventsTbody) {
+        if (!appState.events || appState.events.length === 0) {
+            eventsTbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500 dark:text-slate-400">Aucun événement trouvé.</td></tr>';
+        } else {
+            eventsTbody.innerHTML = appState.events.slice(0, 5).map(event => `
+                <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
+                    <td class="px-6 py-4 font-medium text-slate-800 dark:text-white truncate max-w-xs" title="${event.title}">${event.title}</td>
+                    <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${new Date(event.pubDate).toLocaleDateString('fr-FR')}</td>
+                    <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${event.location || '-'}</td>
+                    <td class="px-6 py-4 text-right">
+                        <button onclick="openEventPreview('${event.link}')" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 font-medium text-xs uppercase tracking-wide">Ouvrir</button>
+                    </td>
+                </tr>
+            `).join('');
+        }
+    }
 }
 
 let currentPage = 1;
@@ -581,6 +611,9 @@ function renderVideos() {
 let currentPodcastPage = 1;
 const PODCASTS_PER_PAGE = 10;
 
+let currentEventPage = 1;
+const EVENTS_PER_PAGE = 10;
+
 function renderPodcasts() {
     const tbody = document.getElementById('podcasts-table');
     if (!tbody) return;
@@ -643,6 +676,84 @@ function nextPodcastPage() {
         currentPodcastPage++;
         renderPodcasts();
     }
+}
+
+function renderEvents() {
+    const tbody = document.getElementById('events-table');
+    if (!tbody) return;
+
+    const search = document.getElementById('search-events')?.value.toLowerCase() || '';
+    const filtered = appState.events.filter(e => 
+        e.title.toLowerCase().includes(search) || 
+        (e.location && e.location.toLowerCase().includes(search))
+    );
+
+    if (filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="5" class="text-center py-12 bg-slate-50 dark:bg-slate-800/50 rounded-lg border border-dashed border-slate-300 dark:border-slate-700"><i class="fas fa-calendar-alt text-4xl text-slate-300 dark:text-slate-600 mb-3"></i><p class="text-slate-500 dark:text-slate-400">Aucun événement trouvé</p></td></tr>`;
+        document.getElementById('event-pagination-info').textContent = `Page 1 sur 1`;
+        document.getElementById('prev-event-page-btn').disabled = true;
+        document.getElementById('next-event-page-btn').disabled = true;
+        return;
+    }
+
+    const totalPages = Math.ceil(filtered.length / EVENTS_PER_PAGE);
+    if (currentEventPage > totalPages) currentEventPage = 1;
+
+    const start = (currentEventPage - 1) * EVENTS_PER_PAGE;
+    const pageEvents = filtered.slice(start, start + EVENTS_PER_PAGE);
+
+    tbody.innerHTML = pageEvents.map(event => `
+        <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition group border-b border-transparent dark:border-slate-700/50 last:border-0">
+            <td class="px-6 py-4">
+                ${event.image ? 
+                    `<img src="${event.image}" alt="${event.title}" class="w-16 h-10 rounded object-cover">` :
+                    `<div class="w-16 h-10 rounded bg-slate-200 dark:bg-slate-700 overflow-hidden">
+                        <div class="w-full h-full flex items-center justify-center text-slate-400 dark:text-slate-500"><i class="fas fa-calendar-alt"></i></div>
+                    </div>`
+                }
+            </td>
+            <td class="px-6 py-4 font-medium text-slate-800 dark:text-white">
+                ${event.title}
+                <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate max-w-md">${event.description ? event.description.replace(/<[^>]*>/g, '').substring(0, 60) + '...' : ''}</div>
+            </td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(event.pubDate).toLocaleDateString('fr-FR')}</td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${event.location || '-'}</td>
+            <td class="px-6 py-4 text-right">
+                <button onclick="openEventPreview('${event.link}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
+                    <i class="fas fa-external-link-alt"></i> Ouvrir
+                </button>
+            </td>
+        </tr>
+    `).join('');
+
+    document.getElementById('event-pagination-info').textContent = `Page ${currentEventPage} sur ${totalPages}`;
+    document.getElementById('prev-event-page-btn').disabled = currentEventPage === 1;
+    document.getElementById('next-event-page-btn').disabled = currentEventPage === totalPages;
+}
+
+function prevEventPage() {
+    if (currentEventPage > 1) {
+        currentEventPage--;
+        renderEvents();
+    }
+}
+
+function nextEventPage() {
+    const search = document.getElementById('search-events')?.value.toLowerCase() || '';
+    const filtered = appState.events.filter(e => 
+        e.title.toLowerCase().includes(search) || 
+        (e.location && e.location.toLowerCase().includes(search))
+    );
+    const totalPages = Math.ceil(filtered.length / EVENTS_PER_PAGE);
+
+    if (currentEventPage < totalPages) {
+        currentEventPage++;
+        renderEvents();
+    }
+}
+
+function openEventPreview(link) {
+    window.open(link, '_blank');
 }
 
 function prevVideoPage() {

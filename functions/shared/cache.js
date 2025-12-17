@@ -123,3 +123,45 @@ export async function getCachedPodcastData(feedUrl, forceRefresh = false) {
         return [];
     }
 }
+
+/**
+ * Récupère les données Events (Meetup) avec cache
+ */
+export async function getCachedEventsData(feedUrl, forceRefresh = false) {
+    if (!feedUrl) return [];
+
+    const cache = caches.default;
+    const cacheKey = new Request(feedUrl, { method: 'GET' });
+
+    if (!forceRefresh) {
+        let response = await cache.match(cacheKey);
+        if (response) {
+            return await response.json();
+        }
+    }
+
+    try {
+        const res = await fetch(feedUrl, {
+            headers: { "User-Agent": "WebSuite-Worker/1.0" }
+        });
+        if (!res.ok) throw new Error(`Failed to fetch RSS: ${res.status}`);
+
+        const xmlText = await res.text();
+        const { parseMeetupEventsRSS } = await import('./rss-parser.js');
+        const events = parseMeetupEventsRSS(xmlText);
+
+        const cachedResponse = new Response(JSON.stringify(events), {
+            headers: {
+                'Content-Type': 'application/json',
+                'Cache-Control': `public, max-age=${CACHE_TTL}`
+            }
+        });
+
+        await cache.put(cacheKey, cachedResponse.clone());
+
+        return events;
+    } catch (e) {
+        console.error("Erreur Events Fetch:", e);
+        return [];
+    }
+}
