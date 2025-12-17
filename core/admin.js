@@ -469,7 +469,7 @@ function renderDashboard() {
                     <td class="px-6 py-4 font-medium text-slate-800 dark:text-white truncate max-w-xs" title="${podcast.title}">${podcast.title}</td>
                     <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${new Date(podcast.pubDate).toLocaleDateString('fr-FR')}</td>
                     <td class="px-6 py-4 text-right">
-                        <button onclick="openPodcastPreview('${podcast.link}')" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 font-medium text-xs uppercase tracking-wide">Ouvrir</button>
+                        <button onclick="openPodcastPreview('${podcast.link}')" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium text-xs uppercase tracking-wide">Voir</button>
                     </td>
                 </tr>
             `).join('');
@@ -486,9 +486,8 @@ function renderDashboard() {
                 <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition">
                     <td class="px-6 py-4 font-medium text-slate-800 dark:text-white truncate max-w-xs" title="${event.title}">${event.title}</td>
                     <td class="px-6 py-4 text-slate-500 dark:text-slate-400">${new Date(event.pubDate).toLocaleDateString('fr-FR')}</td>
-                    <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${event.location || '-'}</td>
                     <td class="px-6 py-4 text-right">
-                        <button onclick="openEventPreview('${event.link}')" class="text-blue-500 dark:text-blue-400 hover:text-blue-700 font-medium text-xs uppercase tracking-wide">Ouvrir</button>
+                        <button onclick="openEventPreview('${event.link}')" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium text-xs uppercase tracking-wide">Voir</button>
                     </td>
                 </tr>
             `).join('');
@@ -651,9 +650,7 @@ function renderPodcasts() {
             </td>
             <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(podcast.pubDate).toLocaleDateString('fr-FR')}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openPodcastPreview('${podcast.link}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
-                    <i class="fas fa-play"></i> Ouvrir
-                </button>
+                <button onclick="openPodcastPreview('${podcast.link}')" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium text-xs uppercase tracking-wide">Voir</button>
             </td>
         </tr>
     `).join('');
@@ -720,11 +717,8 @@ function renderEvents() {
                 <div class="text-xs text-slate-400 dark:text-slate-500 mt-0.5 truncate max-w-md">${event.description ? event.description.replace(/<[^>]*>/g, '').substring(0, 60) + '...' : ''}</div>
             </td>
             <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${new Date(event.pubDate).toLocaleDateString('fr-FR')}</td>
-            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">${event.location || '-'}</td>
             <td class="px-6 py-4 text-right">
-                <button onclick="openEventPreview('${event.link}')" class="text-slate-600 dark:text-slate-300 hover:text-purple-600 dark:hover:text-purple-400 font-medium text-sm transition flex items-center justify-end gap-1 ml-auto">
-                    <i class="fas fa-external-link-alt"></i> Ouvrir
-                </button>
+                <button onclick="openEventPreview('${event.link}')" class="text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium text-xs uppercase tracking-wide">Voir</button>
             </td>
         </tr>
     `).join('');

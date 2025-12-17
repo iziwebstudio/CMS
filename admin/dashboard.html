@@ -246,8 +246,8 @@
                     </div>
 
                     <!-- Feed Status -->
-                    <div
-                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300">
+                    <button onclick="showView('content')"
+                        class="bg-white dark:bg-slate-800 rounded-xl p-6 shadow-sm border border-slate-100 dark:border-slate-700 transition-colors duration-300 hover:border-purple-500 hover:shadow-md cursor-pointer text-left w-full">
                         <div class="flex items-center justify-between mb-4">
                             <div
                                 class="w-12 h-12 bg-green-50 dark:bg-slate-700 rounded-xl flex items-center justify-center text-green-600 dark:text-green-400">
@@ -259,37 +259,71 @@
                         <h4 class="text-slate-500 dark:text-slate-400 text-sm font-medium">Mise à jour</h4>
                         <p class="text-sm font-bold text-slate-800 dark:text-white mt-2 truncate" id="stat-last-sync">-
                         </p>
-                    </div>
+                    </button>
                 </div>
 
                 <!-- Recent Content Grid -->
-                <!-- Recent Articles (Full Width) -->
-                <div
-                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                <!-- Articles & Events Grid -->
+                <div class="grid grid-cols-1 lg:grid-cols-2 gap-6">
+                    <!-- Recent Articles Table -->
                     <div
-                        class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
-                        <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Articles</h3>
-                        <button onclick="showView('content')"
-                            class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
-                            tout</button>
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Articles</h3>
+                            <button onclick="showView('content')"
+                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
+                                tout</button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium">Titre</th>
+                                        <th class="px-6 py-3 font-medium">Date</th>
+                                        <th class="px-6 py-3 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-posts" class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
+                                            Chargement...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
-                    <div class="p-0 overflow-x-auto">
-                        <table class="w-full text-left border-collapse">
-                            <thead
-                                class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
-                                <tr>
-                                    <th class="px-6 py-3 font-medium">Titre</th>
-                                    <th class="px-6 py-3 font-medium">Date</th>
-                                    <th class="px-6 py-3 font-medium text-right">Action</th>
-                                </tr>
-                            </thead>
-                            <tbody id="dashboard-recent-posts" class="divide-y divide-slate-100 dark:divide-slate-700">
-                                <tr>
-                                    <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
-                                        Chargement...</td>
-                                </tr>
-                            </tbody>
-                        </table>
+
+                    <!-- Recent Events Table -->
+                    <div
+                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
+                        <div
+                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
+                            <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Événements</h3>
+                            <button onclick="showView('events')"
+                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
+                                tout</button>
+                        </div>
+                        <div class="p-0 overflow-x-auto">
+                            <table class="w-full text-left border-collapse">
+                                <thead
+                                    class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
+                                    <tr>
+                                        <th class="px-6 py-3 font-medium">Titre</th>
+                                        <th class="px-6 py-3 font-medium">Date</th>
+                                        <th class="px-6 py-3 font-medium text-right">Action</th>
+                                    </tr>
+                                </thead>
+                                <tbody id="dashboard-recent-events"
+                                    class="divide-y divide-slate-100 dark:divide-slate-700">
+                                    <tr>
+                                        <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
+                                            Chargement...</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
                     </div>
                 </div>
 
@@ -357,37 +391,6 @@
                         </div>
                     </div>
 
-                    <!-- Recent Events Table -->
-                    <div
-                        class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 overflow-hidden flex flex-col transition-colors duration-300">
-                        <div
-                            class="px-6 py-4 border-b border-slate-100 dark:border-slate-700 bg-slate-50 dark:bg-slate-800/50 flex justify-between items-center">
-                            <h3 class="font-semibold text-slate-800 dark:text-white">Derniers Événements</h3>
-                            <button onclick="showView('events')"
-                                class="text-sm text-purple-600 dark:text-purple-400 hover:text-purple-700 font-medium">Voir
-                                tout</button>
-                        </div>
-                        <div class="p-0 overflow-x-auto">
-                            <table class="w-full text-sm text-left">
-                                <thead
-                                    class="bg-slate-50 dark:bg-slate-700/50 text-slate-500 dark:text-slate-400 text-xs uppercase">
-                                    <tr>
-                                        <th class="px-6 py-3 font-medium">Titre</th>
-                                        <th class="px-6 py-3 font-medium">Date</th>
-                                        <th class="px-6 py-3 font-medium">Lieu</th>
-                                        <th class="px-6 py-3 font-medium text-right">Action</th>
-                                    </tr>
-                                </thead>
-                                <tbody id="dashboard-recent-events"
-                                    class="divide-y divide-slate-100 dark:divide-slate-700">
-                                    <tr>
-                                        <td class="p-6 text-center text-slate-500 dark:text-slate-400 font-medium">
-                                            Chargement...</td>
-                                    </tr>
-                                </tbody>
-                            </table>
-                        </div>
-                    </div>
                         <div class="p-0 overflow-x-auto">
                             <table class="w-full text-left border-collapse">
                                 <thead
@@ -783,8 +786,7 @@
                                     <th class="px-6 py-3">Image</th>
                                     <th class="px-6 py-3">Titre</th>
                                     <th class="px-6 py-3">Date</th>
-                                    <th class="px-6 py-3">Lieu</th>
-                                    <th class="px-6 py-3 text-right">Actions</th>
+                                    <th class="px-6 py-3 text-right">Action</th>
                                 </tr>
                             </thead>
                             <tbody id="events-table" class="divide-y divide-slate-100 dark:divide-slate-700">
@@ -804,17 +806,6 @@
                             <button id="next-event-page-btn" onclick="nextEventPage()"
                                 class="px-3 py-1 bg-white dark:bg-slate-700 border border-slate-300 dark:border-slate-600 dark:text-slate-200 rounded text-sm hover:bg-slate-50 dark:hover:bg-slate-600 disabled:opacity-50 disabled:cursor-not-allowed">Suivant</button>
                         </div>
-                    </div>
-                </div>
-
-                <!-- API Info Card -->
-                <div
-                    class="bg-white dark:bg-slate-800 rounded-xl shadow-sm border border-slate-100 dark:border-slate-700 p-6 transition-colors duration-300">
-                    <h4 class="font-semibold text-slate-800 dark:text-white mb-4">API Endpoint</h4>
-                    <div class="flex items-center gap-3">
-                        <code class="text-sm font-mono text-slate-600 dark:text-slate-300">/api/events</code>
-                        <button onclick="testApi('/api/events')"
-                            class="px-3 py-1 bg-purple-600 text-white rounded text-sm hover:bg-purple-700 transition">Tester</button>
                     </div>
                 </div>
             </div>
