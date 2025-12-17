@@ -297,6 +297,9 @@ async function loadConfig() {
         if (document.getElementById('conf-podcast')) {
             document.getElementById('conf-podcast').value = config.podcastFeedUrl || 'Non configuré';
         }
+        if (document.getElementById('conf-events')) {
+            document.getElementById('conf-events').value = config.eventsRssUrl || 'Non configuré';
+        }
         if (document.getElementById('conf-wstd-staging')) {
             document.getElementById('conf-wstd-staging').value = config.wstdStagingUrl || 'Non configuré (fichiers locaux)';
         }
@@ -753,7 +756,51 @@ function nextEventPage() {
 }
 
 function openEventPreview(link) {
-    window.open(link, '_blank');
+    const event = appState.events.find(e => e.link === link);
+    if (!event) {
+        // Si l'événement n'est pas trouvé, ouvrir le lien dans un nouvel onglet
+        window.open(link, '_blank');
+        return;
+    }
+
+    document.getElementById('modal-title').textContent = event.title;
+
+    const content = `<div class="flex flex-col gap-4">
+        ${event.image ? `
+        <div class="w-full rounded-xl overflow-hidden shadow-lg">
+            <img src="${event.image}" alt="${event.title}" class="w-full h-64 object-cover">
+        </div>
+        ` : `
+        <div class="w-full bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 rounded-xl p-8 border border-purple-200 dark:border-purple-800 flex flex-col items-center justify-center gap-4">
+            <div class="w-24 h-24 bg-purple-100 dark:bg-purple-900/40 rounded-full flex items-center justify-center text-purple-500 dark:text-purple-400 mb-2">
+                <i class="fas fa-calendar-alt text-4xl"></i>
+            </div>
+        </div>
+        `}
+        <div class="mt-6 prose prose-orange max-w-none">
+            <div class="flex flex-wrap gap-4 text-sm text-slate-500 dark:text-slate-400 mb-4">
+                ${event.location ? `<div class="flex items-center gap-2">
+                    <i class="fas fa-map-marker-alt"></i> ${event.location}
+                </div>` : ''}
+                ${event.fee ? `<div class="flex items-center gap-2">
+                    <i class="fas fa-euro-sign"></i> ${event.fee}
+                </div>` : ''}
+                <div class="flex items-center gap-2">
+                    <i class="far fa-calendar mr-2"></i> ${new Date(event.pubDate).toLocaleDateString('fr-FR', { day: 'numeric', month: 'long', year: 'numeric' })}
+                </div>
+            </div>
+            <div class="event-content">
+                ${event.content || event.description || ''}
+            </div>
+            <a href="${event.link}" target="_blank" class="inline-flex items-center gap-2 mt-6 px-4 py-2 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                <i class="fas fa-external-link-alt"></i> Voir l'événement sur Meetup
+            </a>
+        </div>
+    </div>`;
+
+    document.getElementById('modal-content').innerHTML = content;
+    const modal = document.getElementById('preview-modal');
+    modal.classList.remove('hidden');
 }
 
 function prevVideoPage() {

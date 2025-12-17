@@ -238,7 +238,23 @@ export function parseMeetupEventsRSS(xmlText) {
         // Extraire l'image depuis enclosure ou depuis la description
         let image = extractEnclosureImage(block);
         if (!image) {
+            // Essayer d'extraire depuis la description HTML
             image = extractFirstImage(description);
+        }
+        // Si toujours pas d'image, essayer d'extraire depuis les liens d'images dans la description
+        if (!image && description) {
+            // Chercher des patterns d'images Meetup ou autres
+            const imgPatterns = [
+                /<img[^>]+src=["']([^"']+)["']/i,
+                /https?:\/\/[^\s<>"']+\.(jpg|jpeg|png|gif|webp)/i
+            ];
+            for (const pattern of imgPatterns) {
+                const match = description.match(pattern);
+                if (match && match[1]) {
+                    image = match[1];
+                    break;
+                }
+            }
         }
 
         // Extraire les informations structurées depuis la description (optionnel)
