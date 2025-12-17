@@ -234,6 +234,8 @@ async function loadData() {
         const statEventsEl = document.getElementById('stat-events-count');
         if (statEventsEl) statEventsEl.textContent = appState.events.length;
 
+        // Update badges and source labels
+        updateStatBadges();
 
         // Feed status UI (only if element exists)
         if (statusEl) {
@@ -379,6 +381,7 @@ async function saveConfig() {
             blogRssUrl: document.getElementById('conf-substack').value.trim(),
             youtubeRssUrl: document.getElementById('conf-youtube')?.value.trim() || '',
             podcastFeedUrl: document.getElementById('conf-podcast')?.value.trim() || '',
+            eventsRssUrl: document.getElementById('conf-events')?.value.trim() || '',
             wstdStagingUrl: document.getElementById('conf-wstd-staging')?.value.trim() || '',
             analyticsEmbedUrl: appState.config.analyticsEmbedUrl || '',
             frontendBuilderUrl: appState.config.frontendBuilderUrl || '',
@@ -407,6 +410,8 @@ async function saveConfig() {
             }
             // Recharger la config pour s'assurer qu'elle est à jour
             await loadConfig();
+            // Mettre à jour les badges après le rechargement
+            updateStatBadges();
         } else {
             throw new Error(result.error || 'Erreur lors de la sauvegarde');
         }
@@ -417,6 +422,137 @@ async function saveConfig() {
             statusEl.className = 'text-xs text-red-500 mt-2';
         }
         alert(`Erreur lors de la sauvegarde: ${error.message}`);
+    }
+}
+
+// Helper function to detect source from URL
+function detectSourceFromUrl(url) {
+    if (!url || url === 'Non configuré' || url.trim() === '') return null;
+    
+    try {
+        const urlObj = new URL(url);
+        const hostname = urlObj.hostname.toLowerCase();
+        
+        // Detect various sources
+        if (hostname.includes('meetup.com')) return 'Meetup';
+        if (hostname.includes('openagenda.com')) return 'OpenAgenda';
+        if (hostname.includes('substack.com')) return 'Substack';
+        if (hostname.includes('youtube.com') || hostname.includes('youtu.be')) return 'YouTube';
+        if (hostname.includes('anchor.fm') || hostname.includes('spotify.com')) return 'Spotify';
+        if (hostname.includes('wordpress.com') || hostname.includes('wordpress.org')) return 'WordPress';
+        if (hostname.includes('medium.com')) return 'Medium';
+        if (hostname.includes('ghost.org')) return 'Ghost';
+        
+        // Default: extract domain name
+        const domain = hostname.split('.')[0];
+        return domain.charAt(0).toUpperCase() + domain.slice(1);
+    } catch (e) {
+        return null;
+    }
+}
+
+// Update stat badges and source labels
+function updateStatBadges() {
+    const config = appState.config || {};
+    
+    // Articles
+    const postsBadge = document.getElementById('stat-posts-badge');
+    const postsLabel = document.getElementById('stat-posts-label');
+    const postsUrl = config.blogRssUrl || '';
+    const postsActive = postsUrl && postsUrl !== 'Non configuré' && postsUrl.trim() !== '';
+    
+    if (postsBadge) {
+        if (postsActive) {
+            const source = detectSourceFromUrl(postsUrl);
+            postsBadge.textContent = source || 'Actif';
+            postsBadge.className = 'text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full';
+        } else {
+            postsBadge.textContent = 'Inactif';
+            postsBadge.className = 'text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full';
+        }
+    }
+    if (postsLabel && postsActive) {
+        const source = detectSourceFromUrl(postsUrl);
+        if (source) {
+            postsLabel.textContent = `Articles (${source})`;
+        } else {
+            postsLabel.textContent = 'Articles';
+        }
+    }
+    
+    // Videos
+    const videosBadge = document.getElementById('stat-videos-badge');
+    const videosLabel = document.getElementById('stat-videos-label');
+    const videosUrl = config.youtubeRssUrl || '';
+    const videosActive = videosUrl && videosUrl !== 'Non configuré' && videosUrl.trim() !== '';
+    
+    if (videosBadge) {
+        if (videosActive) {
+            const source = detectSourceFromUrl(videosUrl);
+            videosBadge.textContent = source || 'Actif';
+            videosBadge.className = 'text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full';
+        } else {
+            videosBadge.textContent = 'Inactif';
+            videosBadge.className = 'text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full';
+        }
+    }
+    if (videosLabel && videosActive) {
+        const source = detectSourceFromUrl(videosUrl);
+        if (source) {
+            videosLabel.textContent = `Vidéos (${source})`;
+        } else {
+            videosLabel.textContent = 'Vidéos';
+        }
+    }
+    
+    // Podcasts
+    const podcastsBadge = document.getElementById('stat-podcasts-badge');
+    const podcastsLabel = document.getElementById('stat-podcasts-label');
+    const podcastsUrl = config.podcastFeedUrl || '';
+    const podcastsActive = podcastsUrl && podcastsUrl !== 'Non configuré' && podcastsUrl.trim() !== '';
+    
+    if (podcastsBadge) {
+        if (podcastsActive) {
+            const source = detectSourceFromUrl(podcastsUrl);
+            podcastsBadge.textContent = source || 'Actif';
+            podcastsBadge.className = 'text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full';
+        } else {
+            podcastsBadge.textContent = 'Inactif';
+            podcastsBadge.className = 'text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full';
+        }
+    }
+    if (podcastsLabel && podcastsActive) {
+        const source = detectSourceFromUrl(podcastsUrl);
+        if (source) {
+            podcastsLabel.textContent = `Podcasts (${source})`;
+        } else {
+            podcastsLabel.textContent = 'Podcasts';
+        }
+    }
+    
+    // Events
+    const eventsBadge = document.getElementById('stat-events-badge');
+    const eventsLabel = document.getElementById('stat-events-label');
+    const eventsUrl = config.eventsRssUrl || '';
+    const eventsActive = eventsUrl && eventsUrl !== 'Non configuré' && eventsUrl.trim() !== '';
+    
+    if (eventsBadge) {
+        if (eventsActive) {
+            const source = detectSourceFromUrl(eventsUrl);
+            eventsBadge.textContent = source || 'Actif';
+            eventsBadge.className = 'text-xs font-medium text-green-600 bg-green-50 dark:bg-green-900/30 px-2 py-1 rounded-full';
+        } else {
+            eventsBadge.textContent = 'Inactif';
+            eventsBadge.className = 'text-xs font-medium text-slate-500 bg-slate-100 dark:bg-slate-700 px-2 py-1 rounded-full';
+        }
+    }
+    if (eventsLabel && eventsActive) {
+        const source = detectSourceFromUrl(eventsUrl);
+        if (source) {
+            eventsLabel.textContent = `Événements (${source})`;
+        } else {
+            eventsLabel.textContent = 'Événements';
+        }
     }
 }
 
