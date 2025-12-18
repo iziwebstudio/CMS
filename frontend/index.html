@@ -33,16 +33,6 @@
         }
     </script>
     <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <script>
-        // Configuration HTMX pour améliorer la gestion de l'historique
-        document.addEventListener('DOMContentLoaded', function() {
-            // Augmenter la taille du cache de l'historique
-            if (htmx.config) {
-                htmx.config.historyCacheSize = 20;
-                htmx.config.historyEnabled = true;
-            }
-        });
-    </script>
     <link href="/core/style.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -2783,7 +2773,7 @@ export default {
         });
 
         // Mettre à jour après chaque navigation HTMX
-        document.body.addEventListener('htmx:afterSwap', function(event) {
+        document.body.addEventListener('htmx:afterSwap', function() {
             // Retirer la classe de transition et réinitialiser l'opacité
             if (mainContent) {
                 mainContent.classList.remove('page-transitioning');
@@ -2795,51 +2785,22 @@ export default {
             setTimeout(updateActiveNav, 50);
             // Scroller vers le haut après le swap
             setTimeout(scrollToTop, 100);
-            
-            // Réinitialiser les event listeners HTMX sur les nouveaux éléments
-            // Cela garantit que les liens fonctionnent après une restauration
-            if (htmx && htmx.process) {
-                htmx.process(mainContent);
-            }
         });
         
-        document.body.addEventListener('htmx:historyRestore', function(event) {
+        document.body.addEventListener('htmx:historyRestore', function() {
+            // Fermer le menu mobile s'il est ouvert
             closeMobileMenuIfOpen();
-            
-            // Laisser HTMX restaurer le contenu depuis son cache
-            // Vérifier après un délai si le contenu est vide
-            setTimeout(() => {
-                const mainContent = document.getElementById('main-content');
-                if (mainContent) {
-                    const isEmpty = mainContent.innerHTML.trim() === '' || 
-                                   (mainContent.children.length === 0 && mainContent.innerHTML.includes('hx-get='));
-                    
-                    if (isEmpty) {
-                        const currentPath = window.location.pathname;
-                        // Forcer le rechargement depuis le serveur
-                        htmx.ajax('GET', currentPath, {
-                            target: '#main-content',
-                            swap: 'innerHTML',
-                            headers: { 'HX-Request': 'true' }
-                        });
-                    }
-                }
-            }, 200);
-            
-            setTimeout(updateActiveNav, 100);
-            setTimeout(scrollToTop, 150);
+            setTimeout(updateActiveNav, 50);
+            // Scroller vers le haut lors de la restauration de l'historique
+            setTimeout(scrollToTop, 100);
         });
 
         // Mettre à jour lors des changements d'URL (navigation navigateur)
-        // Ne pas interférer avec HTMX - laisser HTMX gérer la restauration
-        // On écoute seulement pour mettre à jour la navigation et le scroll
-        window.addEventListener('popstate', function(event) {
-            // Ne pas bloquer HTMX - laisser le temps à HTMX de restaurer
-            setTimeout(() => {
-                closeMobileMenuIfOpen();
-                updateActiveNav();
-                setTimeout(scrollToTop, 100);
-            }, 50);
+        window.addEventListener('popstate', function() {
+            // Fermer le menu mobile s'il est ouvert
+            closeMobileMenuIfOpen();
+            updateActiveNav();
+            setTimeout(scrollToTop, 100);
         });
         
         // Écouter aussi les changements d'URL via HTMX
