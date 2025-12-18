@@ -796,8 +796,39 @@ export function generateEventsContent(fullTemplate, events) {
             });
             
             // Masquer les éléments vides avec classe event-location
-            if (!event.location) {
-                cardHtml = cardHtml.replace(/<span class="event-location">[\s\S]*?<\/span>/g, '');
+            if (!event.location || event.location.trim() === '') {
+                cardHtml = cardHtml.replace(/<span class="event-location"[^>]*>[\s\S]*?<\/span>/g, '');
+            } else {
+                // Remplacer le placeholder location par la valeur réelle et afficher l'élément
+                cardHtml = cardHtml.replace(/\{\{location\}\}/g, event.location);
+                cardHtml = cardHtml.replace(/<span class="event-location"[^>]*style="display:none;"/g, 
+                    '<span class="event-location"');
+            }
+            
+            // Gérer l'image : si vide, masquer l'image et afficher le placeholder
+            if (!event.image || event.image.trim() === '') {
+                // Masquer l'image
+                cardHtml = cardHtml.replace(/<img[^>]*class="[^"]*event-card-image[^"]*"[^>]*>/g, (match) => {
+                    if (match.includes('style=')) {
+                        return match.replace(/style="[^"]*"/, 'style="display:none;"');
+                    } else {
+                        return match.replace(/>/, ' style="display:none;">');
+                    }
+                });
+                // Afficher le placeholder - remplacer style="display:none;" par style="display:flex;"
+                cardHtml = cardHtml.replace(/<div[^>]*class="[^"]*event-card-placeholder[^"]*"[^>]*style="display:none;"/g, 
+                    (match) => match.replace('style="display:none;"', 'style="display:flex;"'));
+            } else {
+                // Si l'image existe, s'assurer que le placeholder est masqué
+                cardHtml = cardHtml.replace(/<div[^>]*class="[^"]*event-card-placeholder[^"]*"[^>]*>/g, 
+                    (match) => {
+                        if (!match.includes('style=')) {
+                            return match.replace(/>/, ' style="display:none;">');
+                        } else if (!match.includes('display:flex')) {
+                            return match.replace(/style="[^"]*"/, 'style="display:none;"');
+                        }
+                        return match;
+                    });
             }
             
             // Ajouter une classe pour la pagination côté client (masquer après les 4 premiers)
