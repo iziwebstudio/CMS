@@ -733,7 +733,7 @@
                     </div>
                         <h3 class="text-2xl font-bold mb-3 text-gray-900 dark:text-slate-50">Headless CMS</h3>
                         <p class="text-gray-600 dark:text-slate-300 mb-6">
-                            Headless CMS with RSS aggregation. Manage content from Substack, YouTube, Podcasts, and more.
+                            Headless CMS with RSS aggregation. Manage content from Substack, YouTube, Podcasts, Events, and more.
                         </p>
                         <ul class="space-y-2 text-sm text-gray-600 dark:text-slate-300">
                             <li class="flex items-center gap-2"><i class="fas fa-check text-purple-600"></i> RSS Feed Integration</li>
@@ -1112,8 +1112,8 @@
                         </div>
                         <h3 class="text-2xl font-bold mb-4 text-gray-900 dark:text-slate-50">Universal Feed Parser</h3>
                         <p class="text-gray-600 dark:text-purple-200 leading-relaxed">
-                            The Worker acts as a universal adapter. It fetches RSS feeds from Substack, YouTube, and
-                            Podcast hosts,
+                            The Worker acts as a universal adapter. It fetches RSS feeds from Substack, YouTube,
+                            Podcast hosts, and Event platforms like Meetup,
                             parses the XML, and transforms it into a unified JSON structure.
                             This allows you to use any content source without changing your frontend code.
                         </p>
@@ -1294,6 +1294,10 @@ export default {
                                     <div class="flex items-center gap-2 text-gray-600">
                                         <i class="fas fa-circle text-purple-500 text-xs"></i>
                                         <span>Podcast Feed</span>
+                                    </div>
+                                    <div class="flex items-center gap-2 text-gray-600">
+                                        <i class="fas fa-circle text-blue-500 text-xs"></i>
+                                        <span>Event Feeds (Meetup)</span>
                                     </div>
                                 </div>
                             </div>
@@ -1539,7 +1543,7 @@ export default {
                                     <span class="text-3xl font-black">1</span>
                                 </div>
                                 <h3 class="text-xl font-bold mb-2">Connect Sources</h3>
-                                <p class="text-purple-100">Add your RSS feeds from Substack, YouTube, Podcasts, and more</p>
+                                <p class="text-purple-100">Add your RSS feeds from Substack, YouTube, Podcasts, Events, and more</p>
                             </div>
                             <div class="text-center">
                                 <div class="w-16 h-16 bg-white/20 rounded-xl flex items-center justify-center mx-auto mb-4">
@@ -2011,12 +2015,12 @@ export default {
                         <h3 class="text-center font-semibold text-gray-900 dark:text-slate-50 text-sm">Medium</h3>
                     </a>
 
-                    <!-- RSS Feed -->
-                    <a href="https://rss.com" target="_blank" rel="noopener noreferrer" class="integration-card bg-white dark:bg-slate-900 p-6 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 hover:-translate-y-1 hover:shadow-xl transition-all group cursor-pointer block" data-category="content">
+                    <!-- Meetup -->
+                    <a href="https://www.meetup.com" target="_blank" rel="noopener noreferrer" class="integration-card bg-white dark:bg-slate-900 p-6 rounded-xl border-2 border-gray-200 dark:border-slate-700 hover:border-purple-500 hover:-translate-y-1 hover:shadow-xl transition-all group cursor-pointer block" data-category="content">
                         <div class="w-16 h-16 mx-auto mb-4 flex items-center justify-center bg-gray-50 dark:bg-slate-800 rounded-lg group-hover:bg-purple-50 dark:group-hover:bg-purple-900/40 transition-colors">
-                            <img src="https://cdn.worldvectorlogo.com/logos/rss.svg" alt="RSS Feed" class="w-10 h-10">
+                            <img src="https://cdn.worldvectorlogo.com/logos/meetup-3.svg" alt="Meetup" class="w-10 h-10">
                         </div>
-                        <h3 class="text-center font-semibold text-gray-900 dark:text-slate-50 text-sm">Flux RSS</h3>
+                        <h3 class="text-center font-semibold text-gray-900 dark:text-slate-50 text-sm">Meetup</h3>
                     </a>
 
                     <!-- StreamYard-->
