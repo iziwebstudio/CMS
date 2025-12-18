@@ -295,26 +295,33 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
     // Détecte automatiquement les patterns : /post/[slug], /video/[id], /podcast/[id]
     // Cette détection doit être AVANT la détection des routes de liste
     const detailPatterns = [
-        { 
-            pattern: /^post\/(.+)$/, 
-            apiPath: (match) => `/api/post/${match[1]}`, 
-            generator: generatePostContent, 
+        {
+            pattern: /^post\/(.+)$/,
+            apiPath: (match) => `/api/post/${match[1]}`,
+            generator: generatePostContent,
             type: 'post',
             notFoundMsg: 'Article non trouvé'
         },
-        { 
-            pattern: /^video\/(.+)$/, 
-            apiPath: (match) => `/api/video/${match[1]}`, 
-            generator: generateVideoDetailContent, 
+        {
+            pattern: /^video\/(.+)$/,
+            apiPath: (match) => `/api/video/${match[1]}`,
+            generator: generateVideoDetailContent,
             type: 'video',
             notFoundMsg: 'Vidéo non trouvée'
         },
-        { 
-            pattern: /^podcast\/(.+)$/, 
-            apiPath: (match) => `/api/podcast/${match[1]}`, 
+        {
+            pattern: /^podcast\/(.+)$/,
+            apiPath: (match) => `/api/podcast/${match[1]}`,
             generator: null, // TODO: créer generatePodcastDetailContent si nécessaire
             type: 'podcast',
             notFoundMsg: 'Podcast non trouvé'
+        },
+        {
+            pattern: /^event\/(.+)$/,
+            apiPath: (match) => `/api/event/${match[1]}`,
+            generator: generateEventDetailContent,
+            type: 'event',
+            notFoundMsg: 'Événement non trouvé'
         }
     ];
     
@@ -332,6 +339,8 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
                         ? generatePostContent(fullTemplate, item, path, siteConfig)
                         : type === 'video'
                         ? generateVideoDetailContent(fullTemplate, item, path)
+                        : type === 'event'
+                        ? generateEventDetailContent(fullTemplate, item, path)
                         : generator(fullTemplate, item, path);
                     
                     const metadata = {
@@ -411,6 +420,11 @@ export async function detectAndRenderContentRoute(request, path, fullTemplate, s
             api: '/api/podcasts',
             generator: null, // TODO: créer generatePodcastsContent si nécessaire
             title: 'Podcasts'
+        },
+        'events': {
+            api: '/api/events',
+            generator: generateEventsContent,
+            title: 'Événements'
         }
     };
     
@@ -729,6 +743,92 @@ export function generateVideosContent(fullTemplate, videos) {
 }
 
 /**
+ * Génère le contenu de la page des événements
+ */
+export function generateEventsContent(fullTemplate, events) {
+    // Cherche automatiquement un template de liste pour les événements
+    let listTpl = extractTemplate(fullTemplate, 'tpl-events') || 
+                   extractTemplate(fullTemplate, 'tpl-events-list');
+    
+    // Cherche automatiquement un template de carte pour les événements
+    let cardTpl = extractTemplate(fullTemplate, 'tpl-event-card') ||
+                   extractTemplate(fullTemplate, 'tpl-events-card');
+
+    // FALLBACKS
+    if (!listTpl) {
+        listTpl = '<div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">{{items}}</div>';
+    }
+    if (!cardTpl) {
+        cardTpl = `
+        <div class="bg-white dark:bg-slate-800 rounded-lg shadow overflow-hidden group">
+            <div class="relative aspect-video">
+                <img src="{{image}}" alt="{{title}}" class="w-full h-full object-cover" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-full h-full bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 flex items-center justify-center" style="display:none;">
+                    <i class="fas fa-calendar-alt text-4xl text-purple-500 dark:text-purple-400"></i>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="font-bold text-sm mb-1 line-clamp-2">
+                    <a href="/event/{{slug}}" hx-get="/event/{{slug}}" hx-target="#main-content" hx-push-url="true" class="hover:text-purple-600 transition">
+                        {{title}}
+                    </a>
+                </h3>
+                <div class="text-xs text-slate-500">{{date}}</div>
+            </div>
+        </div>`;
+    }
+
+    // Envoyer TOUS les événements - le frontend gère l'affichage et la pagination
+    let itemsHtml = '';
+    if (events.length === 0) {
+        itemsHtml = `<p class="col-span-full text-center text-gray-600 dark:text-slate-400 p-8">Aucun événement disponible.</p>`;
+    } else {
+        events.forEach((event, index) => {
+            const pubDate = new Date(event.pubDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+            let cardHtml = replacePlaceholders(cardTpl, {
+                title: event.title,
+                image: event.image || '',
+                date: pubDate,
+                location: event.location || '',
+                fee: event.fee || '',
+                link: `/event/${event.slug}`,
+                slug: event.slug
+            });
+            
+            // Masquer les éléments vides avec classe event-location
+            if (!event.location) {
+                cardHtml = cardHtml.replace(/<span class="event-location">[\s\S]*?<\/span>/g, '');
+            }
+            
+            // Ajouter une classe pour la pagination côté client (masquer après les 4 premiers)
+            const itemClass = index >= 4 ? 'event-item event-item-hidden' : 'event-item';
+            // Ajouter la classe au premier élément (a, div, article, etc.)
+            const firstTagMatch = cardHtml.match(/^<([a-zA-Z]+)([^>]*)>/);
+            if (firstTagMatch) {
+                const tag = firstTagMatch[1];
+                const attrs = firstTagMatch[2];
+                let newAttrs = attrs;
+                
+                if (attrs.includes('class=')) {
+                    // Ajouter la classe à l'attribut class existant
+                    newAttrs = attrs.replace(/class=["']([^"']*)["']/, `class="$1 ${itemClass}"`);
+                } else {
+                    // Ajouter un nouvel attribut class
+                    newAttrs = attrs + ` class="${itemClass}"`;
+                }
+                
+                cardHtml = cardHtml.replace(/^<([a-zA-Z]+)([^>]*)>/, `<${tag}${newAttrs}>`);
+            }
+            
+            itemsHtml += cardHtml;
+        });
+    }
+
+    let content = listTpl.replace('{{items}}', itemsHtml);
+    return content;
+}
+
+/**
  * Génère le contenu de la page de contact
  */
 export function generateContactContent(fullTemplate) {
@@ -785,6 +885,69 @@ export function generateVideoDetailContent(fullTemplate, video, currentUrl = '')
         slug: video.slug,
         currentUrl: currentUrl
     });
+}
+
+/**
+ * Génère le contenu de détail d'un événement
+ */
+export function generateEventDetailContent(fullTemplate, event, currentUrl = '') {
+    let detailTpl = extractTemplate(fullTemplate, 'tpl-event-detail') ||
+                     extractTemplate(fullTemplate, 'tpl-event-detail-page');
+    
+    if (!detailTpl) {
+        // Fallback template
+        detailTpl = `
+        <article class="py-20 bg-white dark:bg-slate-950">
+            <div class="container mx-auto px-6 max-w-5xl">
+                <a href="/events" hx-get="/events" hx-target="#main-content" hx-push-url="true"
+                    class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-700 mb-6">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Events
+                </a>
+                <h1 class="text-4xl md:text-5xl font-bold mb-6">{{title}}</h1>
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-slate-400 mb-8">
+                    <span><i class="far fa-calendar mr-2"></i>{{date}}</span>
+                    <span class="event-location"><i class="fas fa-map-marker-alt mr-2"></i>{{location}}</span>
+                    <span class="event-fee"><i class="fas fa-euro-sign mr-2"></i>{{fee}}</span>
+                </div>
+                <div class="w-full rounded-xl overflow-hidden shadow-lg mb-8 event-image-container">
+                    <img src="{{image}}" alt="{{title}}" class="w-full h-96 object-cover">
+                </div>
+                <div class="prose prose-lg dark:prose-invert max-w-none">
+                    <div class="event-content">{{content}}</div>
+                </div>
+                <div class="mt-8 pt-8 border-t">
+                    <a href="{{link}}" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700">
+                        <i class="fas fa-external-link-alt"></i> View Event on Meetup
+                    </a>
+                </div>
+            </div>
+        </article>`;
+    }
+    
+    const pubDate = new Date(event.pubDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    let content = replacePlaceholders(detailTpl, {
+        title: event.title,
+        date: pubDate,
+        location: event.location || '',
+        fee: event.fee || '',
+        image: event.image || '',
+        content: event.content || event.description || '',
+        link: event.link
+    });
+    
+    // Masquer les éléments vides
+    if (!event.location) {
+        content = content.replace(/<span class="event-location">[\s\S]*?<\/span>/g, '');
+    }
+    if (!event.fee) {
+        content = content.replace(/<span class="event-fee">[\s\S]*?<\/span>/g, '');
+    }
+    if (!event.image) {
+        content = content.replace(/<div class="[^"]*event-image-container[^"]*">[\s\S]*?<\/div>/g, '');
+    }
+    
+    return content;
 }
 
 /**

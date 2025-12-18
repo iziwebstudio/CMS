@@ -19,6 +19,7 @@ import {
     generateVideosContent,
     generatePostContent,
     generateVideoDetailContent,
+    generateEventDetailContent,
     detectAndRenderContentRoute,
     handleHtmxCatchAll
 } from './shared/htmx-render.js';

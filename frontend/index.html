@@ -61,7 +61,11 @@
         a.video-item-hidden,
         article.video-item-hidden,
         div.video-item-hidden,
-        .video-item-hidden {
+        .video-item-hidden,
+        a.event-item-hidden,
+        article.event-item-hidden,
+        div.event-item-hidden,
+        .event-item-hidden {
             display: none !important;
             visibility: hidden !important;
             height: 0 !important;
@@ -880,6 +884,84 @@
             </h3>
             <p class="text-gray-600 dark:text-slate-400 text-sm">{{date}}</p>
         </a>
+    </template>
+
+    <template id="tpl-events">
+        <section class="relative py-20 bg-gray-50 dark:bg-slate-950 transition-colors duration-300 overflow-hidden">
+            <!-- Neon background -->
+            <div class="pointer-events-none absolute inset-0 opacity-40 dark:opacity-70">
+                <div class="absolute -top-24 left-1/4 w-64 h-64 bg-purple-500/40 blur-3xl rounded-full animate-pulse-slow"></div>
+                <div class="absolute bottom-0 right-0 w-80 h-80 bg-blue-500/25 blur-3xl rounded-full animate-pulse-slower"></div>
+            </div>
+
+            <div class="container mx-auto px-6 relative z-10">
+                <h2 class="text-4xl font-bold text-center mb-16 text-gray-900 dark:text-slate-50">Events</h2>
+                <div id="events-container" class="grid grid-cols-1 md:grid-cols-2 gap-8">{{items}}</div>
+                <div id="event-load-more" class="text-center mt-12 mb-20">
+                    <button id="load-more-events-btn" onclick="loadMoreEvents()"
+                        class="px-8 py-3 bg-gradient-to-r from-purple-600 to-purple-800 text-white font-semibold rounded-md hover:from-purple-700 hover:to-purple-900 transition-all disabled:opacity-50 disabled:cursor-not-allowed flex items-center gap-2 mx-auto">
+                        <span id="load-more-events-text">Load More Events</span>
+                        <i id="load-more-events-spinner" class="fas fa-spinner fa-spin hidden"></i>
+                    </button>
+                </div>
+            </div>
+        </section>
+    </template>
+
+    <template id="tpl-event-card">
+        <a href="/event/{{slug}}" hx-get="/event/{{slug}}" hx-target="#main-content" hx-push-url="true"
+            class="group block">
+            <div class="relative rounded-xl overflow-hidden border border-gray-200 dark:border-slate-700 bg-white dark:bg-slate-900">
+                <img src="{{image}}" alt="{{title}}" class="w-full aspect-video object-cover event-card-image" onerror="this.style.display='none'; this.nextElementSibling.style.display='flex';">
+                <div class="w-full aspect-video bg-gradient-to-br from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 flex items-center justify-center event-card-placeholder" style="display:none;">
+                    <i class="fas fa-calendar-alt text-4xl text-purple-500 dark:text-purple-400"></i>
+                </div>
+                <div
+                    class="absolute inset-0 bg-black/40 opacity-0 group-hover:opacity-100 transition-all flex items-center justify-center">
+                    <div class="w-16 h-16 bg-gradient-to-br from-purple-600 to-blue-600 rounded-full flex items-center justify-center shadow-2xl">
+                        <i class="fas fa-calendar-check text-white text-xl"></i>
+                    </div>
+                </div>
+            </div>
+            <div class="p-4">
+                <h3 class="text-lg font-bold text-gray-900 dark:text-slate-50 mt-4 group-hover:text-purple-500 transition-colors line-clamp-2">{{title}}</h3>
+                <div class="flex items-center gap-4 text-sm text-gray-600 dark:text-slate-400 mt-2">
+                    <span><i class="far fa-calendar mr-1"></i>{{date}}</span>
+                    <span class="event-location"><i class="fas fa-map-marker-alt mr-1"></i>{{location}}</span>
+                </div>
+            </div>
+        </a>
+    </template>
+
+    <template id="tpl-event-detail">
+        <article class="py-20 bg-white dark:bg-slate-950 transition-colors duration-300">
+            <div class="container mx-auto px-6 max-w-5xl">
+                <a href="/events" hx-get="/events" hx-target="#main-content" hx-push-url="true"
+                    class="inline-flex items-center text-purple-600 dark:text-purple-400 hover:text-purple-700 mb-6 transition-colors">
+                    <i class="fas fa-arrow-left mr-2"></i> Back to Events
+                </a>
+                <h1 class="text-4xl md:text-5xl font-bold mb-6 text-gray-900 dark:text-slate-50">{{title}}</h1>
+                <div class="flex flex-wrap gap-4 text-sm text-gray-600 dark:text-slate-400 mb-8">
+                    <span><i class="far fa-calendar mr-2"></i>{{date}}</span>
+                    <span class="event-location"><i class="fas fa-map-marker-alt mr-2"></i>{{location}}</span>
+                    <span class="event-fee"><i class="fas fa-euro-sign mr-2"></i>{{fee}}</span>
+                </div>
+                <div class="w-full rounded-xl overflow-hidden shadow-lg mb-8 event-image-container">
+                    <img src="{{image}}" alt="{{title}}" class="w-full h-96 object-cover">
+                </div>
+                <div class="prose prose-lg dark:prose-invert max-w-none">
+                    <div class="event-content text-gray-700 dark:text-slate-300 leading-relaxed">
+                        {{content}}
+                    </div>
+                </div>
+                <div class="mt-8 pt-8 border-t border-gray-200 dark:border-slate-700">
+                    <a href="{{link}}" target="_blank" rel="noopener noreferrer"
+                        class="inline-flex items-center gap-2 px-6 py-3 bg-purple-600 text-white rounded-lg hover:bg-purple-700 transition-colors">
+                        <i class="fas fa-external-link-alt"></i> View Event on Meetup
+                    </a>
+                </div>
+            </div>
+        </article>
     </template>
 
     <template id="tpl-video-detail">
@@ -2542,6 +2624,18 @@ export default {
                     videoLoadMore.style.display = 'block';
                 }
             }
+
+            const eventItems = document.querySelectorAll('.event-item, .event-item-hidden');
+            const eventHidden = document.querySelectorAll('.event-item-hidden');
+            const eventLoadMore = document.getElementById('event-load-more');
+            
+            if (eventLoadMore) {
+                if (eventHidden.length === 0 || eventItems.length <= itemsPerPage) {
+                    eventLoadMore.style.display = 'none';
+                } else {
+                    eventLoadMore.style.display = 'block';
+                }
+            }
         }
         
         function loadMoreBlogs() {
@@ -2633,6 +2727,40 @@ export default {
                     btn.disabled = false;
                     if (spinner) spinner.classList.add('hidden');
                     if (text) text.textContent = 'Load More Videos';
+                    updateLoadMoreButtons();
+                }, itemsToShow * 50 + 200);
+            }, 300);
+        }
+
+        function loadMoreEvents() {
+            const btn = document.getElementById('load-more-events-btn');
+            const spinner = document.getElementById('load-more-events-spinner');
+            const text = document.getElementById('load-more-events-text');
+            const hiddenItems = document.querySelectorAll('.event-item-hidden');
+            const itemsToShow = Math.min(itemsPerPage, hiddenItems.length);
+            
+            if (itemsToShow === 0 || btn.disabled) return;
+            
+            // Désactiver le bouton et afficher le spinner
+            btn.disabled = true;
+            if (spinner) spinner.classList.remove('hidden');
+            if (text) text.textContent = 'Chargement...';
+            
+            // Simuler un délai pour rendre l'animation plus fluide
+            setTimeout(() => {
+                // Afficher les items cachés progressivement
+                Array.from(hiddenItems).slice(0, itemsToShow).forEach((item, index) => {
+                    setTimeout(() => {
+                        item.classList.remove('event-item-hidden');
+                        item.classList.add('event-item');
+                    }, index * 50);
+                });
+                
+                // Réactiver le bouton et masquer le spinner
+                setTimeout(() => {
+                    btn.disabled = false;
+                    if (spinner) spinner.classList.add('hidden');
+                    if (text) text.textContent = 'Load More Events';
                     updateLoadMoreButtons();
                 }, itemsToShow * 50 + 200);
             }, 300);
