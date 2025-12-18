@@ -946,6 +946,118 @@ export function generateVideoDetailContent(fullTemplate, video, currentUrl = '')
 }
 
 /**
+ * Sanitize et convertit le markdown en HTML pour le contenu des événements
+ * Fonction côté serveur (Cloudflare Worker) - version sans DOM
+ */
+function sanitizeEventContent(content) {
+    if (!content) return '';
+    
+    let text = content;
+    
+    // ÉTAPE 1: Convertir les liens markdown [text](url) en liens HTML AVANT d'échapper
+    text = text.replace(/\[([^\]]+)\]\(([^)]+)\)/g, (match, linkText, linkUrl) => {
+        // Échapper l'URL et le texte pour éviter les injections
+        const escapedUrl = linkUrl
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        const escapedText = linkText
+            .replace(/&/g, '&amp;')
+            .replace(/</g, '&lt;')
+            .replace(/>/g, '&gt;')
+            .replace(/"/g, '&quot;')
+            .replace(/'/g, '&#39;');
+        return `<a href="${escapedUrl}" target="_blank" rel="noopener noreferrer" class="text-purple-600 dark:text-purple-400 hover:underline">${escapedText}</a>`;
+    });
+    
+    // ÉTAPE 2: Protéger les liens HTML qu'on vient de créer
+    const linkPlaceholder = '___LINK___';
+    const links = [];
+    let linkIndex = 0;
+    
+    text = text.replace(/<a[^>]*>[\s\S]*?<\/a>/g, (match) => {
+        links.push(match);
+        return `${linkPlaceholder}${linkIndex++}${linkPlaceholder}`;
+    });
+    
+    // ÉTAPE 3: Échapper le HTML restant pour éviter les injections XSS
+    text = text
+        .replace(/&/g, '&amp;')
+        .replace(/</g, '&lt;')
+        .replace(/>/g, '&gt;')
+        .replace(/"/g, '&quot;')
+        .replace(/'/g, '&#39;');
+    
+    // ÉTAPE 4: Restaurer les liens (ils sont déjà échappés)
+    links.forEach((link, index) => {
+        text = text.replace(`${linkPlaceholder}${index}${linkPlaceholder}`, link);
+    });
+    
+    // Convertir **bold** en <strong> (mais pas si c'est dans un lien)
+    text = text.replace(/\*\*([^*]+)\*\*/g, '<strong>$1</strong>');
+    
+    // Convertir *italic* en <em> (mais pas si c'est dans un lien ou déjà en bold)
+    // On évite les conflits en vérifiant qu'on n'est pas dans une balise <a> ou <strong>
+    // Version simplifiée sans lookbehind pour compatibilité
+    text = text.replace(/\*([^*]+)\*/g, (match, content, offset) => {
+        const before = text.substring(0, offset);
+        const after = text.substring(offset + match.length);
+        
+        // Vérifier si on est dans une balise <a> ou <strong>
+        const lastOpenA = before.lastIndexOf('<a');
+        const lastCloseA = before.lastIndexOf('</a>');
+        const lastOpenStrong = before.lastIndexOf('<strong>');
+        const lastCloseStrong = before.lastIndexOf('</strong>');
+        
+        // Si on est dans un lien, ne pas convertir
+        if (lastOpenA > lastCloseA) {
+            return match;
+        }
+        
+        // Si on est dans un strong, ne pas convertir
+        if (lastOpenStrong > lastCloseStrong) {
+            return match;
+        }
+        
+        return `<em>${content}</em>`;
+    });
+    
+    // Convertir les sauts de ligne en <br>
+    text = text.replace(/\n/g, '<br>');
+    
+    // Convertir les URLs brutes en liens cliquables (si pas déjà dans un lien)
+    // On doit faire attention à ne pas convertir les URLs déjà dans des balises <a>
+    const urlRegex = /(https?:\/\/[^\s<>"']+)/g;
+    text = text.replace(urlRegex, (url, offset) => {
+        // Vérifier si on est déjà dans une balise <a>
+        const beforeMatch = text.substring(0, offset);
+        const afterMatch = text.substring(offset);
+        
+        // Compter les balises <a> ouvertes et fermées avant cette position
+        const openTags = (beforeMatch.match(/<a[^>]*>/g) || []).length;
+        const closeTags = (beforeMatch.match(/<\/a>/g) || []).length;
+        
+        // Si on est dans un lien, ne pas convertir
+        if (openTags > closeTags) {
+            return url;
+        }
+        
+        // Vérifier si l'URL est déjà dans un href
+        if (text.includes(`href="${url}"`) || text.includes(`href='${url}'`)) {
+            return url;
+        }
+        
+        // Déséchapper l'URL pour le lien
+        const cleanUrl = url.replace(/&amp;/g, '&');
+        return `<a href="${cleanUrl}" target="_blank" rel="noopener noreferrer" class="text-purple-600 dark:text-purple-400 hover:underline">${url}</a>`;
+    });
+    
+    return text;
+}
+
+/**
  * Génère le contenu de détail d'un événement
  */
 export function generateEventDetailContent(fullTemplate, event, currentUrl = '') {
@@ -984,13 +1096,18 @@ export function generateEventDetailContent(fullTemplate, event, currentUrl = '')
     }
     
     const pubDate = new Date(event.pubDate).toLocaleDateString('fr-FR', { year: 'numeric', month: 'long', day: 'numeric' });
+    
+    // Sanitizer le contenu avant de l'injecter
+    const rawContent = event.content || event.description || '';
+    const sanitizedContent = sanitizeEventContent(rawContent);
+    
     let content = replacePlaceholders(detailTpl, {
         title: event.title,
         date: pubDate,
         location: event.location || '',
         fee: event.fee || '',
         image: event.image || '',
-        content: event.content || event.description || '',
+        content: sanitizedContent,
         link: event.link
     });
     
