@@ -2787,18 +2787,49 @@ export default {
             setTimeout(scrollToTop, 100);
         });
         
-        document.body.addEventListener('htmx:historyRestore', function() {
-            // Fermer le menu mobile s'il est ouvert
+        document.body.addEventListener('htmx:historyRestore', function(event) {
             closeMobileMenuIfOpen();
+            
+            // Vérifier que le contenu a bien été restauré
+            setTimeout(() => {
+                const mainContent = document.getElementById('main-content');
+                if (mainContent && mainContent.innerHTML.trim() === '') {
+                    const currentPath = window.location.pathname;
+                    htmx.ajax('GET', currentPath, {
+                        target: '#main-content',
+                        swap: 'innerHTML'
+                    });
+                }
+            }, 150);
+            
             setTimeout(updateActiveNav, 50);
-            // Scroller vers le haut lors de la restauration de l'historique
             setTimeout(scrollToTop, 100);
         });
 
         // Mettre à jour lors des changements d'URL (navigation navigateur)
-        window.addEventListener('popstate', function() {
-            // Fermer le menu mobile s'il est ouvert
+        window.addEventListener('popstate', function(event) {
             closeMobileMenuIfOpen();
+            
+            const currentPath = window.location.pathname;
+            const mainContent = document.getElementById('main-content');
+            
+            // Vérifier si le contenu est vide après le popstate
+            // HTMX devrait restaurer automatiquement, mais on s'assure que ça fonctionne
+            setTimeout(() => {
+                if (mainContent) {
+                    const isEmpty = mainContent.innerHTML.trim() === '' || 
+                                   (mainContent.children.length === 0 && mainContent.innerHTML.includes('hx-get='));
+                    
+                    if (isEmpty) {
+                        // Forcer HTMX à charger le contenu depuis le serveur
+                        htmx.ajax('GET', currentPath, {
+                            target: '#main-content',
+                            swap: 'innerHTML'
+                        });
+                    }
+                }
+            }, 100);
+            
             updateActiveNav();
             setTimeout(scrollToTop, 100);
         });
