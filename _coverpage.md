@@ -2,7 +2,7 @@
   <i class="fas fa-link"></i>
 </div>
 
-# WebSuite CMS
+# WebSuite Platform
 
 > **CMS headless moderne** basé sur RSS (Substack, YouTube, Podcasts, Meetup)  
 > Déployable sur Cloudflare Pages en un clic
