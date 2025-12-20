@@ -654,6 +654,108 @@
       max-width: 200px;
       height: auto;
     }
+    
+    /* Styles pour la coverpage (hero) */
+    .cover {
+      background: linear-gradient(135deg, #0f0f0f 0%, #1a1a1a 100%) !important;
+      color: #ffffff !important;
+    }
+    
+    .cover .cover-main {
+      color: #ffffff !important;
+    }
+    
+    .cover .cover-main h1 {
+      color: #ffffff !important;
+      font-size: 4em !important;
+      font-weight: 700 !important;
+      margin-bottom: 0.5em !important;
+      text-shadow: 0 4px 8px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    .cover .cover-main blockquote {
+      color: #d1d5db !important;
+      font-size: 1.5em !important;
+      border-left: none !important;
+      margin: 1em 0 2em 0 !important;
+    }
+    
+    .cover .cover-main p {
+      color: #e5e7eb !important;
+      font-size: 1.2em !important;
+    }
+    
+    .cover .cover-main a {
+      display: inline-block;
+      padding: 0.75em 2em;
+      margin: 0.5em;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: 2px solid;
+    }
+    
+    .cover .cover-main a:first-child {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      border-color: #6366f1;
+      color: #ffffff;
+      box-shadow: 0 4px 12px rgba(99, 102, 241, 0.4);
+    }
+    
+    .cover .cover-main a:first-child:hover {
+      transform: translateY(-2px);
+      box-shadow: 0 6px 16px rgba(99, 102, 241, 0.6);
+    }
+    
+    .cover .cover-main a:not(:first-child) {
+      background: transparent;
+      border-color: #6366f1;
+      color: #818cf8;
+    }
+    
+    .cover .cover-main a:not(:first-child):hover {
+      background: rgba(99, 102, 241, 0.1);
+      border-color: #818cf8;
+      color: #a5b4fc;
+    }
+    
+    /* Light theme pour coverpage */
+    body.light-theme .cover {
+      background: linear-gradient(135deg, #ffffff 0%, #f9fafb 100%) !important;
+      color: #111827 !important;
+    }
+    
+    body.light-theme .cover .cover-main {
+      color: #111827 !important;
+    }
+    
+    body.light-theme .cover .cover-main h1 {
+      color: #111827 !important;
+    }
+    
+    body.light-theme .cover .cover-main blockquote {
+      color: #4b5563 !important;
+    }
+    
+    body.light-theme .cover .cover-main p {
+      color: #374151 !important;
+    }
+    
+    body.light-theme .cover .cover-main a:first-child {
+      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
+      color: #ffffff;
+    }
+    
+    body.light-theme .cover .cover-main a:not(:first-child) {
+      border-color: #6366f1;
+      color: #6366f1;
+    }
+    
+    body.light-theme .cover .cover-main a:not(:first-child):hover {
+      background: rgba(99, 102, 241, 0.1);
+      color: #4f46e5;
+    }
   </style>
 </head>
 <body class="dark-theme">
@@ -698,7 +800,7 @@
         crossChapter: true,
         crossChapterText: true,
       },
-      coverpage: false,
+      coverpage: true,
       notFoundPage: true,
       executeScript: true,
       mergeNavbar: true,

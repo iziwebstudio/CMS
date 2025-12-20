@@ -1,0 +1,11 @@
+# WebSuite CMS
+
+> **CMS headless moderne** basé sur RSS (Substack, YouTube, Podcasts, Meetup)  
+> Déployable sur Cloudflare Pages en un clic
+
+[🚀 Démarrage Rapide](guide/quick-start.md)
+[📖 Lire la Documentation](README.md)
+
+<!-- background color -->
+![color](#0f0f0f)
+
