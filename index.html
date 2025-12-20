@@ -211,15 +211,22 @@
 <body>
   <div id="app">Chargement...</div>
   <script>
+    // Configuration pour GitHub Pages
+    // Si votre site est à la racine (username.github.io), laissez basePath vide
+    // Si votre site est dans un repo (username.github.io/repo-name), décommentez et modifiez :
+    const GITHUB_PAGES_BASE = ''; // Exemple: '/StackPagesCMS' ou '/ProdBeta'
+    
     window.$docsify = {
       name: 'WebSuite CMS',
       repo: '',
-      // Pour GitHub Pages dans un sous-dossier, décommentez et modifiez :
-      // basePath: '/nom-du-repo',
+      basePath: GITHUB_PAGES_BASE,
       loadSidebar: true,
       subMaxLevel: 2,
       auto2top: true,
-      relativePath: true,
+      relativePath: !GITHUB_PAGES_BASE, // false si basePath est défini
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
       search: {
         maxAge: 86400000,
         paths: 'auto',
