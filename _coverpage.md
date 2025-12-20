@@ -4,8 +4,8 @@
 
 # WebSuite Platform
 
-> **CMS headless moderne** basé sur RSS (Substack, YouTube, Podcasts, Meetup)  
-> Déployable sur Cloudflare Pages en un clic
+> Documentation complète pour développeurs  
+> CMS headless moderne basé sur RSS, déployable sur Cloudflare Pages
 
 [🚀 Démarrage Rapide](guide/quick-start.md)
 [📖 Lire la Documentation](README.md)

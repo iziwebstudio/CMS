@@ -581,8 +581,10 @@
       color: #ffffff !important;
       font-size: 4em !important;
       font-weight: 700 !important;
-      margin-bottom: 0.5em !important;
+      margin-bottom: 0.3em !important;
       background: none !important;
+      background-color: transparent !important;
+      padding: 0 !important;
       text-shadow: 
         0 0 10px rgba(139, 92, 246, 0.5),
         0 0 20px rgba(139, 92, 246, 0.3),
@@ -593,11 +595,12 @@
     
     .cover .cover-main blockquote {
       color: #d1d5db !important;
-      font-size: 1.5em !important;
+      font-size: 1.3em !important;
       border-left: none !important;
-      margin: 1em 0 2em 0 !important;
+      margin: 0.5em 0 2em 0 !important;
       position: relative;
       z-index: 2;
+      line-height: 1.6;
     }
     
     .cover .cover-main p {
@@ -616,27 +619,6 @@
       font-weight: 600;
       transition: all 0.3s;
       border: 2px solid;
-    }
-    
-    .cover .cover-main a:first-child {
-      background: linear-gradient(135deg, #6366f1 0%, #4f46e5 100%);
-      border-color: #6366f1;
-      color: #ffffff;
-      box-shadow: 
-        0 4px 12px rgba(99, 102, 241, 0.4),
-        0 0 20px rgba(99, 102, 241, 0.2);
-      position: relative;
-      z-index: 2;
-    }
-    
-    .cover .cover-main a:first-child:hover {
-      transform: translateY(-2px);
-      box-shadow: 
-        0 6px 16px rgba(99, 102, 241, 0.6),
-        0 0 30px rgba(99, 102, 241, 0.4);
-    }
-    
-    .cover .cover-main a:not(:first-child) {
       background: #ffffff;
       border-color: #ffffff;
       color: #000000;
@@ -645,7 +627,7 @@
       z-index: 2;
     }
     
-    .cover .cover-main a:not(:first-child):hover {
+    .cover .cover-main a:hover {
       background: #f3f4f6;
       border-color: #ffffff;
       color: #000000;
