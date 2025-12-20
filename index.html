@@ -711,6 +711,136 @@
           hook.afterEach(function(html, next) {
             next(html);
           });
+          
+          // Plugin personnalisé pour navigation précédent/suivant
+          hook.doneEach(function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+            
+            // Récupérer tous les liens de la sidebar (seulement les liens vers des pages, pas les titres)
+            const allLinks = Array.from(sidebar.querySelectorAll('a[href]')).filter(link => {
+              const href = link.getAttribute('href');
+              return href && !href.startsWith('#') && (href.endsWith('.md') || href === 'README.md' || !href.includes('#'));
+            });
+            
+            const currentPath = vm.route.path;
+            const currentFile = currentPath.split('/').pop() || 'README.md';
+            
+            // Trouver l'index du lien actuel
+            let currentIndex = -1;
+            allLinks.forEach((link, index) => {
+              const href = link.getAttribute('href');
+              const linkFile = href.split('/').pop() || href;
+              
+              // Comparer les noms de fichiers
+              if (linkFile === currentFile || 
+                  (currentFile === 'README.md' && (href === 'README.md' || href === './README.md' || href === '/README.md')) ||
+                  (currentPath.includes(href.replace('./', '').replace('/', '')) && href !== '#') ||
+                  (href.includes(currentFile) && currentFile !== 'README.md')) {
+                currentIndex = index;
+              }
+            });
+            
+            // Si on trouve la page actuelle
+            if (currentIndex >= 0) {
+              // Créer la navigation
+              const navContainer = document.createElement('div');
+              navContainer.className = 'custom-pagination';
+              navContainer.style.cssText = 'margin-top: 4em; padding-top: 2em; border-top: 2px solid; display: flex; justify-content: space-between; gap: 1em;';
+              
+              if (document.body.classList.contains('dark-theme')) {
+                navContainer.style.borderTopColor = '#2d2d2d';
+              } else {
+                navContainer.style.borderTopColor = '#e5e7eb';
+              }
+              
+              // Bouton Précédent
+              if (currentIndex > 0) {
+                const prevLink = allLinks[currentIndex - 1];
+                const prevBtn = document.createElement('a');
+                prevBtn.href = prevLink.getAttribute('href');
+                prevBtn.className = 'pagination-btn prev-btn';
+                prevBtn.innerHTML = '← ' + prevLink.textContent.trim();
+                prevBtn.style.cssText = 'flex: 1; padding: 1em 1.5em; border-radius: 8px; text-decoration: none; text-align: left; display: flex; align-items: center; min-width: 150px;';
+                if (document.body.classList.contains('dark-theme')) {
+                  prevBtn.style.cssText += 'background-color: #1a1a1a; border: 1px solid #374151; color: #e5e7eb;';
+                } else {
+                  prevBtn.style.cssText += 'background-color: #ffffff; border: 1px solid #d1d5db; color: #374151;';
+                }
+                prevBtn.addEventListener('mouseenter', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#2d2d2d';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#818cf8';
+                  } else {
+                    this.style.backgroundColor = '#f3f4f6';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#6366f1';
+                  }
+                });
+                prevBtn.addEventListener('mouseleave', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#1a1a1a';
+                    this.style.borderColor = '#374151';
+                    this.style.color = '#e5e7eb';
+                  } else {
+                    this.style.backgroundColor = '#ffffff';
+                    this.style.borderColor = '#d1d5db';
+                    this.style.color = '#374151';
+                  }
+                });
+                navContainer.appendChild(prevBtn);
+              }
+              
+              // Bouton Suivant
+              if (currentIndex < allLinks.length - 1) {
+                const nextLink = allLinks[currentIndex + 1];
+                const nextBtn = document.createElement('a');
+                nextBtn.href = nextLink.getAttribute('href');
+                nextBtn.className = 'pagination-btn next-btn';
+                nextBtn.innerHTML = nextLink.textContent.trim() + ' →';
+                nextBtn.style.cssText = 'flex: 1; padding: 1em 1.5em; border-radius: 8px; text-decoration: none; text-align: right; display: flex; align-items: center; justify-content: flex-end; min-width: 150px;';
+                if (document.body.classList.contains('dark-theme')) {
+                  nextBtn.style.cssText += 'background-color: #1a1a1a; border: 1px solid #374151; color: #e5e7eb;';
+                } else {
+                  nextBtn.style.cssText += 'background-color: #ffffff; border: 1px solid #d1d5db; color: #374151;';
+                }
+                nextBtn.addEventListener('mouseenter', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#2d2d2d';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#818cf8';
+                  } else {
+                    this.style.backgroundColor = '#f3f4f6';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#6366f1';
+                  }
+                });
+                nextBtn.addEventListener('mouseleave', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#1a1a1a';
+                    this.style.borderColor = '#374151';
+                    this.style.color = '#e5e7eb';
+                  } else {
+                    this.style.backgroundColor = '#ffffff';
+                    this.style.borderColor = '#d1d5db';
+                    this.style.color = '#374151';
+                  }
+                });
+                navContainer.appendChild(nextBtn);
+              }
+              
+              // Supprimer l'ancienne navigation si elle existe
+              const oldNav = document.querySelector('.custom-pagination');
+              if (oldNav) oldNav.remove();
+              
+              // Ajouter la nouvelle navigation
+              const content = document.querySelector('.markdown-section');
+              if (content) {
+                content.appendChild(navContainer);
+              }
+            }
+          });
         }
       ]
     }
