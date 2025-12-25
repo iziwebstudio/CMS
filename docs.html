@@ -11,6 +11,7 @@
             darkMode: 'class',
         }
     </script>
+    <script src="https://cdn.jsdelivr.net/npm/marked@11/marked.min.js"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
         /* Markdown Styles */
@@ -375,11 +376,10 @@
             document.documentElement.classList.add('dark');
         }
 
-        // Load markdown content - récupère directement le HTML depuis le serveur
+        // Load markdown content
         async function loadDocContent(path) {
             try {
                 // Convert path from /docs/guide/quick-start to /api/docs/guide/quick-start
-                // Le serveur retourne directement le HTML converti
                 const apiPath = path.replace('/docs', '/api/docs');
                 const response = await fetch(apiPath);
                 
@@ -387,9 +387,16 @@
                     throw new Error(`Failed to load: ${response.status}`);
                 }
                 
-                // Le serveur retourne directement le HTML
-                const html = await response.text();
-                return html;
+                const { markdown } = await response.json();
+                
+                // Convert markdown to HTML using marked.js
+                if (typeof marked !== 'undefined') {
+                    const html = marked.parse(markdown);
+                    return `<div class="markdown-content">${html}</div>`;
+                } else {
+                    // Fallback: return raw markdown
+                    return `<pre class="markdown-content">${markdown}</pre>`;
+                }
             } catch (error) {
                 console.error('Error loading doc:', error);
                 return `<div class="p-8 text-center">
@@ -405,11 +412,7 @@
             const path = window.location.pathname;
             let initialPath = '/docs/guide/quick-start';
             
-            // Si on est sur la racine, rediriger vers la doc
-            if (path === '/' || path === '/index.html') {
-                initialPath = '/docs/guide/quick-start';
-                window.history.replaceState({}, '', initialPath);
-            } else if (path.startsWith('/docs/') && path !== '/docs' && path !== '/docs/') {
+            if (path.startsWith('/docs/') && path !== '/docs' && path !== '/docs.html' && path !== '/docs/') {
                 initialPath = path;
             }
 

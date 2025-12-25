@@ -287,6 +287,19 @@ export async function onRequest(context) {
         return env.ASSETS.fetch(ideRequest);
     }
     
+    // Route pour la documentation - servir index.html (qui est maintenant la doc HTMX)
+    if (url.pathname.startsWith('/docs')) {
+        // Toutes les routes /docs/* servent index.html qui gère le routing côté client
+        const docsRequest = new Request(new URL('/index.html', request.url).toString());
+        return env.ASSETS.fetch(docsRequest);
+    }
+    
+    // Route racine - servir la documentation
+    if (url.pathname === '/' || url.pathname === '/index.html') {
+        const indexRequest = new Request(new URL('/index.html', request.url).toString());
+        return env.ASSETS.fetch(indexRequest);
+    }
+    
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
         // Si /api/* → continuer vers les handlers Functions
         if (url.pathname.startsWith('/api/')) {
