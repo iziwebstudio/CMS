@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Documentation - WebSuite Platform</title>
+    <title>WebSuite Platform - Installation & Configuration</title>
     <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%239333ea'/%3E%3Cpath d='M8.5 13.5L7 15C5.9 16.1 5.9 17.9 7 19C8.1 20.1 9.9 20.1 11 19L13.5 16.5C14.6 15.4 14.6 13.6 13.5 12.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 10.5L17 9C18.1 7.9 18.1 6.1 17 5C15.9 3.9 14.1 3.9 13 5L10.5 7.5C9.4 8.6 9.4 10.4 10.5 11.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 14L14 10' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
     <script src="https://cdn.tailwindcss.com"></script>
     <script>
@@ -11,73 +11,81 @@
             darkMode: 'class',
         }
     </script>
+    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
-        /* Markdown Styles */
-        .markdown-content {
-            @apply prose prose-slate dark:prose-invert max-w-none;
+        /* Smooth scrolling */
+        html {
+            scroll-behavior: smooth;
         }
-        .markdown-content h1 {
-            @apply text-4xl font-bold mb-6 text-slate-900 dark:text-slate-50 border-b border-slate-200 dark:border-slate-700 pb-4;
+        
+        /* Code blocks styling */
+        pre {
+            @apply bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-lg overflow-x-auto my-4;
         }
-        .markdown-content h2 {
-            @apply text-3xl font-bold mt-8 mb-4 text-slate-800 dark:text-slate-100;
+        
+        pre code {
+            @apply text-sm font-mono;
         }
-        .markdown-content h3 {
-            @apply text-2xl font-semibold mt-6 mb-3 text-slate-700 dark:text-slate-200;
-        }
-        .markdown-content h4 {
-            @apply text-xl font-semibold mt-4 mb-2 text-slate-700 dark:text-slate-300;
-        }
-        .markdown-content p {
-            @apply mb-4 text-slate-600 dark:text-slate-300 leading-7;
-        }
-        .markdown-content ul, .markdown-content ol {
-            @apply mb-4 ml-6 space-y-2;
-        }
-        .markdown-content li {
-            @apply text-slate-600 dark:text-slate-300;
-        }
-        .markdown-content code {
+        
+        code:not(pre code) {
             @apply bg-slate-100 dark:bg-slate-800 text-purple-600 dark:text-purple-400 px-2 py-1 rounded text-sm font-mono;
         }
-        .markdown-content pre {
-            @apply bg-slate-900 dark:bg-slate-950 p-6 rounded-lg overflow-x-auto mb-4;
+        
+        /* Content styling */
+        .doc-content h1 {
+            @apply text-4xl font-bold mb-6 text-slate-900 dark:text-slate-50 border-b border-slate-200 dark:border-slate-700 pb-4 mt-8;
         }
-        .markdown-content pre code {
-            @apply bg-transparent text-slate-100 p-0;
+        
+        .doc-content h2 {
+            @apply text-3xl font-bold mt-8 mb-4 text-slate-800 dark:text-slate-100;
         }
-        .markdown-content blockquote {
-            @apply border-l-4 border-purple-500 pl-4 italic my-4 text-slate-500 dark:text-slate-400;
+        
+        .doc-content h3 {
+            @apply text-2xl font-semibold mt-6 mb-3 text-slate-700 dark:text-slate-200;
         }
-        .markdown-content a {
+        
+        .doc-content p {
+            @apply mb-4 text-slate-600 dark:text-slate-300 leading-7;
+        }
+        
+        .doc-content ul, .doc-content ol {
+            @apply mb-4 ml-6 space-y-2;
+        }
+        
+        .doc-content li {
+            @apply text-slate-600 dark:text-slate-300;
+        }
+        
+        .doc-content a {
             @apply text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline;
         }
-        .markdown-content table {
-            @apply w-full border-collapse mb-4;
+        
+        .doc-content blockquote {
+            @apply border-l-4 border-purple-500 pl-4 italic my-4 text-slate-500 dark:text-slate-400;
         }
-        .markdown-content th {
-            @apply bg-slate-100 dark:bg-slate-800 px-4 py-2 text-left font-semibold border border-slate-300 dark:border-slate-700;
-        }
-        .markdown-content td {
-            @apply px-4 py-2 border border-slate-300 dark:border-slate-700;
-        }
-        .markdown-content img {
-            @apply rounded-lg shadow-lg my-4;
-        }
+        
         /* Custom scrollbar */
         ::-webkit-scrollbar {
             width: 8px;
             height: 8px;
         }
+        
         ::-webkit-scrollbar-track {
             @apply bg-slate-100 dark:bg-slate-900;
         }
+        
         ::-webkit-scrollbar-thumb {
             @apply bg-slate-300 dark:bg-slate-700 rounded-full;
         }
+        
         ::-webkit-scrollbar-thumb:hover {
             @apply bg-slate-400 dark:bg-slate-600;
+        }
+        
+        /* Active nav link */
+        .nav-link.active {
+            @apply bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-semibold;
         }
     </style>
 </head>
@@ -87,252 +95,72 @@
         <aside id="docs-sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col h-screen sticky top-0">
             <!-- Header -->
             <div class="p-6 border-b border-slate-200 dark:border-slate-700">
-                <a href="/docs/guide/quick-start" class="flex items-center gap-3">
+                <div class="flex items-center gap-3">
                     <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
                         <i class="fas fa-book text-white text-lg"></i>
                     </div>
                     <div>
                         <h1 class="text-lg font-bold text-slate-900 dark:text-slate-50">WebSuite Platform</h1>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Documentation</p>
+                        <p class="text-xs text-slate-500 dark:text-slate-400">Guide d'Installation</p>
                     </div>
-                </a>
+                </div>
             </div>
 
             <!-- Navigation -->
             <nav class="flex-1 overflow-y-auto p-4">
                 <div class="space-y-1">
-                    <!-- Home -->
-                    <a href="/docs/guide/quick-start" class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors group">
+                    <a href="#home" 
+                       onclick="showSection('home'); return false;"
+                       class="nav-link active flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                         <i class="fas fa-home w-4 text-center"></i>
                         <span>Accueil</span>
                     </a>
 
-                    <!-- Guide -->
                     <div class="mt-4">
                         <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Guide
+                            Installation
                         </div>
-                        <a href="/docs/guide/quick-start" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <a href="#quick-start" 
+                           onclick="showSection('quick-start'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <i class="fas fa-rocket w-4 text-center text-purple-500"></i>
                             <span>Démarrage Rapide</span>
                         </a>
-                        <a href="/docs/guide/installation" 
-/guide/installation" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <a href="#installation" 
+                           onclick="showSection('installation'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <i class="fas fa-download w-4 text-center text-purple-500"></i>
                             <span>Installation</span>
                         </a>
-                        <a href="/docs/guide/development" 
-/guide/development" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <a href="#local-dev" 
+                           onclick="showSection('local-dev'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <i class="fas fa-code w-4 text-center text-purple-500"></i>
                             <span>Développement Local</span>
                         </a>
-                        <a href="/docs/guide/structure" 
-/guide/structure" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-sitemap w-4 text-center text-purple-500"></i>
-                            <span>Structure du Projet</span>
-                        </a>
                     </div>
 
-                    <!-- Déploiement -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Déploiement
-                        </div>
-                        <a href="/docs/deployment/cloudflare-pages" 
-/deployment/cloudflare-pages" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fab fa-cloudflare w-4 text-center text-purple-500"></i>
-                            <span>Cloudflare Pages</span>
-                        </a>
-                        <a href="/docs/deployment/custom-domain" 
-/deployment/custom-domain" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-globe w-4 text-center text-purple-500"></i>
-                            <span>Domaine Personnalisé</span>
-                        </a>
-                        <a href="/docs/deployment/environment-variables" 
-/deployment/environment-variables" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-cog w-4 text-center text-purple-500"></i>
-                            <span>Variables d'Environnement</span>
-                        </a>
-                    </div>
-
-                    <!-- Configuration -->
                     <div class="mt-4">
                         <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
                             Configuration
                         </div>
-                        <a href="/docs/configuration/overview" 
-/configuration/overview" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-sliders-h w-4 text-center text-purple-500"></i>
-                            <span>Vue d'ensemble</span>
+                        <a href="#env-vars" 
+                           onclick="showSection('env-vars'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                            <i class="fas fa-cog w-4 text-center text-purple-500"></i>
+                            <span>Variables d'Environnement</span>
                         </a>
-                        <a href="/docs/configuration/rss-feeds" 
-/configuration/rss-feeds" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <a href="#rss-feeds" 
+                           onclick="showSection('rss-feeds'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <i class="fas fa-rss w-4 text-center text-purple-500"></i>
                             <span>Flux RSS</span>
                         </a>
-                        <a href="/docs/configuration/seo" 
-/configuration/seo" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-search w-4 text-center text-purple-500"></i>
-                            <span>SEO & Métadonnées</span>
-                        </a>
-                    </div>
-
-                    <!-- API -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            API
-                        </div>
-                        <a href="/docs/api/overview" 
-/api/overview" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
+                        <a href="#api" 
+                           onclick="showSection('api'); return false;"
+                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
                             <i class="fas fa-plug w-4 text-center text-purple-500"></i>
-                            <span>Vue d'ensemble</span>
-                        </a>
-                        <a href="/docs/api/public-endpoints" 
-/api/public-endpoints" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-unlock w-4 text-center text-purple-500"></i>
-                            <span>Endpoints Publics</span>
-                        </a>
-                        <a href="/docs/api/protected-endpoints" 
-/api/protected-endpoints" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-lock w-4 text-center text-purple-500"></i>
-                            <span>Endpoints Protégés</span>
-                        </a>
-                        <a href="/docs/api/authentication" 
-/api/authentication" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-key w-4 text-center text-purple-500"></i>
-                            <span>Authentification</span>
-                        </a>
-                        <a href="/docs/api/examples" 
-/api/examples" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-code w-4 text-center text-purple-500"></i>
-                            <span>Exemples</span>
-                        </a>
-                    </div>
-
-                    <!-- Contenu -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Contenu
-                        </div>
-                        <a href="/docs/content/articles" 
-/content/articles" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-newspaper w-4 text-center text-purple-500"></i>
-                            <span>Articles</span>
-                        </a>
-                        <a href="/docs/content/videos" 
-/content/videos" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fab fa-youtube w-4 text-center text-purple-500"></i>
-                            <span>Vidéos</span>
-                        </a>
-                        <a href="/docs/content/podcasts" 
-/content/podcasts" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-podcast w-4 text-center text-purple-500"></i>
-                            <span>Podcasts</span>
-                        </a>
-                        <a href="/docs/content/events" 
-/content/events" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-calendar w-4 text-center text-purple-500"></i>
-                            <span>Événements</span>
-                        </a>
-                    </div>
-
-                    <!-- Interface Admin -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Interface Admin
-                        </div>
-                        <a href="/docs/admin/dashboard" 
-/admin/dashboard" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-tachometer-alt w-4 text-center text-purple-500"></i>
-                            <span>Dashboard</span>
-                        </a>
-                        <a href="/docs/admin/features" 
-/admin/features" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-star w-4 text-center text-purple-500"></i>
-                            <span>Fonctionnalités</span>
-                        </a>
-                        <a href="/docs/admin/content-management" 
-/admin/content-management" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-edit w-4 text-center text-purple-500"></i>
-                            <span>Gestion du Contenu</span>
-                        </a>
-                        <a href="/docs/admin/api-explorer" 
-/admin/api-explorer" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-flask w-4 text-center text-purple-500"></i>
-                            <span>API Explorer</span>
-                        </a>
-                    </div>
-
-                    <!-- Avancé -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Avancé
-                        </div>
-                        <a href="/docs/advanced/caching" 
-/advanced/caching" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-tachometer-alt w-4 text-center text-purple-500"></i>
-                            <span>Cache & Performance</span>
-                        </a>
-                        <a href="/docs/advanced/security" 
-/advanced/security" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-shield-alt w-4 text-center text-purple-500"></i>
-                            <span>Sécurité</span>
-                        </a>
-                        <a href="/docs/advanced/htmx-ssr" 
-/advanced/htmx-ssr" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-code w-4 text-center text-purple-500"></i>
-                            <span>HTMX & SSR</span>
-                        </a>
-                        <a href="/docs/advanced/customization" 
-/advanced/customization" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-paint-brush w-4 text-center text-purple-500"></i>
-                            <span>Personnalisation</span>
-                        </a>
-                    </div>
-
-                    <!-- FAQ -->
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            FAQ
-                        </div>
-                        <a href="/docs/faq/general" 
-/faq/general" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-question-circle w-4 text-center text-purple-500"></i>
-                            <span>Questions Fréquentes</span>
-                        </a>
-                        <a href="/docs/faq/troubleshooting" 
-/faq/troubleshooting" 
-                           class="flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-tools w-4 text-center text-purple-500"></i>
-                            <span>Dépannage</span>
+                            <span>API</span>
                         </a>
                     </div>
                 </div>
@@ -352,13 +180,388 @@
         <!-- Main Content -->
         <main class="flex-1 overflow-y-auto">
             <div id="docs-content" class="max-w-4xl mx-auto p-8">
-                <!-- Loading state -->
-                <div class="flex items-center justify-center h-64">
-                    <div class="text-center">
-                        <div class="animate-spin rounded-full h-12 w-12 border-b-2 border-purple-500 mx-auto mb-4"></div>
-                        <p class="text-slate-500 dark:text-slate-400">Chargement de la documentation...</p>
+                <!-- Home Section -->
+                <section id="home" class="doc-content">
+                    <div class="text-center mb-12">
+                        <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl mb-6">
+                            <i class="fas fa-book text-white text-3xl"></i>
+                        </div>
+                        <h1 class="text-5xl font-bold text-slate-900 dark:text-slate-50 mb-4">WebSuite Platform</h1>
+                        <p class="text-xl text-slate-600 dark:text-slate-400 mb-8">Guide d'Installation et de Configuration</p>
                     </div>
-                </div>
+
+                    <div class="grid md:grid-cols-2 gap-6 mb-12">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-rocket text-purple-600 dark:text-purple-400 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">Démarrage Rapide</h3>
+                            <p class="text-slate-600 dark:text-slate-300 mb-4">Déployez votre CMS sur Cloudflare Pages en moins de 5 minutes</p>
+                            <a href="#quick-start" onclick="showSection('quick-start'); return false;" class="text-purple-600 dark:text-purple-400 font-semibold hover:underline">
+                                Commencer →
+                            </a>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
+                                <i class="fas fa-cog text-blue-600 dark:text-blue-400 text-xl"></i>
+                            </div>
+                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">Configuration</h3>
+                            <p class="text-slate-600 dark:text-slate-300 mb-4">Configurez vos flux RSS et variables d'environnement</p>
+                            <a href="#env-vars" onclick="showSection('env-vars'); return false;" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
+                                Configurer →
+                            </a>
+                        </div>
+                    </div>
+
+                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-8 rounded-xl border border-purple-200 dark:border-purple-800">
+                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-4">Caractéristiques</h2>
+                        <div class="grid md:grid-cols-2 gap-4">
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <strong class="text-slate-900 dark:text-slate-50">Edge Functions</strong>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">Runtime Bun.js pour des performances optimales</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <strong class="text-slate-900 dark:text-slate-50">Multi-sources</strong>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">Substack, YouTube, Podcasts, Meetup</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <strong class="text-slate-900 dark:text-slate-50">Cache intelligent</strong>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">180 secondes de cache pour des réponses ultra-rapides</p>
+                                </div>
+                            </div>
+                            <div class="flex items-start gap-3">
+                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
+                                <div>
+                                    <strong class="text-slate-900 dark:text-slate-50">100% Gratuit</strong>
+                                    <p class="text-sm text-slate-600 dark:text-slate-400">Sur le plan gratuit Cloudflare Pages</p>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </section>
+
+                <!-- Quick Start Section -->
+                <section id="quick-start" class="doc-content hidden">
+                    <h1>🚀 Démarrage Rapide</h1>
+                    
+                    <p>Bienvenue dans <strong>WebSuite Platform</strong> ! Ce guide vous permettra de déployer votre CMS sur Cloudflare Pages en moins de 5 minutes.</p>
+
+                    <h2>Prérequis</h2>
+                    <ul>
+                        <li>Un compte <a href="https://dash.cloudflare.com/sign-up" target="_blank">Cloudflare</a> (gratuit)</li>
+                        <li>Un repository GitHub/GitLab/Bitbucket</li>
+                        <li>Des flux RSS de vos contenus (Substack, YouTube, Podcasts, Meetup)</li>
+                    </ul>
+
+                    <h2>Étapes de Déploiement</h2>
+
+                    <h3>1. Cloner le Projet</h3>
+                    <pre><code>git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
+cd WebSuitePlatform/ProdBeta</code></pre>
+
+                    <h3>2. Déployer sur Cloudflare Pages</h3>
+                    <ol>
+                        <li>Allez sur <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare Dashboard</a></li>
+                        <li>Cliquez sur <strong>Workers & Pages</strong> → <strong>Create application</strong></li>
+                        <li>Sélectionnez <strong>Pages</strong> → <strong>Connect to Git</strong></li>
+                        <li>Autorisez Cloudflare à accéder à votre repository</li>
+                        <li>Sélectionnez votre repository et cliquez sur <strong>Begin setup</strong></li>
+                    </ol>
+
+                    <p><strong>Configuration du Build :</strong></p>
+                    <ul>
+                        <li><strong>Project name</strong> : <code>websuite-cms</code> (ou votre choix)</li>
+                        <li><strong>Production branch</strong> : <code>main</code></li>
+                        <li><strong>Build command</strong> : (laisser vide)</li>
+                        <li><strong>Build output directory</strong> : <code>/</code> (racine)</li>
+                    </ul>
+
+                    <p>Cliquez sur <strong>Save and Deploy</strong></p>
+
+                    <h3>3. Configurer les Variables d'Environnement</h3>
+                    <p>Une fois déployé, allez dans <strong>Settings</strong> → <strong>Environment variables</strong> et ajoutez :</p>
+                    
+                    <pre><code>ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=votre_password_securise_12_caracteres_minimum
+BLOG_FEED_URL=https://votrecompte.substack.com/feed
+YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID
+PODCAST_FEED_URL=https://anchor.fm/s/VOTRE_ID/podcast/rss
+EVENTS_FEED_URL=https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
+
+                    <blockquote>
+                        🔒 <strong>Sécurité</strong> : Marquez <code>ADMIN_PASSWORD</code> comme <strong>Encrypted</strong> !
+                    </blockquote>
+
+                    <h3>4. Accéder à votre CMS</h3>
+                    <p>Une fois déployé, votre CMS est accessible à :</p>
+                    <pre><code>https://votre-projet.pages.dev</code></pre>
+                    <p>L'interface admin est disponible à :</p>
+                    <pre><code>https://votre-projet.pages.dev/admin</code></pre>
+                </section>
+
+                <!-- Installation Section -->
+                <section id="installation" class="doc-content hidden">
+                    <h1>📦 Installation</h1>
+                    
+                    <p>Guide détaillé pour installer et configurer WebSuite Platform.</p>
+
+                    <h2>Installation Locale</h2>
+
+                    <h3>Prérequis</h3>
+                    <ul>
+                        <li><a href="https://nodejs.org/" target="_blank">Node.js</a> (v18 ou supérieur) ou <a href="https://bun.sh" target="_blank">Bun</a></li>
+                        <li><a href="https://developers.cloudflare.com/workers/wrangler/" target="_blank">Wrangler CLI</a> (CLI Cloudflare)</li>
+                    </ul>
+
+                    <h3>Étapes d'Installation</h3>
+
+                    <h4>1. Installer Wrangler</h4>
+                    <pre><code>npm install -g wrangler</code></pre>
+
+                    <h4>2. Cloner le Repository</h4>
+                    <pre><code>git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
+cd WebSuitePlatform/ProdBeta</code></pre>
+
+                    <h4>3. Créer les Variables d'Environnement</h4>
+                    <p>Créez un fichier <code>.dev.vars</code> à la racine du projet :</p>
+                    <pre><code>cp .dev.vars.example .dev.vars</code></pre>
+                    <p>Éditez <code>.dev.vars</code> avec vos valeurs (voir section Variables d'Environnement).</p>
+
+                    <blockquote>
+                        ⚠️ <strong>Sécurité</strong> : Le fichier <code>.dev.vars</code> est déjà dans <code>.gitignore</code> et ne sera jamais commité.
+                    </blockquote>
+
+                    <h4>4. Lancer le Serveur de Développement</h4>
+                    <p>Avec Wrangler :</p>
+                    <pre><code>npx wrangler pages dev . --compatibility-date=2024-12-12</code></pre>
+                    <p>Le serveur démarre sur <code>http://localhost:8788</code></p>
+
+                    <p>Avec Bun :</p>
+                    <pre><code>bun server.js</code></pre>
+                    <p>Le serveur démarre sur <code>http://localhost:8000</code></p>
+                </section>
+
+                <!-- Local Dev Section -->
+                <section id="local-dev" class="doc-content hidden">
+                    <h1>💻 Développement Local</h1>
+                    
+                    <p>Pour tester localement avec Bun :</p>
+
+                    <h2>Configuration</h2>
+                    <pre><code># Créer .dev.vars
+cp .dev.vars.example .dev.vars
+
+# Éditer .dev.vars avec vos valeurs</code></pre>
+
+                    <h2>Lancer le Serveur</h2>
+                    <pre><code>bun server.js</code></pre>
+                    <p>Le serveur démarre sur <code>http://localhost:8000</code></p>
+
+                    <h2>Structure du Projet</h2>
+                    <pre><code>ProdBeta/
+├── index.html              # Page d'accueil frontend
+├── admin/                  # Interface admin
+│   ├── index.html          # Page de login
+│   └── dashboard.html      # Dashboard principal
+├── core/                   # Scripts JavaScript
+│   ├── admin.js            # Logique dashboard
+│   └── frontend.js         # Utilitaires frontend
+├── functions/              # Cloudflare Pages Functions
+│   ├── _middleware.js      # Routeur principal
+│   ├── api/                # Endpoints API
+│   └── shared/             # Utilitaires partagés
+├── frontend/               # Templates frontend
+├── config.json             # Configuration globale
+└── .dev.vars               # Variables d'environnement (local)</code></pre>
+                </section>
+
+                <!-- Environment Variables Section -->
+                <section id="env-vars" class="doc-content hidden">
+                    <h1>⚙️ Variables d'Environnement</h1>
+                    
+                    <p>Configuration complète des variables d'environnement nécessaires pour WebSuite Platform.</p>
+
+                    <h2>Variables Requises</h2>
+
+                    <div class="bg-slate-900 dark:bg-slate-950 p-6 rounded-lg my-4">
+                        <h3 class="text-white mb-4">Variables d'Authentification</h3>
+                        <pre class="text-slate-100"><code>ADMIN_EMAIL=admin@example.com
+ADMIN_PASSWORD=votre_password_securise_12_caracteres_minimum</code></pre>
+                        <p class="text-slate-400 text-sm mt-2">🔒 Marquez <code>ADMIN_PASSWORD</code> comme <strong>Encrypted</strong> dans Cloudflare Pages</p>
+                    </div>
+
+                    <h2>Variables de Flux RSS</h2>
+
+                    <div class="bg-slate-900 dark:bg-slate-950 p-6 rounded-lg my-4">
+                        <pre class="text-slate-100"><code>BLOG_FEED_URL=https://votrecompte.substack.com/feed
+YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID
+PODCAST_FEED_URL=https://anchor.fm/s/VOTRE_ID/podcast/rss
+EVENTS_FEED_URL=https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
+                    </div>
+
+                    <h2>Configuration dans Cloudflare Pages</h2>
+                    <ol>
+                        <li>Allez dans votre projet Cloudflare Pages</li>
+                        <li>Cliquez sur <strong>Settings</strong> → <strong>Environment variables</strong></li>
+                        <li>Ajoutez chaque variable une par une</li>
+                        <li>Pour les variables sensibles, cochez <strong>Encrypted</strong></li>
+                        <li>Cliquez sur <strong>Save</strong></li>
+                    </ol>
+
+                    <h2>Configuration Locale (.dev.vars)</h2>
+                    <p>Pour le développement local, créez un fichier <code>.dev.vars</code> à la racine :</p>
+                    <pre><code>ADMIN_EMAIL=demo@demo.com
+ADMIN_PASSWORD=password123
+BLOG_FEED_URL=https://blog.cloudflare.com/rss
+YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=UCgv3xMy6kECn0boYP9d2o-g
+PODCAST_FEED_URL=https://feeds.fame.so/the-connectivity-cloud-podcast
+EVENTS_FEED_URL=https://www.meetup.com/open-data-science-ny-odsc/events/rss</code></pre>
+                </section>
+
+                <!-- RSS Feeds Section -->
+                <section id="rss-feeds" class="doc-content hidden">
+                    <h1>📡 Configuration des Flux RSS</h1>
+                    
+                    <p>WebSuite Platform supporte plusieurs sources de contenu via RSS.</p>
+
+                    <h2>Sources Supportées</h2>
+
+                    <div class="grid md:grid-cols-2 gap-4 my-6">
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fab fa-substack text-2xl text-purple-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Substack</h3>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-300 mb-3">Articles de blog</p>
+                            <code class="block text-sm">https://votrecompte.substack.com/feed</code>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fab fa-youtube text-2xl text-red-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">YouTube</h3>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-300 mb-3">Vidéos</p>
+                            <code class="block text-sm">https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID</code>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fas fa-podcast text-2xl text-blue-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Podcasts</h3>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-300 mb-3">Anchor.fm, Spotify, etc.</p>
+                            <code class="block text-sm">https://anchor.fm/s/VOTRE_ID/podcast/rss</code>
+                        </div>
+
+                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
+                            <div class="flex items-center gap-3 mb-3">
+                                <i class="fas fa-calendar text-2xl text-green-600"></i>
+                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Meetup</h3>
+                            </div>
+                            <p class="text-slate-600 dark:text-slate-300 mb-3">Événements</p>
+                            <code class="block text-sm">https://www.meetup.com/fr-fr/votre-groupe/events/rss</code>
+                        </div>
+                    </div>
+
+                    <h2>Comment Obtenir l'URL d'un Flux RSS</h2>
+
+                    <h3>Substack</h3>
+                    <p>Ajoutez <code>/feed</code> à la fin de l'URL de votre publication :</p>
+                    <pre><code>https://votrecompte.substack.com/feed</code></pre>
+
+                    <h3>YouTube</h3>
+                    <p>Pour trouver votre Channel ID :</p>
+                    <ol>
+                        <li>Allez sur votre chaîne YouTube</li>
+                        <li>Cliquez sur "À propos"</li>
+                        <li>Copiez le Channel ID</li>
+                        <li>Utilisez : <code>https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID</code></li>
+                    </ol>
+                    <p>Ou utilisez <a href="https://commentpicker.com/youtube-channel-id.php" target="_blank">Comment Picker</a></p>
+
+                    <h3>Podcasts</h3>
+                    <p>Vérifiez la documentation de votre plateforme de podcast pour obtenir l'URL RSS.</p>
+
+                    <h3>Meetup</h3>
+                    <p>Ajoutez <code>/events/rss</code> à la fin de l'URL de votre groupe :</p>
+                    <pre><code>https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
+                </section>
+
+                <!-- API Section -->
+                <section id="api" class="doc-content hidden">
+                    <h1>🔌 API</h1>
+                    
+                    <p>WebSuite Platform expose une API REST complète pour accéder à tous vos contenus.</p>
+
+                    <h2>Base URL</h2>
+                    <pre><code>https://votre-projet.pages.dev/api</code></pre>
+
+                    <h2>Endpoints Publics</h2>
+                    <p>La plupart des endpoints sont publics et ne nécessitent pas d'authentification :</p>
+                    <ul>
+                        <li><code>GET /api/posts</code> - Liste des articles</li>
+                        <li><code>GET /api/videos</code> - Liste des vidéos</li>
+                        <li><code>GET /api/podcasts</code> - Liste des podcasts</li>
+                        <li><code>GET /api/events</code> - Liste des événements</li>
+                        <li><code>GET /api/siteinfos</code> - Informations du site</li>
+                    </ul>
+
+                    <h2>Endpoints Protégés</h2>
+                    <p>Certains endpoints nécessitent une authentification via header :</p>
+                    <pre><code>X-Auth-Key: votre_password_admin</code></pre>
+                    <p>Endpoints protégés :</p>
+                    <ul>
+                        <li><code>GET /api/config</code> - Configuration</li>
+                        <li><code>POST /api/clear-cache</code> - Vider le cache</li>
+                        <li><code>POST /api/login</code> - Connexion admin</li>
+                    </ul>
+
+                    <h2>Exemples d'Utilisation</h2>
+
+                    <h3>JavaScript (Fetch)</h3>
+                    <pre><code>// Récupérer les articles
+fetch('https://votre-projet.pages.dev/api/posts')
+  .then(response => response.json())
+  .then(data => console.log(data));
+
+// Récupérer un article spécifique
+fetch('https://votre-projet.pages.dev/api/post/mon-article')
+  .then(response => response.json())
+  .then(data => console.log(data));</code></pre>
+
+                    <h3>cURL</h3>
+                    <pre><code># Liste des articles
+curl https://votre-projet.pages.dev/api/posts
+
+# Article spécifique
+curl https://votre-projet.pages.dev/api/post/mon-article
+
+# Avec authentification
+curl -H "X-Auth-Key: votre_password" \
+     https://votre-projet.pages.dev/api/config</code></pre>
+
+                    <h2>Cache</h2>
+                    <p>Toutes les réponses sont mises en cache pendant <strong>180 secondes</strong> (3 minutes) pour optimiser les performances.</p>
+                    <p>Pour forcer le rafraîchissement, utilisez l'endpoint <code>/api/clear-cache</code> (protégé).</p>
+
+                    <h2>Rate Limiting</h2>
+                    <p>Sur le plan gratuit Cloudflare Pages :</p>
+                    <ul>
+                        <li><strong>100 000 requêtes/jour</strong></li>
+                        <li>Pas de limite de bande passante</li>
+                        <li>CDN global avec 300+ datacenters</li>
+                    </ul>
+                </section>
             </div>
         </main>
     </div>
@@ -375,94 +578,66 @@
             document.documentElement.classList.add('dark');
         }
 
-        // Load markdown content - récupère directement le HTML depuis le serveur
-        async function loadDocContent(path) {
-            try {
-                // Convert path from /docs/guide/quick-start to /api/docs/guide/quick-start
-                // Le serveur retourne directement le HTML converti
-                const apiPath = path.replace('/docs', '/api/docs');
-                const response = await fetch(apiPath);
+        // Show section and update navigation
+        function showSection(sectionId) {
+            // Hide all sections
+            document.querySelectorAll('.doc-content').forEach(section => {
+                section.classList.add('hidden');
+            });
+            
+            // Show selected section
+            const section = document.getElementById(sectionId);
+            if (section) {
+                section.classList.remove('hidden');
                 
-                if (!response.ok) {
-                    throw new Error(`Failed to load: ${response.status}`);
-                }
-                
-                // Le serveur retourne directement le HTML
-                const html = await response.text();
-                return html;
-            } catch (error) {
-                console.error('Error loading doc:', error);
-                return `<div class="p-8 text-center">
-                    <div class="text-red-500 text-xl mb-4"><i class="fas fa-exclamation-circle"></i></div>
-                    <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-2">Erreur de chargement</h2>
-                    <p class="text-slate-600 dark:text-slate-400">Impossible de charger la documentation.</p>
-                </div>`;
+                // Scroll to top
+                window.scrollTo({ top: 0, behavior: 'smooth' });
             }
+            
+            // Update active nav link
+            document.querySelectorAll('.nav-link').forEach(link => {
+                link.classList.remove('active');
+            });
+            
+            // Find and activate the corresponding nav link
+            const activeLink = document.querySelector(`a[href="#${sectionId}"]`);
+            if (activeLink) {
+                activeLink.classList.add('active');
+            }
+            
+            // Update URL without reload
+            window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
         }
 
-        // Load initial content
-        document.addEventListener('DOMContentLoaded', async function() {
-            const path = window.location.pathname;
-            let initialPath = '/docs/guide/quick-start';
-            
-            // Si on est sur la racine, rediriger vers la doc
-            if (path === '/' || path === '/index.html') {
-                initialPath = '/docs/guide/quick-start';
-                window.history.replaceState({}, '', initialPath);
-            } else if (path.startsWith('/docs/') && path !== '/docs' && path !== '/docs/') {
-                initialPath = path;
+        // Handle hash changes
+        window.addEventListener('hashchange', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                showSection(hash);
+            } else {
+                showSection('home');
             }
+        });
 
-            // Load the initial page
-            const content = await loadDocContent(initialPath);
-            document.getElementById('docs-content').innerHTML = content;
-            updateActiveLink(initialPath);
+        // Initialize on load
+        document.addEventListener('DOMContentLoaded', function() {
+            const hash = window.location.hash.substring(1);
+            if (hash && document.getElementById(hash)) {
+                showSection(hash);
+            } else {
+                showSection('home');
+            }
         });
 
         // Handle browser back/forward
-        window.addEventListener('popstate', async function(e) {
-            const path = window.location.pathname;
-            if (path.startsWith('/docs')) {
-                const content = await loadDocContent(path);
-                document.getElementById('docs-content').innerHTML = content;
-                updateActiveLink(path);
-            }
-        });
-
-        // Update active link in sidebar
-        function updateActiveLink(currentPath) {
-            // Remove active class from all links
-            document.querySelectorAll('#docs-sidebar a').forEach(link => {
-                link.classList.remove('bg-purple-50', 'dark:bg-purple-900/20', 'text-purple-600', 'dark:text-purple-400', 'font-semibold');
-            });
-
-            // Add active class to current link
-            document.querySelectorAll('#docs-sidebar a').forEach(link => {
-                const href = link.getAttribute('href');
-                if (href && (currentPath === href || currentPath.startsWith(href + '/'))) {
-                    link.classList.add('bg-purple-50', 'dark:bg-purple-900/20', 'text-purple-600', 'dark:text-purple-400', 'font-semibold');
-                }
-            });
-        }
-
-        // Handle clicks on sidebar links
-        document.addEventListener('click', async function(e) {
-            const link = e.target.closest('a[href^="/docs"]');
-            if (link) {
-                e.preventDefault();
-                const href = link.getAttribute('href');
-                const content = await loadDocContent(href);
-                document.getElementById('docs-content').innerHTML = content;
-                
-                // Update URL without reload
-                window.history.pushState({}, '', href);
-                updateActiveLink(href);
-                
-                // Scroll to top
-                window.scrollTo(0, 0);
+        window.addEventListener('popstate', function(e) {
+            const hash = window.location.hash.substring(1);
+            if (hash) {
+                showSection(hash);
+            } else {
+                showSection('home');
             }
         });
     </script>
 </body>
 </html>
-
