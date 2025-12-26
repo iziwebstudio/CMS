@@ -37,10 +37,22 @@ META_TITLE=Mon Site WebSuite
 META_DESCRIPTION=Portail de contenus agrégés depuis Substack, YouTube et Podcast
 META_KEYWORDS=blog,contenu,substack,youtube,podcast
 
+# --- GITHUB (pour les agents) ---
+# Token GitHub avec permissions repo (pour lire/écrire les agents)
+# Créer un token : https://github.com/settings/tokens
+GITHUB_TOKEN=ghp_xxxxxxxxxxxxxxxxxxxx
+GITHUB_USER=votre-username
+GITHUB_REPO=votre-repo
+
+# --- CRONJOB ---
+# Token secret pour sécuriser l'exécution des agents via CronJob
+# Générer un token aléatoire sécurisé (ex: openssl rand -hex 32)
+CRONJOB_API_KEY=votre_token_secret_ici
+
 # ====================================================================
 # INSTRUCTIONS
 # ====================================================================
 # 1. Copier ce fichier : cp .dev.vars.example .dev.vars
 # 2. Éditer .dev.vars avec vos vraies valeurs
-# 3. Lancer le worker : npx wrangler dev
-# 4. Accéder au dashboard : http://localhost:8787/admin/
+# 3. Lancer le serveur : bun server.js
+# 4. Accéder au dashboard : http://localhost:8000/admin/
