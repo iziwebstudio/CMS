@@ -1,6 +1,6 @@
 # 🔌 API - Vue d'ensemble
 
-WebSuite Platform expose une API REST complète pour accéder à tous vos contenus.
+WebSuite CMS expose une API REST complète pour accéder à tous vos contenus.
 
 ## Base URL
 
@@ -133,8 +133,8 @@ config = response.json()
 
 ## Documentation Complète
 
-- [Endpoints Publics](#/docs/api/public-endpoints)
-- [Endpoints Protégés](#/docs/api/protected-endpoints)
-- [Authentification](#/docs/api/authentication)
-- [Exemples d'utilisation](#/docs/api/examples)
+- [Endpoints Publics](public-endpoints.md)
+- [Endpoints Protégés](protected-endpoints.md)
+- [Authentification](authentication.md)
+- [Exemples d'utilisation](examples.md)
 

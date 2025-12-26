@@ -4,7 +4,7 @@ Guide complet sur le système de cache et l'optimisation des performances.
 
 ## Vue d'Ensemble
 
-WebSuite Platform utilise un système de cache intelligent pour optimiser les performances et réduire la charge sur les flux RSS sources.
+WebSuite CMS utilise un système de cache intelligent pour optimiser les performances et réduire la charge sur les flux RSS sources.
 
 ## Système de Cache
 
@@ -135,7 +135,7 @@ Les réponses incluent des headers de cache :
 
 ## Prochaines Étapes
 
-- [Sécurité](#/docs/advanced/security)
-- [HTMX & SSR](#/docs/advanced/htmx-ssr)
-- [Personnalisation](#/docs/advanced/customization)
+- [Sécurité](security.md)
+- [HTMX & SSR](htmx-ssr.md)
+- [Personnalisation](customization.md)
 

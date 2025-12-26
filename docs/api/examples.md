@@ -1,6 +1,6 @@
 # 💡 Exemples d'Utilisation de l'API
 
-Exemples pratiques d'utilisation de l'API WebSuite Platform.
+Exemples pratiques d'utilisation de l'API WebSuite CMS.
 
 ## JavaScript (Vanilla)
 
@@ -293,7 +293,7 @@ if (posts) {
 
 ## Prochaines Étapes
 
-- [Vue d'ensemble de l'API](#/docs/api/overview)
-- [Endpoints publics](#/docs/api/public-endpoints)
-- [Endpoints protégés](#/docs/api/protected-endpoints)
+- [Vue d'ensemble de l'API](overview.md)
+- [Endpoints publics](public-endpoints.md)
+- [Endpoints protégés](protected-endpoints.md)
 

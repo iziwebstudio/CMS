@@ -2,18 +2,26 @@
 
 Guide pour développer et tester WebSuite Platform en local.
 
+## Architecture
+
+WebSuite Platform utilise une architecture hybride :
+- **Worker MCP** : Hébergé sur `mcp.websuite.cc` (géré par WebSuite)
+- **CMS/Frontend** : Déployé par vous sur GitHub Pages
+
+Pour le développement local, le frontend communique avec le worker MCP distant.
+
 ## Prérequis
 
-- [Bun](https://bun.sh) installé (runtime JavaScript)
 - Un éditeur de code (VS Code recommandé)
+- Python, Node.js, ou PHP (pour servir les fichiers statiques)
 
 ## Installation
 
 ### 1. Cloner le Projet
 
 ```bash
-git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
-cd WebSuitePlatform/ProdBeta
+git clone https://github.com/VOTRE_USERNAME/StackPagesCMS.git
+cd StackPagesCMS/ProdBeta
 ```
 
 ### 2. Configurer les Variables
@@ -39,54 +47,73 @@ EVENTS_FEED_URL=https://www.meetup.com/fr-fr/votre-groupe/events/rss
 
 ## Lancer le Serveur Local
 
-### Avec Bun (Recommandé)
+### Option 1 : Avec Python
 
 ```bash
-bun server.js
+python -m http.server 8000
+```
+
+### Option 2 : Avec Node.js
+
+```bash
+npx http-server
+```
+
+### Option 3 : Avec PHP
+
+```bash
+php -S localhost:8000
 ```
 
 Le serveur démarre sur `http://localhost:8000`
 
-Le serveur local (`server.js`) simule le comportement de Cloudflare Pages Functions, incluant :
-- Routing des requêtes
-- SSR avec HTMX
-- API endpoints
-- Gestion des variables d'environnement
-- Cache en mémoire
+## Configuration du Worker MCP
 
-### Avec Wrangler (Alternative)
+Le worker MCP est hébergé sur `https://mcp.websuite.cc` et gère toutes les variables d'environnement.
 
-```bash
-npx wrangler pages dev . --compatibility-date=2024-12-25
-```
+### Communication avec le Worker
 
-Le serveur démarre sur `http://localhost:8788`
+Tous les appels API pointent automatiquement vers le worker MCP distant :
+
+- `GET https://mcp.websuite.cc/api/posts` - Liste des articles
+- `GET https://mcp.websuite.cc/api/videos` - Liste des vidéos
+- `GET https://mcp.websuite.cc/api/podcasts` - Liste des podcasts
+- `GET https://mcp.websuite.cc/api/events` - Liste des événements
+
+Le worker MCP gère :
+- Les variables d'environnement (RSS feeds, admin password)
+- Le parsing RSS
+- Le cache
+- L'authentification
+- Les MCP Workers
+
+> 💡 **Note** : Pour le développement local, les variables dans `.dev.vars` sont utilisées uniquement pour la configuration locale. Le worker MCP distant utilise ses propres variables configurées par WebSuite.
 
 ## Workflow de Développement
 
 ### 1. Faire des Modifications
 
-Éditez les fichiers dans votre éditeur. Pour les modifications de `server.js` ou des fonctions, redémarrez le serveur.
+Éditez les fichiers dans votre éditeur. Les modifications sont prises en compte automatiquement.
 
 ### 2. Tester Localement
 
 - Frontend : `http://localhost:8000`
 - Admin : `http://localhost:8000/admin`
-- API : `http://localhost:8000/api/posts`, `/api/videos`, etc.
+- API : Les appels API pointent vers `https://mcp.websuite.cc/api/*`
 
 ### 3. Déboguer
 
-Utilisez `console.log()` dans le code. Les logs apparaissent dans le terminal où le serveur tourne.
+Utilisez `console.log()` dans le code. Les logs apparaissent dans le terminal où Wrangler tourne.
 
 ### 4. Tester les API
 
 ```bash
-# Tester les articles
-curl http://localhost:8000/api/posts
+# Tester les articles (via le worker MCP distant)
+curl https://mcp.websuite.cc/api/posts
 
 # Tester avec authentification
 curl -H "X-Auth-Key: votre_password" \
-     http://localhost:8000/api/config
+     https://mcp.websuite.cc/api/config
 ```
 
 ## Structure de Développement
@@ -99,9 +126,7 @@ Les templates sont dans `frontend/index.html`. Les modifications sont visibles i
 
 L'interface admin est dans `admin/dashboard.html` et `core/admin.js`.
 
-### Modifier l'API Backend
-
-Les endpoints API sont dans `functions/api/`. Toutes les modifications sont dans le même projet.
+> ⚠️ **Note** : L'API backend est gérée par le worker MCP distant. Pour modifier l'API, contactez WebSuite.
 
 ## Outils de Développement
 
@@ -188,18 +213,18 @@ npx http-server -p 8001
 
 - Vérifiez que `.dev.vars` existe
 - Vérifiez la syntaxe (pas d'espaces autour du `=`)
-- Redémarrez le serveur après modification de `.dev.vars`
+- Rechargez la page dans le navigateur
 
 ### Cache Persistant
 
-Le cache est géré localement en mémoire. Pour le vider :
+Le cache est géré par le worker MCP distant. Pour le vider :
 
 1. Utilisez l'interface admin : `/admin` → Configuration → Vider le cache
-2. Ou redémarrez le serveur (`bun server.js`)
+2. Ou contactez WebSuite pour vider le cache sur le worker MCP
 
 ## Prochaines Étapes
 
-- [Structure du projet](#/docs/guide/structure)
-- [API Documentation](#/docs/api/overview)
-- [Déploiement sur Cloudflare Pages](#/docs/deployment/cloudflare-pages)
+- [Structure du projet](structure.md)
+- [API Documentation](../api/overview.md)
+- [Déploiement sur GitHub Pages](../deployment/github-pages.md)
 

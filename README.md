@@ -28,13 +28,14 @@ En résumé :
 
 1. **Cloner le projet**
    ```bash
-   git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
-   cd WebSuitePlatform/ProdBeta
+   git clone https://github.com/VOTRE_USERNAME/StackPagesCMS.git
+   cd StackPagesCMS/ProdBeta
    ```
 
-2. **Déployer sur Cloudflare Pages**
-   - [Guide de déploiement](#/docs/deployment/cloudflare-pages)
-   - Ou toute autre plateforme serverless supportant Edge Functions
+2. **Déployer sur votre plateforme edge préférée**
+   - [GitHub Pages](#/docs/deployment/github-pages)
+   - [Cloudflare Pages](#/docs/deployment/cloudflare-pages)
+   - Ou toute autre plateforme supportant Edge Functions
 
 3. **Configurer vos flux RSS**
    Voir [Configuration des flux RSS](#/docs/configuration/rss-feeds)
@@ -56,6 +57,7 @@ En résumé :
 
 ### 🚀 Déploiement
 
+- **[GitHub Pages](#/docs/deployment/github-pages)** - Déploiement sur GitHub Pages
 - **[Cloudflare Pages](#/docs/deployment/cloudflare-pages)** - Déploiement sur Cloudflare Pages
 - **[Domaine Personnalisé](#/docs/deployment/custom-domain)** - Configurer un domaine personnalisé
 - **[Variables d'Environnement](#/docs/deployment/environment-variables)** - Configuration des variables
@@ -159,10 +161,10 @@ MIT License - Voir [LICENSE](LICENSE) pour plus de détails.
 
 ## 📞 Support
 
-- 📧 **Email** : support@websuite.platform
+- 📧 **Email** : cms@iziweb.page
 - 💬 **Discord** : [Rejoindre la communauté](#)
-- 📖 **Documentation** : https://docs.websuite.platform
-- 🐛 **Issues** : [GitHub Issues](https://github.com/VOTRE_USERNAME/WebSuitePlatform/issues)
+- 📖 **Documentation** : https://cms.iziweb.page
+- 🐛 **Issues** : [GitHub Issues](https://github.com/iziweb-studio/CMS/issues)
 
 ---
 

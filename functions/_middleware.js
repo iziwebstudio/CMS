@@ -287,12 +287,6 @@ export async function onRequest(context) {
         return env.ASSETS.fetch(ideRequest);
     }
     
-    // Route racine - servir la documentation SPA
-    if (url.pathname === '/' || url.pathname === '/index.html') {
-        const indexRequest = new Request(new URL('/index.html', request.url).toString());
-        return env.ASSETS.fetch(indexRequest);
-    }
-    
     if (url.pathname.startsWith('/api/') || url.pathname.startsWith('/admin/') || url.pathname.startsWith('/core/')) {
         // Si /api/* → continuer vers les handlers Functions
         if (url.pathname.startsWith('/api/')) {

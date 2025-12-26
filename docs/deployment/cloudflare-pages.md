@@ -1,12 +1,12 @@
 # ☁️ Déploiement sur Cloudflare Pages
 
-Guide complet pour déployer WebSuite Platform sur Cloudflare Pages.
+Guide complet pour déployer WebSuite CMS sur Cloudflare Pages.
 
 ## Prérequis
 
 - Un compte [Cloudflare](https://dash.cloudflare.com/sign-up) (gratuit)
 - Un repository GitHub/GitLab/Bitbucket
-- Le code source de WebSuite Platform
+- Le code source de WebSuite CMS
 
 ## Méthode 1 : Via Dashboard (Recommandé)
 
@@ -22,7 +22,7 @@ Guide complet pour déployer WebSuite Platform sur Cloudflare Pages.
 
 1. Sélectionnez votre provider (GitHub, GitLab, Bitbucket)
 2. Autorisez Cloudflare à accéder à vos repositories
-3. Sélectionnez le repository contenant WebSuite Platform
+3. Sélectionnez le repository contenant WebSuite CMS
 4. Cliquez sur **Begin setup**
 
 ### Étape 3 : Configuration du Build
@@ -164,7 +164,7 @@ Vous pouvez définir des variables différentes pour chaque environnement dans l
 
 ## Prochaines Étapes
 
-- [Configurer un domaine personnalisé](#/docs/deployment/custom-domain)
-- [Variables d'environnement](#/docs/deployment/environment-variables)
-- [Configuration](#/docs/configuration/overview)
+- [Configurer un domaine personnalisé](custom-domain.md)
+- [Variables d'environnement](environment-variables.md)
+- [Configuration](../configuration/overview.md)
 

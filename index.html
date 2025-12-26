@@ -1,643 +1,837 @@
 <!DOCTYPE html>
-<html lang="fr" class="h-full">
+<html lang="fr">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>WebSuite Platform - Installation & Configuration</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%239333ea'/%3E%3Cpath d='M8.5 13.5L7 15C5.9 16.1 5.9 17.9 7 19C8.1 20.1 9.9 20.1 11 19L13.5 16.5C14.6 15.4 14.6 13.6 13.5 12.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 10.5L17 9C18.1 7.9 18.1 6.1 17 5C15.9 3.9 14.1 3.9 13 5L10.5 7.5C9.4 8.6 9.4 10.4 10.5 11.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 14L14 10' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <script>
-        tailwind.config = {
-            darkMode: 'class',
-        }
-    </script>
-    <script src="https://unpkg.com/htmx.org@1.9.10"></script>
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
-    <style>
-        /* Smooth scrolling */
-        html {
-            scroll-behavior: smooth;
-        }
-        
-        /* Code blocks styling */
-        pre {
-            @apply bg-slate-900 dark:bg-slate-950 text-slate-100 p-4 rounded-lg overflow-x-auto my-4;
-        }
-        
-        pre code {
-            @apply text-sm font-mono;
-        }
-        
-        code:not(pre code) {
-            @apply bg-slate-100 dark:bg-slate-800 text-purple-600 dark:text-purple-400 px-2 py-1 rounded text-sm font-mono;
-        }
-        
-        /* Content styling */
-        .doc-content h1 {
-            @apply text-4xl font-bold mb-6 text-slate-900 dark:text-slate-50 border-b border-slate-200 dark:border-slate-700 pb-4 mt-8;
-        }
-        
-        .doc-content h2 {
-            @apply text-3xl font-bold mt-8 mb-4 text-slate-800 dark:text-slate-100;
-        }
-        
-        .doc-content h3 {
-            @apply text-2xl font-semibold mt-6 mb-3 text-slate-700 dark:text-slate-200;
-        }
-        
-        .doc-content p {
-            @apply mb-4 text-slate-600 dark:text-slate-300 leading-7;
-        }
-        
-        .doc-content ul, .doc-content ol {
-            @apply mb-4 ml-6 space-y-2;
-        }
-        
-        .doc-content li {
-            @apply text-slate-600 dark:text-slate-300;
-        }
-        
-        .doc-content a {
-            @apply text-purple-600 dark:text-purple-400 hover:text-purple-700 dark:hover:text-purple-300 underline;
-        }
-        
-        .doc-content blockquote {
-            @apply border-l-4 border-purple-500 pl-4 italic my-4 text-slate-500 dark:text-slate-400;
-        }
-        
-        /* Custom scrollbar */
-        ::-webkit-scrollbar {
-            width: 8px;
-            height: 8px;
-        }
-        
-        ::-webkit-scrollbar-track {
-            @apply bg-slate-100 dark:bg-slate-900;
-        }
-        
-        ::-webkit-scrollbar-thumb {
-            @apply bg-slate-300 dark:bg-slate-700 rounded-full;
-        }
-        
-        ::-webkit-scrollbar-thumb:hover {
-            @apply bg-slate-400 dark:bg-slate-600;
-        }
-        
-        /* Active nav link */
-        .nav-link.active {
-            @apply bg-purple-50 dark:bg-purple-900/20 text-purple-600 dark:text-purple-400 font-semibold;
-        }
-    </style>
+  <meta charset="UTF-8">
+  <title>WebSuite Platform - Documentation</title>
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, minimum-scale=1.0">
+  <meta name="description" content="Documentation complète du CMS headless WebSuite basé sur RSS et déployable sur Cloudflare Pages">
+  <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24'%3E%3Crect width='24' height='24' rx='5' fill='%239333ea'/%3E%3Cpath d='M8.5 13.5L7 15C5.9 16.1 5.9 17.9 7 19C8.1 20.1 9.9 20.1 11 19L13.5 16.5C14.6 15.4 14.6 13.6 13.5 12.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M15.5 10.5L17 9C18.1 7.9 18.1 6.1 17 5C15.9 3.9 14.1 3.9 13 5L10.5 7.5C9.4 8.6 9.4 10.4 10.5 11.5' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3Cpath d='M10 14L14 10' fill='none' stroke='white' stroke-width='1.8' stroke-linecap='round' stroke-linejoin='round'/%3E%3C/svg%3E">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/docsify@4/lib/themes/vue.css">
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    /* Variables de thème */
+    :root {
+      --theme-color: #6366f1;
+      --theme-color-dark: #4f46e5;
+    }
+    
+    /* Thème Dark uniquement */
+    body.dark-theme {
+      background-color: #0f0f0f !important;
+      color: #f9fafb !important;
+    }
+    
+    body.dark-theme .sidebar {
+      background-color: #1a1a1a !important;
+      border-right: 1px solid #2d2d2d !important;
+    }
+    
+    body.dark-theme .sidebar ul li a {
+      color: #e5e7eb !important;
+    }
+    
+    body.dark-theme .sidebar ul li a:hover {
+      background-color: #2d2d2d !important;
+      color: #818cf8 !important;
+    }
+    
+    body.dark-theme .sidebar ul li.active > a {
+      background-color: #2d2d2d !important;
+      color: #818cf8 !important;
+      font-weight: 600;
+    }
+    
+    body.dark-theme .app-name {
+      color: #ffffff !important;
+    }
+    
+    body.dark-theme .markdown-section {
+      color: #e5e7eb !important;
+    }
+    
+    body.dark-theme .markdown-section p {
+      color: #d1d5db !important;
+      line-height: 1.7 !important;
+    }
+    
+    body.dark-theme .markdown-section strong {
+      color: #ffffff !important;
+      font-weight: 700 !important;
+    }
+    
+    body.dark-theme .markdown-section h1 {
+      color: #ffffff !important;
+      border-color: #818cf8 !important;
+      font-size: 2.5em !important;
+      font-weight: 700 !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.5) !important;
+    }
+    
+    body.dark-theme .markdown-section h2 {
+      color: #ffffff !important;
+      border-color: #818cf8 !important;
+      border-bottom: 2px solid #818cf8 !important;
+      font-size: 2em !important;
+      font-weight: 600 !important;
+      margin-top: 2em !important;
+      padding-bottom: 0.5em !important;
+    }
+    
+    body.dark-theme .markdown-section h3 {
+      color: #ffffff !important;
+      border-color: #4b5563 !important;
+      font-size: 1.5em !important;
+      font-weight: 600 !important;
+      margin-top: 1.5em !important;
+    }
+    
+    body.dark-theme .markdown-section h4 {
+      color: #ffffff !important;
+      font-weight: 600 !important;
+      font-size: 1.25em !important;
+    }
+    
+    body.dark-theme .markdown-section h5,
+    body.dark-theme .markdown-section h6 {
+      color: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    
+    body.dark-theme .markdown-section a {
+      color: #a5b4fc !important;
+    }
+    
+    body.dark-theme .markdown-section a:hover {
+      color: #818cf8 !important;
+    }
+    
+    body.dark-theme .markdown-section code {
+      background-color: #1e1e1e !important;
+      color: #fbbf24 !important;
+      padding: 2px 6px;
+      border-radius: 3px;
+      border: 1px solid #374151 !important;
+    }
+    
+    body.dark-theme .markdown-section pre {
+      background-color: #0f0f0f !important;
+      border: 1px solid #2d2d2d !important;
+    }
+    
+    body.dark-theme .markdown-section pre code {
+      background-color: transparent !important;
+      color: #e5e7eb !important;
+      border: none !important;
+    }
+    
+    /* Blocs de code toujours sur fond noir */
+    .markdown-section pre {
+      background-color: #0f0f0f !important;
+      border: 1px solid #2d2d2d !important;
+    }
+    
+    .markdown-section pre code {
+      background-color: transparent !important;
+      color: #e5e7eb !important;
+      border: none !important;
+    }
+    
+    body.dark-theme .markdown-section blockquote {
+      border-left-color: #818cf8 !important;
+      background-color: #1a1a1a !important;
+      color: #d1d5db !important;
+    }
+    
+    body.dark-theme .markdown-section table {
+      border-color: #374151 !important;
+    }
+    
+    body.dark-theme .markdown-section table th {
+      background-color: #1a1a1a !important;
+      border-color: #374151 !important;
+      color: #f9fafb !important;
+    }
+    
+    body.dark-theme .markdown-section table td {
+      border-color: #374151 !important;
+    }
+    
+    body.dark-theme .markdown-section table tr:nth-child(2n) {
+      background-color: #1a1a1a !important;
+    }
+    
+    body.dark-theme .search input {
+      background-color: #1a1a1a !important;
+      border-color: #374151 !important;
+      color: #e5e7eb !important;
+    }
+    
+    body.dark-theme .search input::placeholder {
+      color: #9ca3af !important;
+    }
+    
+    body.dark-theme .pagination-item {
+      background-color: #1a1a1a !important;
+      border-color: #374151 !important;
+      color: #e5e7eb !important;
+    }
+    
+    body.dark-theme .pagination-item:hover {
+      background-color: #2d2d2d !important;
+      color: #818cf8 !important;
+    }
+    
+    /* Styles communs */
+    .sidebar {
+      width: 300px;
+    }
+    
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .sidebar ul li {
+      margin: 5px 0;
+    }
+    
+    .sidebar ul li a {
+      text-decoration: none;
+      display: block;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    
+    .markdown-section ul,
+    .markdown-section ol {
+      line-height: 1.7;
+    }
+    
+    .markdown-section ul li,
+    .markdown-section ol li {
+      margin: 0.5em 0;
+    }
+    
+    .app-name-link img {
+      max-width: 200px;
+      height: auto;
+    }
+    
+    .sidebar {
+      width: 300px;
+      background-color: #1f1f1f !important;
+      border-right: 1px solid #333 !important;
+    }
+    
+    .sidebar ul {
+      list-style: none;
+      padding-left: 0;
+    }
+    
+    .sidebar ul li {
+      margin: 5px 0;
+    }
+    
+    .sidebar ul li a {
+      color: #d1d5db !important;
+      text-decoration: none;
+      display: block;
+      padding: 8px 15px;
+      border-radius: 5px;
+      transition: all 0.2s;
+    }
+    
+    .sidebar ul li a:hover {
+      background-color: #2d2d2d !important;
+      color: #6366f1 !important;
+    }
+    
+    .sidebar ul li.active > a {
+      background-color: #2d2d2d !important;
+      color: #6366f1 !important;
+      font-weight: 600;
+    }
+    
+    .app-name {
+      color: #e5e7eb !important;
+    }
+    
+    .markdown-section {
+      color: #d1d5db !important;
+    }
+    
+    .markdown-section p {
+      color: #d1d5db !important;
+      line-height: 1.7 !important;
+    }
+    
+    .markdown-section strong {
+      color: #ffffff !important;
+      font-weight: 600 !important;
+    }
+    
+    .markdown-section em {
+      color: #e5e7eb !important;
+    }
+    
+    .markdown-section ul,
+    .markdown-section ol {
+      color: #d1d5db !important;
+    }
+    
+    .markdown-section ul li,
+    .markdown-section ol li {
+      color: #d1d5db !important;
+      margin: 0.5em 0 !important;
+    }
+    
+    .markdown-section ul li::marker {
+      color: #818cf8 !important;
+    }
+    
+    .markdown-section ol li::marker {
+      color: #818cf8 !important;
+    }
+    
+    .markdown-section h1 {
+      color: #ffffff !important;
+      border-color: #6366f1 !important;
+      font-size: 2.5em !important;
+      font-weight: 700 !important;
+      text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3) !important;
+    }
+    
+    .markdown-section h2 {
+      color: #f9fafb !important;
+      border-color: #6366f1 !important;
+      border-bottom: 2px solid #6366f1 !important;
+      font-size: 2em !important;
+      font-weight: 600 !important;
+      margin-top: 2em !important;
+      padding-bottom: 0.5em !important;
+    }
+    
+    .markdown-section h3 {
+      color: #f3f4f6 !important;
+      border-color: #4b5563 !important;
+      font-size: 1.5em !important;
+      font-weight: 600 !important;
+      margin-top: 1.5em !important;
+    }
+    
+    .markdown-section h4 {
+      color: #e5e7eb !important;
+      font-weight: 600 !important;
+      font-size: 1.25em !important;
+    }
+    
+    .markdown-section h5,
+    .markdown-section h6 {
+      color: #d1d5db !important;
+      font-weight: 600 !important;
+    }
+    
+    .markdown-section a {
+      color: #818cf8 !important;
+    }
+    
+    .markdown-section a:hover {
+      color: #6366f1 !important;
+    }
+    
+    .markdown-section code {
+      background-color: #2d2d2d !important;
+      color: #fbbf24 !important;
+      padding: 2px 6px;
+      border-radius: 3px;
+    }
+    
+    .markdown-section pre {
+      background-color: #1e1e1e !important;
+      border: 1px solid #333 !important;
+    }
+    
+    .markdown-section pre code {
+      background-color: transparent !important;
+      color: #e5e7eb !important;
+    }
+    
+    .markdown-section blockquote {
+      border-left-color: #6366f1 !important;
+      background-color: #2d2d2d !important;
+      color: #d1d5db !important;
+    }
+    
+    .markdown-section table {
+      border-color: #374151 !important;
+    }
+    
+    .markdown-section table th {
+      background-color: #2d2d2d !important;
+      border-color: #374151 !important;
+      color: #f3f4f6 !important;
+    }
+    
+    .markdown-section table td {
+      border-color: #374151 !important;
+    }
+    
+    .markdown-section table tr:nth-child(2n) {
+      background-color: #252525 !important;
+    }
+    
+    .search input {
+      background-color: #2d2d2d !important;
+      border-color: #374151 !important;
+      color: #e5e7eb !important;
+    }
+    
+    .search input::placeholder {
+      color: #9ca3af !important;
+    }
+    
+    /* Styles améliorés pour la pagination - FORCER LA VISIBILITÉ */
+    .pagination {
+      margin-top: 4em !important;
+      padding-top: 2em !important;
+      border-top: 2px solid !important;
+      display: flex !important;
+      justify-content: space-between !important;
+      gap: 1em !important;
+      flex-wrap: wrap !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    body.dark-theme .pagination {
+      border-top-color: #2d2d2d !important;
+    }
+    
+    
+    .pagination-item {
+      flex: 1 !important;
+      min-width: 150px !important;
+      padding: 1em 1.5em !important;
+      border-radius: 8px !important;
+      text-align: center !important;
+      font-weight: 500 !important;
+      transition: all 0.2s !important;
+      text-decoration: none !important;
+      display: flex !important;
+      align-items: center !important;
+      justify-content: center !important;
+      gap: 0.5em !important;
+      box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1) !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    .pagination-item:hover {
+      transform: translateY(-2px) !important;
+      box-shadow: 0 4px 12px rgba(0, 0, 0, 0.2) !important;
+    }
+    
+    .pagination-item:first-child {
+      text-align: left !important;
+      justify-content: flex-start !important;
+    }
+    
+    .pagination-item:last-child {
+      text-align: right !important;
+      justify-content: flex-end !important;
+    }
+    
+    .pagination-item:only-child {
+      justify-content: center !important;
+    }
+    
+    /* Forcer la visibilité de la pagination */
+    .pagination-item[href],
+    .pagination-item:not([style*="display: none"]) {
+      display: flex !important;
+      visibility: visible !important;
+      opacity: 1 !important;
+    }
+    
+    /* Améliorer le contraste des boutons de pagination */
+    body.dark-theme .pagination-item {
+      background-color: #1a1a1a !important;
+      border: 1px solid #374151 !important;
+      color: #e5e7eb !important;
+    }
+    
+    body.dark-theme .pagination-item:hover {
+      background-color: #2d2d2d !important;
+      border-color: #6366f1 !important;
+      color: #818cf8 !important;
+    }
+    
+    
+    .app-name-link img {
+      max-width: 200px;
+      height: auto;
+    }
+    
+    /* Styles pour la coverpage (hero) - Background noir avec effets néon */
+    .cover {
+      background: #000000 !important;
+      color: #ffffff !important;
+      position: relative;
+      overflow: hidden;
+    }
+    
+    .cover::before {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        radial-gradient(circle at 20% 30%, rgba(139, 92, 246, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 80% 70%, rgba(124, 58, 237, 0.15) 0%, transparent 40%),
+        radial-gradient(circle at 50% 50%, rgba(168, 85, 247, 0.1) 0%, transparent 50%);
+      pointer-events: none;
+      animation: neonPulse 4s ease-in-out infinite;
+    }
+    
+    .cover::after {
+      content: '';
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: 
+        linear-gradient(45deg, transparent 30%, rgba(139, 92, 246, 0.05) 50%, transparent 70%),
+        linear-gradient(-45deg, transparent 30%, rgba(124, 58, 237, 0.05) 50%, transparent 70%);
+      pointer-events: none;
+      animation: neonShift 6s ease-in-out infinite;
+    }
+    
+    @keyframes neonPulse {
+      0%, 100% {
+        opacity: 1;
+      }
+      50% {
+        opacity: 0.7;
+      }
+    }
+    
+    @keyframes neonShift {
+      0%, 100% {
+        transform: translateX(0) translateY(0);
+      }
+      50% {
+        transform: translateX(20px) translateY(-20px);
+      }
+    }
+    
+    .cover .cover-main {
+      color: #ffffff !important;
+    }
+    
+    .cover .cover-main {
+      position: relative;
+      z-index: 1;
+    }
+    
+    .cover-logo {
+      width: 80px;
+      height: 80px;
+      background: rgba(0, 0, 0, 0.3);
+      border-radius: 12px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin: 0 auto 2em;
+      backdrop-filter: blur(10px);
+      border: 2px solid rgba(139, 92, 246, 0.5);
+      box-shadow: 
+        0 0 20px rgba(139, 92, 246, 0.4),
+        0 8px 32px rgba(0, 0, 0, 0.5);
+      position: relative;
+      z-index: 2;
+      animation: logoGlow 3s ease-in-out infinite;
+    }
+    
+    @keyframes logoGlow {
+      0%, 100% {
+        box-shadow: 
+          0 0 20px rgba(139, 92, 246, 0.4),
+          0 8px 32px rgba(0, 0, 0, 0.5);
+        border-color: rgba(139, 92, 246, 0.5);
+      }
+      50% {
+        box-shadow: 
+          0 0 30px rgba(139, 92, 246, 0.6),
+          0 8px 32px rgba(0, 0, 0, 0.5);
+        border-color: rgba(139, 92, 246, 0.8);
+      }
+    }
+    
+    .cover-logo i {
+      font-size: 2.5em;
+      color: #ffffff;
+      text-shadow: 0 0 10px rgba(139, 92, 246, 0.8);
+    }
+    
+    .cover .cover-main h1 {
+      color: #ffffff !important;
+      font-size: 4em !important;
+      font-weight: 700 !important;
+      margin-bottom: 0.3em !important;
+      background: none !important;
+      background-color: transparent !important;
+      padding: 0 !important;
+      text-shadow: 
+        0 0 10px rgba(139, 92, 246, 0.5),
+        0 0 20px rgba(139, 92, 246, 0.3),
+        0 0 30px rgba(139, 92, 246, 0.2) !important;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .cover .cover-main blockquote {
+      color: #d1d5db !important;
+      font-size: 1.3em !important;
+      border-left: none !important;
+      margin: 0.5em 0 2em 0 !important;
+      position: relative;
+      z-index: 2;
+      line-height: 1.6;
+    }
+    
+    .cover .cover-main p {
+      color: #e5e7eb !important;
+      font-size: 1.2em !important;
+      position: relative;
+      z-index: 2;
+    }
+    
+    .cover .cover-main a {
+      display: inline-block;
+      padding: 0.75em 2em;
+      margin: 0.5em;
+      border-radius: 8px;
+      text-decoration: none;
+      font-weight: 600;
+      transition: all 0.3s;
+      border: 2px solid;
+      background: #ffffff;
+      border-color: #ffffff;
+      color: #000000;
+      box-shadow: 0 4px 12px rgba(255, 255, 255, 0.2);
+      position: relative;
+      z-index: 2;
+    }
+    
+    .cover .cover-main a:hover {
+      background: #f3f4f6;
+      border-color: #ffffff;
+      color: #000000;
+      box-shadow: 
+        0 6px 16px rgba(255, 255, 255, 0.3),
+        0 0 20px rgba(255, 255, 255, 0.1);
+      transform: translateY(-2px);
+    }
+    
+  </style>
 </head>
-<body class="h-full bg-slate-50 dark:bg-slate-900 transition-colors duration-300">
-    <div class="flex h-full">
-        <!-- Sidebar -->
-        <aside id="docs-sidebar" class="w-64 bg-white dark:bg-slate-800 border-r border-slate-200 dark:border-slate-700 flex flex-col h-screen sticky top-0">
-            <!-- Header -->
-            <div class="p-6 border-b border-slate-200 dark:border-slate-700">
-                <div class="flex items-center gap-3">
-                    <div class="w-10 h-10 bg-gradient-to-br from-purple-500 to-purple-600 rounded-lg flex items-center justify-center">
-                        <i class="fas fa-book text-white text-lg"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-lg font-bold text-slate-900 dark:text-slate-50">WebSuite Platform</h1>
-                        <p class="text-xs text-slate-500 dark:text-slate-400">Guide d'Installation</p>
-                    </div>
-                </div>
-            </div>
-
-            <!-- Navigation -->
-            <nav class="flex-1 overflow-y-auto p-4">
-                <div class="space-y-1">
-                    <a href="#home" 
-                       onclick="showSection('home'); return false;"
-                       class="nav-link active flex items-center gap-3 px-4 py-2 rounded-lg text-slate-700 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                        <i class="fas fa-home w-4 text-center"></i>
-                        <span>Accueil</span>
-                    </a>
-
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Installation
-                        </div>
-                        <a href="#quick-start" 
-                           onclick="showSection('quick-start'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-rocket w-4 text-center text-purple-500"></i>
-                            <span>Démarrage Rapide</span>
-                        </a>
-                        <a href="#installation" 
-                           onclick="showSection('installation'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-download w-4 text-center text-purple-500"></i>
-                            <span>Installation</span>
-                        </a>
-                        <a href="#local-dev" 
-                           onclick="showSection('local-dev'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-code w-4 text-center text-purple-500"></i>
-                            <span>Développement Local</span>
-                        </a>
-                    </div>
-
-                    <div class="mt-4">
-                        <div class="px-4 py-2 text-xs font-semibold text-slate-500 dark:text-slate-400 uppercase tracking-wider">
-                            Configuration
-                        </div>
-                        <a href="#env-vars" 
-                           onclick="showSection('env-vars'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-cog w-4 text-center text-purple-500"></i>
-                            <span>Variables d'Environnement</span>
-                        </a>
-                        <a href="#rss-feeds" 
-                           onclick="showSection('rss-feeds'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-rss w-4 text-center text-purple-500"></i>
-                            <span>Flux RSS</span>
-                        </a>
-                        <a href="#api" 
-                           onclick="showSection('api'); return false;"
-                           class="nav-link flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                            <i class="fas fa-plug w-4 text-center text-purple-500"></i>
-                            <span>API</span>
-                        </a>
-                    </div>
-                </div>
-            </nav>
-
-            <!-- Footer -->
-            <div class="p-4 border-t border-slate-200 dark:border-slate-700">
-                <button onclick="toggleDarkMode()" class="w-full flex items-center gap-3 px-4 py-2 rounded-lg text-slate-600 dark:text-slate-300 hover:bg-slate-100 dark:hover:bg-slate-700 transition-colors">
-                    <i class="fas fa-moon dark:hidden w-4 text-center"></i>
-                    <i class="fas fa-sun hidden dark:inline w-4 text-center"></i>
-                    <span class="dark:hidden">Mode sombre</span>
-                    <span class="hidden dark:inline">Mode clair</span>
-                </button>
-            </div>
-        </aside>
-
-        <!-- Main Content -->
-        <main class="flex-1 overflow-y-auto">
-            <div id="docs-content" class="max-w-4xl mx-auto p-8">
-                <!-- Home Section -->
-                <section id="home" class="doc-content">
-                    <div class="text-center mb-12">
-                        <div class="inline-flex items-center justify-center w-20 h-20 bg-gradient-to-br from-purple-500 to-purple-600 rounded-2xl mb-6">
-                            <i class="fas fa-book text-white text-3xl"></i>
-                        </div>
-                        <h1 class="text-5xl font-bold text-slate-900 dark:text-slate-50 mb-4">WebSuite Platform</h1>
-                        <p class="text-xl text-slate-600 dark:text-slate-400 mb-8">Guide d'Installation et de Configuration</p>
-                    </div>
-
-                    <div class="grid md:grid-cols-2 gap-6 mb-12">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="w-12 h-12 bg-purple-100 dark:bg-purple-900/30 rounded-lg flex items-center justify-center mb-4">
-                                <i class="fas fa-rocket text-purple-600 dark:text-purple-400 text-xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">Démarrage Rapide</h3>
-                            <p class="text-slate-600 dark:text-slate-300 mb-4">Déployez votre CMS sur Cloudflare Pages en moins de 5 minutes</p>
-                            <a href="#quick-start" onclick="showSection('quick-start'); return false;" class="text-purple-600 dark:text-purple-400 font-semibold hover:underline">
-                                Commencer →
-                            </a>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="w-12 h-12 bg-blue-100 dark:bg-blue-900/30 rounded-lg flex items-center justify-center mb-4">
-                                <i class="fas fa-cog text-blue-600 dark:text-blue-400 text-xl"></i>
-                            </div>
-                            <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50 mb-2">Configuration</h3>
-                            <p class="text-slate-600 dark:text-slate-300 mb-4">Configurez vos flux RSS et variables d'environnement</p>
-                            <a href="#env-vars" onclick="showSection('env-vars'); return false;" class="text-blue-600 dark:text-blue-400 font-semibold hover:underline">
-                                Configurer →
-                            </a>
-                        </div>
-                    </div>
-
-                    <div class="bg-gradient-to-r from-purple-50 to-blue-50 dark:from-purple-900/20 dark:to-blue-900/20 p-8 rounded-xl border border-purple-200 dark:border-purple-800">
-                        <h2 class="text-2xl font-bold text-slate-900 dark:text-slate-50 mb-4">Caractéristiques</h2>
-                        <div class="grid md:grid-cols-2 gap-4">
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                                <div>
-                                    <strong class="text-slate-900 dark:text-slate-50">Edge Functions</strong>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Runtime Bun.js pour des performances optimales</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                                <div>
-                                    <strong class="text-slate-900 dark:text-slate-50">Multi-sources</strong>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Substack, YouTube, Podcasts, Meetup</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                                <div>
-                                    <strong class="text-slate-900 dark:text-slate-50">Cache intelligent</strong>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">180 secondes de cache pour des réponses ultra-rapides</p>
-                                </div>
-                            </div>
-                            <div class="flex items-start gap-3">
-                                <i class="fas fa-check-circle text-green-500 mt-1"></i>
-                                <div>
-                                    <strong class="text-slate-900 dark:text-slate-50">100% Gratuit</strong>
-                                    <p class="text-sm text-slate-600 dark:text-slate-400">Sur le plan gratuit Cloudflare Pages</p>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-                </section>
-
-                <!-- Quick Start Section -->
-                <section id="quick-start" class="doc-content hidden">
-                    <h1>🚀 Démarrage Rapide</h1>
-                    
-                    <p>Bienvenue dans <strong>WebSuite Platform</strong> ! Ce guide vous permettra de déployer votre CMS sur Cloudflare Pages en moins de 5 minutes.</p>
-
-                    <h2>Prérequis</h2>
-                    <ul>
-                        <li>Un compte <a href="https://dash.cloudflare.com/sign-up" target="_blank">Cloudflare</a> (gratuit)</li>
-                        <li>Un repository GitHub/GitLab/Bitbucket</li>
-                        <li>Des flux RSS de vos contenus (Substack, YouTube, Podcasts, Meetup)</li>
-                    </ul>
-
-                    <h2>Étapes de Déploiement</h2>
-
-                    <h3>1. Cloner le Projet</h3>
-                    <pre><code>git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
-cd WebSuitePlatform/ProdBeta</code></pre>
-
-                    <h3>2. Déployer sur Cloudflare Pages</h3>
-                    <ol>
-                        <li>Allez sur <a href="https://dash.cloudflare.com/" target="_blank">Cloudflare Dashboard</a></li>
-                        <li>Cliquez sur <strong>Workers & Pages</strong> → <strong>Create application</strong></li>
-                        <li>Sélectionnez <strong>Pages</strong> → <strong>Connect to Git</strong></li>
-                        <li>Autorisez Cloudflare à accéder à votre repository</li>
-                        <li>Sélectionnez votre repository et cliquez sur <strong>Begin setup</strong></li>
-                    </ol>
-
-                    <p><strong>Configuration du Build :</strong></p>
-                    <ul>
-                        <li><strong>Project name</strong> : <code>websuite-cms</code> (ou votre choix)</li>
-                        <li><strong>Production branch</strong> : <code>main</code></li>
-                        <li><strong>Build command</strong> : (laisser vide)</li>
-                        <li><strong>Build output directory</strong> : <code>/</code> (racine)</li>
-                    </ul>
-
-                    <p>Cliquez sur <strong>Save and Deploy</strong></p>
-
-                    <h3>3. Configurer les Variables d'Environnement</h3>
-                    <p>Une fois déployé, allez dans <strong>Settings</strong> → <strong>Environment variables</strong> et ajoutez :</p>
-                    
-                    <pre><code>ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=votre_password_securise_12_caracteres_minimum
-BLOG_FEED_URL=https://votrecompte.substack.com/feed
-YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID
-PODCAST_FEED_URL=https://anchor.fm/s/VOTRE_ID/podcast/rss
-EVENTS_FEED_URL=https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
-
-                    <blockquote>
-                        🔒 <strong>Sécurité</strong> : Marquez <code>ADMIN_PASSWORD</code> comme <strong>Encrypted</strong> !
-                    </blockquote>
-
-                    <h3>4. Accéder à votre CMS</h3>
-                    <p>Une fois déployé, votre CMS est accessible à :</p>
-                    <pre><code>https://votre-projet.pages.dev</code></pre>
-                    <p>L'interface admin est disponible à :</p>
-                    <pre><code>https://votre-projet.pages.dev/admin</code></pre>
-                </section>
-
-                <!-- Installation Section -->
-                <section id="installation" class="doc-content hidden">
-                    <h1>📦 Installation</h1>
-                    
-                    <p>Guide détaillé pour installer et configurer WebSuite Platform.</p>
-
-                    <h2>Installation Locale</h2>
-
-                    <h3>Prérequis</h3>
-                    <ul>
-                        <li><a href="https://nodejs.org/" target="_blank">Node.js</a> (v18 ou supérieur) ou <a href="https://bun.sh" target="_blank">Bun</a></li>
-                        <li><a href="https://developers.cloudflare.com/workers/wrangler/" target="_blank">Wrangler CLI</a> (CLI Cloudflare)</li>
-                    </ul>
-
-                    <h3>Étapes d'Installation</h3>
-
-                    <h4>1. Installer Wrangler</h4>
-                    <pre><code>npm install -g wrangler</code></pre>
-
-                    <h4>2. Cloner le Repository</h4>
-                    <pre><code>git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
-cd WebSuitePlatform/ProdBeta</code></pre>
-
-                    <h4>3. Créer les Variables d'Environnement</h4>
-                    <p>Créez un fichier <code>.dev.vars</code> à la racine du projet :</p>
-                    <pre><code>cp .dev.vars.example .dev.vars</code></pre>
-                    <p>Éditez <code>.dev.vars</code> avec vos valeurs (voir section Variables d'Environnement).</p>
-
-                    <blockquote>
-                        ⚠️ <strong>Sécurité</strong> : Le fichier <code>.dev.vars</code> est déjà dans <code>.gitignore</code> et ne sera jamais commité.
-                    </blockquote>
-
-                    <h4>4. Lancer le Serveur de Développement</h4>
-                    <p>Avec Wrangler :</p>
-                    <pre><code>npx wrangler pages dev . --compatibility-date=2024-12-12</code></pre>
-                    <p>Le serveur démarre sur <code>http://localhost:8788</code></p>
-
-                    <p>Avec Bun :</p>
-                    <pre><code>bun server.js</code></pre>
-                    <p>Le serveur démarre sur <code>http://localhost:8000</code></p>
-                </section>
-
-                <!-- Local Dev Section -->
-                <section id="local-dev" class="doc-content hidden">
-                    <h1>💻 Développement Local</h1>
-                    
-                    <p>Pour tester localement avec Bun :</p>
-
-                    <h2>Configuration</h2>
-                    <pre><code># Créer .dev.vars
-cp .dev.vars.example .dev.vars
-
-# Éditer .dev.vars avec vos valeurs</code></pre>
-
-                    <h2>Lancer le Serveur</h2>
-                    <pre><code>bun server.js</code></pre>
-                    <p>Le serveur démarre sur <code>http://localhost:8000</code></p>
-
-                    <h2>Structure du Projet</h2>
-                    <pre><code>ProdBeta/
-├── index.html              # Page d'accueil frontend
-├── admin/                  # Interface admin
-│   ├── index.html          # Page de login
-│   └── dashboard.html      # Dashboard principal
-├── core/                   # Scripts JavaScript
-│   ├── admin.js            # Logique dashboard
-│   └── frontend.js         # Utilitaires frontend
-├── functions/              # Cloudflare Pages Functions
-│   ├── _middleware.js      # Routeur principal
-│   ├── api/                # Endpoints API
-│   └── shared/             # Utilitaires partagés
-├── frontend/               # Templates frontend
-├── config.json             # Configuration globale
-└── .dev.vars               # Variables d'environnement (local)</code></pre>
-                </section>
-
-                <!-- Environment Variables Section -->
-                <section id="env-vars" class="doc-content hidden">
-                    <h1>⚙️ Variables d'Environnement</h1>
-                    
-                    <p>Configuration complète des variables d'environnement nécessaires pour WebSuite Platform.</p>
-
-                    <h2>Variables Requises</h2>
-
-                    <div class="bg-slate-900 dark:bg-slate-950 p-6 rounded-lg my-4">
-                        <h3 class="text-white mb-4">Variables d'Authentification</h3>
-                        <pre class="text-slate-100"><code>ADMIN_EMAIL=admin@example.com
-ADMIN_PASSWORD=votre_password_securise_12_caracteres_minimum</code></pre>
-                        <p class="text-slate-400 text-sm mt-2">🔒 Marquez <code>ADMIN_PASSWORD</code> comme <strong>Encrypted</strong> dans Cloudflare Pages</p>
-                    </div>
-
-                    <h2>Variables de Flux RSS</h2>
-
-                    <div class="bg-slate-900 dark:bg-slate-950 p-6 rounded-lg my-4">
-                        <pre class="text-slate-100"><code>BLOG_FEED_URL=https://votrecompte.substack.com/feed
-YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID
-PODCAST_FEED_URL=https://anchor.fm/s/VOTRE_ID/podcast/rss
-EVENTS_FEED_URL=https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
-                    </div>
-
-                    <h2>Configuration dans Cloudflare Pages</h2>
-                    <ol>
-                        <li>Allez dans votre projet Cloudflare Pages</li>
-                        <li>Cliquez sur <strong>Settings</strong> → <strong>Environment variables</strong></li>
-                        <li>Ajoutez chaque variable une par une</li>
-                        <li>Pour les variables sensibles, cochez <strong>Encrypted</strong></li>
-                        <li>Cliquez sur <strong>Save</strong></li>
-                    </ol>
-
-                    <h2>Configuration Locale (.dev.vars)</h2>
-                    <p>Pour le développement local, créez un fichier <code>.dev.vars</code> à la racine :</p>
-                    <pre><code>ADMIN_EMAIL=demo@demo.com
-ADMIN_PASSWORD=password123
-BLOG_FEED_URL=https://blog.cloudflare.com/rss
-YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=UCgv3xMy6kECn0boYP9d2o-g
-PODCAST_FEED_URL=https://feeds.fame.so/the-connectivity-cloud-podcast
-EVENTS_FEED_URL=https://www.meetup.com/open-data-science-ny-odsc/events/rss</code></pre>
-                </section>
-
-                <!-- RSS Feeds Section -->
-                <section id="rss-feeds" class="doc-content hidden">
-                    <h1>📡 Configuration des Flux RSS</h1>
-                    
-                    <p>WebSuite Platform supporte plusieurs sources de contenu via RSS.</p>
-
-                    <h2>Sources Supportées</h2>
-
-                    <div class="grid md:grid-cols-2 gap-4 my-6">
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="flex items-center gap-3 mb-3">
-                                <i class="fab fa-substack text-2xl text-purple-600"></i>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Substack</h3>
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-300 mb-3">Articles de blog</p>
-                            <code class="block text-sm">https://votrecompte.substack.com/feed</code>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="flex items-center gap-3 mb-3">
-                                <i class="fab fa-youtube text-2xl text-red-600"></i>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">YouTube</h3>
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-300 mb-3">Vidéos</p>
-                            <code class="block text-sm">https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID</code>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="flex items-center gap-3 mb-3">
-                                <i class="fas fa-podcast text-2xl text-blue-600"></i>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Podcasts</h3>
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-300 mb-3">Anchor.fm, Spotify, etc.</p>
-                            <code class="block text-sm">https://anchor.fm/s/VOTRE_ID/podcast/rss</code>
-                        </div>
-
-                        <div class="bg-white dark:bg-slate-800 p-6 rounded-xl border border-slate-200 dark:border-slate-700">
-                            <div class="flex items-center gap-3 mb-3">
-                                <i class="fas fa-calendar text-2xl text-green-600"></i>
-                                <h3 class="text-xl font-bold text-slate-900 dark:text-slate-50">Meetup</h3>
-                            </div>
-                            <p class="text-slate-600 dark:text-slate-300 mb-3">Événements</p>
-                            <code class="block text-sm">https://www.meetup.com/fr-fr/votre-groupe/events/rss</code>
-                        </div>
-                    </div>
-
-                    <h2>Comment Obtenir l'URL d'un Flux RSS</h2>
-
-                    <h3>Substack</h3>
-                    <p>Ajoutez <code>/feed</code> à la fin de l'URL de votre publication :</p>
-                    <pre><code>https://votrecompte.substack.com/feed</code></pre>
-
-                    <h3>YouTube</h3>
-                    <p>Pour trouver votre Channel ID :</p>
-                    <ol>
-                        <li>Allez sur votre chaîne YouTube</li>
-                        <li>Cliquez sur "À propos"</li>
-                        <li>Copiez le Channel ID</li>
-                        <li>Utilisez : <code>https://www.youtube.com/feeds/videos.xml?channel_id=VOTRE_ID</code></li>
-                    </ol>
-                    <p>Ou utilisez <a href="https://commentpicker.com/youtube-channel-id.php" target="_blank">Comment Picker</a></p>
-
-                    <h3>Podcasts</h3>
-                    <p>Vérifiez la documentation de votre plateforme de podcast pour obtenir l'URL RSS.</p>
-
-                    <h3>Meetup</h3>
-                    <p>Ajoutez <code>/events/rss</code> à la fin de l'URL de votre groupe :</p>
-                    <pre><code>https://www.meetup.com/fr-fr/votre-groupe/events/rss</code></pre>
-                </section>
-
-                <!-- API Section -->
-                <section id="api" class="doc-content hidden">
-                    <h1>🔌 API</h1>
-                    
-                    <p>WebSuite Platform expose une API REST complète pour accéder à tous vos contenus.</p>
-
-                    <h2>Base URL</h2>
-                    <pre><code>https://votre-projet.pages.dev/api</code></pre>
-
-                    <h2>Endpoints Publics</h2>
-                    <p>La plupart des endpoints sont publics et ne nécessitent pas d'authentification :</p>
-                    <ul>
-                        <li><code>GET /api/posts</code> - Liste des articles</li>
-                        <li><code>GET /api/videos</code> - Liste des vidéos</li>
-                        <li><code>GET /api/podcasts</code> - Liste des podcasts</li>
-                        <li><code>GET /api/events</code> - Liste des événements</li>
-                        <li><code>GET /api/siteinfos</code> - Informations du site</li>
-                    </ul>
-
-                    <h2>Endpoints Protégés</h2>
-                    <p>Certains endpoints nécessitent une authentification via header :</p>
-                    <pre><code>X-Auth-Key: votre_password_admin</code></pre>
-                    <p>Endpoints protégés :</p>
-                    <ul>
-                        <li><code>GET /api/config</code> - Configuration</li>
-                        <li><code>POST /api/clear-cache</code> - Vider le cache</li>
-                        <li><code>POST /api/login</code> - Connexion admin</li>
-                    </ul>
-
-                    <h2>Exemples d'Utilisation</h2>
-
-                    <h3>JavaScript (Fetch)</h3>
-                    <pre><code>// Récupérer les articles
-fetch('https://votre-projet.pages.dev/api/posts')
-  .then(response => response.json())
-  .then(data => console.log(data));
-
-// Récupérer un article spécifique
-fetch('https://votre-projet.pages.dev/api/post/mon-article')
-  .then(response => response.json())
-  .then(data => console.log(data));</code></pre>
-
-                    <h3>cURL</h3>
-                    <pre><code># Liste des articles
-curl https://votre-projet.pages.dev/api/posts
-
-# Article spécifique
-curl https://votre-projet.pages.dev/api/post/mon-article
-
-# Avec authentification
-curl -H "X-Auth-Key: votre_password" \
-     https://votre-projet.pages.dev/api/config</code></pre>
-
-                    <h2>Cache</h2>
-                    <p>Toutes les réponses sont mises en cache pendant <strong>180 secondes</strong> (3 minutes) pour optimiser les performances.</p>
-                    <p>Pour forcer le rafraîchissement, utilisez l'endpoint <code>/api/clear-cache</code> (protégé).</p>
-
-                    <h2>Rate Limiting</h2>
-                    <p>Sur le plan gratuit Cloudflare Pages :</p>
-                    <ul>
-                        <li><strong>100 000 requêtes/jour</strong></li>
-                        <li>Pas de limite de bande passante</li>
-                        <li>CDN global avec 300+ datacenters</li>
-                    </ul>
-                </section>
-            </div>
-        </main>
-    </div>
-
-    <script>
-        // Dark mode toggle
-        function toggleDarkMode() {
-            document.documentElement.classList.toggle('dark');
-            localStorage.setItem('darkMode', document.documentElement.classList.contains('dark'));
-        }
-
-        // Initialize dark mode
-        if (localStorage.getItem('darkMode') === 'true' || (!localStorage.getItem('darkMode') && window.matchMedia('(prefers-color-scheme: dark)').matches)) {
-            document.documentElement.classList.add('dark');
-        }
-
-        // Show section and update navigation
-        function showSection(sectionId) {
-            // Hide all sections
-            document.querySelectorAll('.doc-content').forEach(section => {
-                section.classList.add('hidden');
+<body class="dark-theme">
+  <div id="app">Chargement...</div>
+  <script>
+    // Détection automatique du basePath
+    const path = window.location.pathname;
+    let basePath = '/';
+    // Si on est sur GitHub Pages dans un repo (pas username.github.io)
+    if (path !== '/' && path !== '/index.html') {
+      const parts = path.split('/').filter(p => p && p !== 'index.html');
+      if (parts.length > 0) {
+        // Prendre le premier segment comme basePath
+        basePath = '/' + parts[0];
+      }
+    }
+    
+    window.$docsify = {
+      name: 'WebSuite Platform',
+      repo: '',
+      basePath: basePath,
+      loadSidebar: true,
+      subMaxLevel: 2,
+      auto2top: true,
+      relativePath: basePath === '/',
+      alias: {
+        '/.*/_sidebar.md': '/_sidebar.md'
+      },
+      search: {
+        maxAge: 86400000,
+        paths: 'auto',
+        placeholder: 'Rechercher...',
+        noData: 'Aucun résultat trouvé',
+        depth: 6
+      },
+      pagination: {
+        previousText: '← Précédent',
+        nextText: 'Suivant →',
+        crossChapter: true,
+        crossChapterText: true,
+      },
+      coverpage: true,
+      notFoundPage: true,
+      executeScript: true,
+      mergeNavbar: true,
+      formatUpdated: '{YYYY}-{MM}-{DD} {HH}:{mm}',
+      plugins: [
+        function(hook, vm) {
+          hook.beforeEach(function(html) {
+            return html;
+          });
+          hook.afterEach(function(html, next) {
+            next(html);
+          });
+          
+          // Plugin personnalisé pour navigation précédent/suivant
+          hook.doneEach(function() {
+            const sidebar = document.querySelector('.sidebar');
+            if (!sidebar) return;
+            
+            // Récupérer tous les liens de la sidebar (seulement les liens vers des pages, pas les titres)
+            const allLinks = Array.from(sidebar.querySelectorAll('a[href]')).filter(link => {
+              const href = link.getAttribute('href');
+              return href && !href.startsWith('#') && (href.endsWith('.md') || href === 'README.md' || !href.includes('#'));
             });
             
-            // Show selected section
-            const section = document.getElementById(sectionId);
-            if (section) {
-                section.classList.remove('hidden');
-                
-                // Scroll to top
-                window.scrollTo({ top: 0, behavior: 'smooth' });
-            }
+            const currentPath = vm.route.path;
+            const currentFile = currentPath.split('/').pop() || 'README.md';
             
-            // Update active nav link
-            document.querySelectorAll('.nav-link').forEach(link => {
-                link.classList.remove('active');
+            // Trouver l'index du lien actuel
+            let currentIndex = -1;
+            allLinks.forEach((link, index) => {
+              const href = link.getAttribute('href');
+              const linkFile = href.split('/').pop() || href;
+              
+              // Comparer les noms de fichiers
+              if (linkFile === currentFile || 
+                  (currentFile === 'README.md' && (href === 'README.md' || href === './README.md' || href === '/README.md')) ||
+                  (currentPath.includes(href.replace('./', '').replace('/', '')) && href !== '#') ||
+                  (href.includes(currentFile) && currentFile !== 'README.md')) {
+                currentIndex = index;
+              }
             });
             
-            // Find and activate the corresponding nav link
-            const activeLink = document.querySelector(`a[href="#${sectionId}"]`);
-            if (activeLink) {
-                activeLink.classList.add('active');
+            // Si on trouve la page actuelle
+            if (currentIndex >= 0) {
+              // Créer la navigation
+              const navContainer = document.createElement('div');
+              navContainer.className = 'custom-pagination';
+              navContainer.style.cssText = 'margin-top: 4em; padding-top: 2em; border-top: 2px solid; display: flex; justify-content: space-between; gap: 1em;';
+              
+              if (document.body.classList.contains('dark-theme')) {
+                navContainer.style.borderTopColor = '#2d2d2d';
+              } else {
+                navContainer.style.borderTopColor = '#e5e7eb';
+              }
+              
+              // Bouton Précédent
+              if (currentIndex > 0) {
+                const prevLink = allLinks[currentIndex - 1];
+                const prevBtn = document.createElement('a');
+                prevBtn.href = prevLink.getAttribute('href');
+                prevBtn.className = 'pagination-btn prev-btn';
+                prevBtn.innerHTML = '← ' + prevLink.textContent.trim();
+                prevBtn.style.cssText = 'flex: 1; padding: 1em 1.5em; border-radius: 8px; text-decoration: none; text-align: left; display: flex; align-items: center; min-width: 150px;';
+                if (document.body.classList.contains('dark-theme')) {
+                  prevBtn.style.cssText += 'background-color: #1a1a1a; border: 1px solid #374151; color: #e5e7eb;';
+                } else {
+                  prevBtn.style.cssText += 'background-color: #ffffff; border: 1px solid #d1d5db; color: #374151;';
+                }
+                prevBtn.addEventListener('mouseenter', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#2d2d2d';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#818cf8';
+                  } else {
+                    this.style.backgroundColor = '#f3f4f6';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#6366f1';
+                  }
+                });
+                prevBtn.addEventListener('mouseleave', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#1a1a1a';
+                    this.style.borderColor = '#374151';
+                    this.style.color = '#e5e7eb';
+                  } else {
+                    this.style.backgroundColor = '#ffffff';
+                    this.style.borderColor = '#d1d5db';
+                    this.style.color = '#374151';
+                  }
+                });
+                navContainer.appendChild(prevBtn);
+              }
+              
+              // Bouton Suivant
+              if (currentIndex < allLinks.length - 1) {
+                const nextLink = allLinks[currentIndex + 1];
+                const nextBtn = document.createElement('a');
+                nextBtn.href = nextLink.getAttribute('href');
+                nextBtn.className = 'pagination-btn next-btn';
+                nextBtn.innerHTML = nextLink.textContent.trim() + ' →';
+                nextBtn.style.cssText = 'flex: 1; padding: 1em 1.5em; border-radius: 8px; text-decoration: none; text-align: right; display: flex; align-items: center; justify-content: flex-end; min-width: 150px;';
+                if (document.body.classList.contains('dark-theme')) {
+                  nextBtn.style.cssText += 'background-color: #1a1a1a; border: 1px solid #374151; color: #e5e7eb;';
+                } else {
+                  nextBtn.style.cssText += 'background-color: #ffffff; border: 1px solid #d1d5db; color: #374151;';
+                }
+                nextBtn.addEventListener('mouseenter', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#2d2d2d';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#818cf8';
+                  } else {
+                    this.style.backgroundColor = '#f3f4f6';
+                    this.style.borderColor = '#6366f1';
+                    this.style.color = '#6366f1';
+                  }
+                });
+                nextBtn.addEventListener('mouseleave', function() {
+                  if (document.body.classList.contains('dark-theme')) {
+                    this.style.backgroundColor = '#1a1a1a';
+                    this.style.borderColor = '#374151';
+                    this.style.color = '#e5e7eb';
+                  } else {
+                    this.style.backgroundColor = '#ffffff';
+                    this.style.borderColor = '#d1d5db';
+                    this.style.color = '#374151';
+                  }
+                });
+                navContainer.appendChild(nextBtn);
+              }
+              
+              // Supprimer l'ancienne navigation si elle existe
+              const oldNav = document.querySelector('.custom-pagination');
+              if (oldNav) oldNav.remove();
+              
+              // Ajouter la nouvelle navigation
+              const content = document.querySelector('.markdown-section');
+              if (content) {
+                content.appendChild(navContainer);
+              }
             }
-            
-            // Update URL without reload
-            window.history.pushState({ section: sectionId }, '', `#${sectionId}`);
+          });
         }
-
-        // Handle hash changes
-        window.addEventListener('hashchange', function() {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                showSection(hash);
-            } else {
-                showSection('home');
-            }
-        });
-
-        // Initialize on load
-        document.addEventListener('DOMContentLoaded', function() {
-            const hash = window.location.hash.substring(1);
-            if (hash && document.getElementById(hash)) {
-                showSection(hash);
-            } else {
-                showSection('home');
-            }
-        });
-
-        // Handle browser back/forward
-        window.addEventListener('popstate', function(e) {
-            const hash = window.location.hash.substring(1);
-            if (hash) {
-                showSection(hash);
-            } else {
-                showSection('home');
-            }
-        });
-    </script>
+      ]
+    }
+  </script>
+  <script src="//cdn.jsdelivr.net/npm/docsify@4"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/search.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/pagination.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/docsify/lib/plugins/emoji.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-bash.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-json.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-javascript.min.js"></script>
+  <script src="//cdn.jsdelivr.net/npm/prismjs@1/components/prism-http.min.js"></script>
 </body>
 </html>

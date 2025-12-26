@@ -1,10 +1,10 @@
 # ⚙️ Configuration - Vue d'Ensemble
 
-Guide complet de la configuration de WebSuite Platform.
+Guide complet de la configuration de WebSuite CMS.
 
 ## Méthodes de Configuration
 
-WebSuite Platform peut être configuré de deux façons :
+WebSuite CMS peut être configuré de deux façons :
 
 1. **Variables d'environnement** (recommandé pour la production)
 2. **config.json** (fallback ou développement)
@@ -13,7 +13,7 @@ WebSuite Platform peut être configuré de deux façons :
 
 ## Variables d'Environnement
 
-Voir [Variables d'Environnement](#/docs/deployment/environment-variables) pour la liste complète.
+Voir [Variables d'Environnement](../deployment/environment-variables.md) pour la liste complète.
 
 ## config.json
 
@@ -28,7 +28,7 @@ Le fichier `config.json` à la racine du projet :
   "podcastFeedUrl": "https://anchor.fm/s/VOTRE_ID/podcast/rss",
   "eventsRssUrl": "https://www.meetup.com/fr-fr/votre-groupe/events/rss",
   "seo": {
-    "metaTitle": "WebSuite Platform",
+    "metaTitle": "WebSuite CMS",
     "metaDescription": "Description du site",
     "metaKeywords": "cms, rss, cloudflare"
   }
@@ -98,7 +98,7 @@ curl -H "X-Auth-Key: votre_password" \
 
 ## Prochaines Étapes
 
-- [Flux RSS](#/docs/configuration/rss-feeds)
-- [SEO](#/docs/configuration/seo)
-- [Variables d'environnement](#/docs/deployment/environment-variables)
+- [Flux RSS](rss-feeds.md)
+- [SEO](seo.md)
+- [Variables d'environnement](../deployment/environment-variables.md)
 

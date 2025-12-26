@@ -1,6 +1,6 @@
 # 📦 Installation
 
-Guide détaillé pour installer et configurer WebSuite Platform.
+Guide détaillé pour installer et configurer WebSuite CMS.
 
 ## Installation Locale
 
@@ -20,8 +20,8 @@ npm install -g wrangler
 #### 2. Cloner le Repository
 
 ```bash
-git clone https://github.com/VOTRE_USERNAME/WebSuitePlatform.git
-cd WebSuitePlatform/ProdBeta
+git clone https://github.com/VOTRE_USERNAME/StackPagesCMS.git
+cd StackPagesCMS/ProdBeta
 ```
 
 #### 3. Créer les Variables d'Environnement
@@ -77,7 +77,7 @@ ProdBeta/
 
 ### Déploiement sur Cloudflare Pages
 
-Voir le guide [Déploiement sur Cloudflare Pages](#/docs/deployment/cloudflare-pages) pour les instructions complètes.
+Voir le guide [Déploiement sur Cloudflare Pages](../deployment/cloudflare-pages.md) pour les instructions complètes.
 
 ### Variables d'Environnement en Production
 
@@ -131,7 +131,7 @@ Assurez-vous que les URLs de flux RSS sont valides et accessibles.
 
 ## Prochaines Étapes
 
-- [Développement Local](#/docs/guide/development)
-- [Configuration](#/docs/configuration/overview)
-- [API Documentation](#/docs/api/overview)
+- [Développement Local](development.md)
+- [Configuration](../configuration/overview.md)
+- [API Documentation](../api/overview.md)
 

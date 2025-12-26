@@ -1,10 +1,10 @@
 # ⚡ HTMX & SSR
 
-Guide sur l'utilisation de HTMX et du Server-Side Rendering dans WebSuite Platform.
+Guide sur l'utilisation de HTMX et du Server-Side Rendering dans WebSuite CMS.
 
 ## Vue d'Ensemble
 
-WebSuite Platform utilise HTMX pour le rendu dynamique et le Server-Side Rendering (SSR) pour optimiser les performances.
+WebSuite CMS utilise HTMX pour le rendu dynamique et le Server-Side Rendering (SSR) pour optimiser les performances.
 
 ## HTMX
 
@@ -12,7 +12,7 @@ WebSuite Platform utilise HTMX pour le rendu dynamique et le Server-Side Renderi
 
 HTMX permet de faire des requêtes AJAX directement depuis le HTML, sans JavaScript complexe.
 
-### Utilisation dans WebSuite Platform
+### Utilisation dans WebSuite CMS
 
 Les templates frontend utilisent HTMX pour :
 - Charger le contenu dynamiquement
@@ -181,7 +181,7 @@ Le SSR utilise le même cache que l'API :
 
 ## Prochaines Étapes
 
-- [Cache & Performance](#/docs/advanced/caching)
-- [Sécurité](#/docs/advanced/security)
-- [Personnalisation](#/docs/advanced/customization)
+- [Cache & Performance](caching.md)
+- [Sécurité](security.md)
+- [Personnalisation](customization.md)
 

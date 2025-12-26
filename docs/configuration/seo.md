@@ -7,7 +7,7 @@ Configuration SEO pour optimiser le référencement de votre site.
 ### Titre (Meta Title)
 
 ```env
-META_TITLE=WebSuite Platform - Votre Titre
+META_TITLE=WebSuite CMS - Votre Titre
 ```
 
 Ou dans `config.json` :
@@ -15,7 +15,7 @@ Ou dans `config.json` :
 ```json
 {
   "seo": {
-    "metaTitle": "WebSuite Platform - Votre Titre"
+    "metaTitle": "WebSuite CMS - Votre Titre"
   }
 }
 ```
@@ -133,7 +133,7 @@ curl https://votre-projet.pages.dev/api/siteinfos
 
 ## Prochaines Étapes
 
-- [Configuration générale](#/docs/configuration/overview)
-- [Flux RSS](#/docs/configuration/rss-feeds)
-- [Déploiement](#/docs/deployment/cloudflare-pages)
+- [Configuration générale](overview.md)
+- [Flux RSS](rss-feeds.md)
+- [Déploiement](../deployment/cloudflare-pages.md)
 

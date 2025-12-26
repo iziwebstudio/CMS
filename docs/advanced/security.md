@@ -1,10 +1,10 @@
 # 🔐 Sécurité
 
-Guide complet sur la sécurité de WebSuite Platform.
+Guide complet sur la sécurité de WebSuite CMS.
 
 ## Vue d'Ensemble
 
-WebSuite Platform est conçu avec la sécurité en tête, mais il est important de suivre les bonnes pratiques pour protéger votre installation.
+WebSuite CMS est conçu avec la sécurité en tête, mais il est important de suivre les bonnes pratiques pour protéger votre installation.
 
 ## Authentification
 
@@ -168,7 +168,7 @@ Cloudflare Pages inclut un rate limiting automatique :
 
 ## Prochaines Étapes
 
-- [Cache & Performance](#/docs/advanced/caching)
-- [HTMX & SSR](#/docs/advanced/htmx-ssr)
-- [Personnalisation](#/docs/advanced/customization)
+- [Cache & Performance](caching.md)
+- [HTMX & SSR](htmx-ssr.md)
+- [Personnalisation](customization.md)
 

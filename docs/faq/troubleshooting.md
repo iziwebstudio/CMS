@@ -189,9 +189,9 @@ Ouvrez les DevTools (F12) pour voir :
 
 Si le problème persiste :
 
-1. 📧 Email : support@websuite.platform
-2. 🐛 [GitHub Issues](https://github.com/VOTRE_USERNAME/WebSuitePlatform/issues)
-3. 📖 [Documentation complète](#/)
+1. 📧 Email : cms@iziweb.page
+2. 🐛 [GitHub Issues](https://github.com/iziweb-studio/CMS/issues)
+3. 📖 [Documentation complète](README.md)
 
 Incluez dans votre demande :
 - Description du problème

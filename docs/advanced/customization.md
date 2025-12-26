@@ -1,10 +1,10 @@
 # 🎨 Personnalisation
 
-Guide pour personnaliser et étendre WebSuite Platform.
+Guide pour personnaliser et étendre WebSuite CMS.
 
 ## Vue d'Ensemble
 
-WebSuite Platform est conçu pour être extensible et personnalisable. Ce guide vous montre comment adapter le CMS à vos besoins.
+WebSuite CMS est conçu pour être extensible et personnalisable. Ce guide vous montre comment adapter le CMS à vos besoins.
 
 ## Personnalisation du Frontend
 
@@ -207,7 +207,7 @@ Créez des endpoints webhook dans `functions/api/webhooks/` pour :
 
 ## Prochaines Étapes
 
-- [Cache & Performance](#/docs/advanced/caching)
-- [Sécurité](#/docs/advanced/security)
-- [HTMX & SSR](#/docs/advanced/htmx-ssr)
+- [Cache & Performance](caching.md)
+- [Sécurité](security.md)
+- [HTMX & SSR](htmx-ssr.md)
 

@@ -122,7 +122,7 @@ Cliquez sur **Voir** pour afficher une modal avec :
 
 ## Prochaines Étapes
 
-- [Dashboard](#/docs/admin/dashboard)
-- [Gestion du contenu](#/docs/admin/content-management)
-- [API Explorer](#/docs/admin/api-explorer)
+- [Dashboard](dashboard.md)
+- [Gestion du contenu](content-management.md)
+- [API Explorer](api-explorer.md)
 
