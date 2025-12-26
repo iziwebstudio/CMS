@@ -255,6 +255,18 @@ async function handleApiRoute(pathname, request) {
       return await handler.onRequestGet?.(context);
     }
     
+    // Route sauvegarde agent : /api/agents/save
+    if (apiPath === 'agents/save' && request.method === 'POST') {
+      const handler = await import('./functions/api/agents/save.js');
+      return await handler.onRequestPost?.({ request, env });
+    }
+    
+    // Route chargement agent : /api/agents/load?id=xxx
+    if (apiPath === 'agents/load' && request.method === 'GET') {
+      const handler = await import('./functions/api/agents/load.js');
+      return await handler.onRequestGet?.({ request, env });
+    }
+    
   } catch (error) {
     console.error(`Error handling API route ${pathname}:`, error);
     return new Response(`API Error: ${error.message}`, { 
@@ -268,9 +280,9 @@ async function handleApiRoute(pathname, request) {
 
 // Middleware principal
 const server = Bun.serve({
-  port: 8000,
+    port: 8000,
   async fetch(req) {
-    const url = new URL(req.url);
+      const url = new URL(req.url);
     let pathname = url.pathname;
     
     // Gérer OPTIONS pour CORS
@@ -364,7 +376,7 @@ const server = Bun.serve({
           }
         };
       }
-    } catch (e) {
+      } catch (e) {
       console.log('Could not load config.json, using defaults:', e.message);
     }
     
@@ -462,9 +474,9 @@ const server = Bun.serve({
     
     // Si on arrive ici sans réponse, servir le template de base
     return htmlResponse(template);
-  },
-});
-
-console.log(`🚀 Server running at http://localhost:${server.port}`);
+    },
+  });
+  
+  console.log(`🚀 Server running at http://localhost:${server.port}`);
 console.log(`📁 Serving files from: ${projectRoot}`);
 console.log(`🔧 Environment variables loaded: ${Object.keys(env).filter(k => !k.includes('PASSWORD')).length} vars`);

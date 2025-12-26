@@ -155,12 +155,17 @@ function showView(viewName) {
         'builder': 'Frontend Builder',
         'analytics': 'Google Analytics',
         'podcasts': 'Podcasts',
-        'agents': 'Agents Google AI',
+        'agents': 'Agents IA',
         'agent-create': 'Nouvel Agent Google',
         'config': 'Configuration',
         'help': 'Aide & Support'
     };
     document.getElementById('page-title').textContent = titles[viewName];
+
+    // Load data for specific views
+    if (viewName === 'agents') {
+        loadAgents();
+    }
 
     // Update Nav State
     document.querySelectorAll('.nav-item').forEach(el => {
@@ -1251,18 +1256,9 @@ async function checkAgentsConfig() {
     }
 }
 
-// Mock Data for agents
-const mockAgents = [
-    {
-        name: "Gmail Prospecting",
-        id: "gmail_bot",
-        status: "active",
-        trigger: "cron",
-        schedule: "0 9 * * *",
-        type: "gas",
-        lastRun: new Date(Date.now() - 3600000).toISOString()
-    }
-];
+// Agents data
+let agentsList = [];
+let agentsLogs = {}; // Cache des logs par agent
 
 async function loadAgents() {
     const tbody = document.getElementById('agents-table');
@@ -1270,14 +1266,62 @@ async function loadAgents() {
 
     await checkAgentsConfig();
 
-    // TODO: Fetch from /api/agents
+    try {
+        const authKey = localStorage.getItem('websuite_auth');
+        const response = await fetch(buildApiUrl('/api/agents'), {
+            headers: { 'X-Auth-Key': authKey }
+        });
 
-    if (mockAgents.length === 0) {
-        tbody.innerHTML = '<tr><td colspan="4" class="px-6 py-4 text-center text-slate-500">Aucun agent configuré.</td></tr>';
+        if (!response.ok) {
+            if (response.status === 401) {
+                // Non authentifié, rediriger vers login
+                window.location.href = '/admin/index.html';
         return;
-    }
+            }
+            throw new Error(`Erreur ${response.status}`);
+        }
 
-    tbody.innerHTML = mockAgents.map(agent => `
+        agentsList = await response.json();
+
+        if (agentsList.length === 0) {
+            tbody.innerHTML = '<tr><td colspan="5" class="px-6 py-4 text-center text-slate-500">Aucun agent configuré. <button onclick="document.getElementById(\'agent-create-modal\').classList.remove(\'hidden\')" class="text-emerald-600 hover:underline ml-2">Créer un agent</button></td></tr>';
+            return;
+        }
+
+        // Charger les logs du dernier exécution pour chaque agent
+        for (const agent of agentsList) {
+            try {
+                const logsResponse = await fetch(buildApiUrl(`/api/agents/${agent.id}/logs`), {
+                    headers: { 'X-Auth-Key': authKey }
+                });
+                if (logsResponse.ok) {
+                    const logsData = await logsResponse.json();
+                    agentsLogs[agent.id] = logsData.logs || [];
+                }
+            } catch (e) {
+                console.warn(`Could not load logs for agent ${agent.id}:`, e);
+            }
+        }
+
+        renderAgentsTable();
+
+    } catch (error) {
+        console.error('Error loading agents:', error);
+        tbody.innerHTML = `<tr><td colspan="5" class="px-6 py-4 text-center text-red-500">Erreur lors du chargement: ${error.message}</td></tr>`;
+    }
+}
+
+function renderAgentsTable() {
+    const tbody = document.getElementById('agents-table');
+    if (!tbody) return;
+
+    tbody.innerHTML = agentsList.map(agent => {
+        const logs = agentsLogs[agent.id] || [];
+        const lastLog = logs.length > 0 ? logs[logs.length - 1] : null;
+        const lastRun = lastLog ? new Date(lastLog.timestamp) : null;
+        const lastSuccess = lastLog ? lastLog.data.success : null;
+
+        return `
         <tr class="hover:bg-slate-50 dark:hover:bg-slate-700/50 transition border-b border-transparent dark:border-slate-700/50 last:border-0">
             <td class="px-6 py-4">
                 <span class="inline-flex items-center gap-1.5 px-2.5 py-1 rounded-full text-xs font-medium ${agent.status === 'active' ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-slate-100 text-slate-600 dark:bg-slate-700 dark:text-slate-400'}">
@@ -1287,25 +1331,170 @@ async function loadAgents() {
             </td>
             <td class="px-6 py-4 font-medium text-slate-800 dark:text-white">
                 <div class="flex items-center gap-3">
-                    <div class="w-8 h-8 rounded-lg bg-white border border-slate-200 dark:bg-slate-700 dark:border-slate-600 flex items-center justify-center text-xl shadow-sm">
-                        <i class="fab fa-google text-lg"></i>
+                    <div class="w-8 h-8 rounded-lg bg-gradient-to-br from-purple-500 to-purple-700 border border-slate-200 dark:border-slate-600 flex items-center justify-center text-white shadow-sm">
+                        <i class="fas fa-robot text-sm"></i>
                     </div>
                     <div>
-                        ${agent.name}
-                        <div class="text-xs text-slate-400 mt-0.5">${agent.schedule}</div>
+                        <div class="font-semibold">${agent.name}</div>
+                        <div class="text-xs text-slate-400 mt-0.5 font-mono">${agent.id}</div>
                     </div>
                 </div>
             </td>
-            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs text-right">
-                ${agent.lastRun ? new Date(agent.lastRun).toLocaleString('fr-FR') : 'Jamais'}
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
+                ${lastRun ? `
+                    <div>${lastRun.toLocaleString('fr-FR')}</div>
+                    <div class="mt-1 ${lastSuccess ? 'text-emerald-600' : 'text-red-600'}">
+                        ${lastSuccess ? '<i class="fas fa-check-circle"></i> Succès' : '<i class="fas fa-times-circle"></i> Échec'}
+                    </div>
+                ` : '<span class="text-slate-400">Jamais exécuté</span>'}
+            </td>
+            <td class="px-6 py-4 text-slate-500 dark:text-slate-400 text-xs">
+                ${lastLog && lastLog.data.executionTime ? `${lastLog.data.executionTime}ms` : '-'}
             </td>
             <td class="px-6 py-4 text-right">
-                <button onclick="alert('Déclenchement du script Google...')" class="text-slate-400 hover:text-emerald-500 transition mx-1" title="Lancer manuellement">
+                <div class="flex items-center justify-end gap-2">
+                    <button onclick="executeAgent('${agent.id}', this)" 
+                        class="text-slate-400 hover:text-emerald-500 transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" 
+                        title="Exécuter maintenant">
                     <i class="fas fa-play"></i>
                 </button>
+                    <button onclick="viewAgentLogs('${agent.id}')" 
+                        class="text-slate-400 hover:text-blue-500 transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" 
+                        title="Voir les logs">
+                        <i class="fas fa-list-alt"></i>
+                    </button>
+                    <button onclick="editAgent('${agent.id}')" 
+                        class="text-slate-400 hover:text-purple-500 transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded" 
+                        title="Éditer dans l'IDE">
+                        <i class="fas fa-edit"></i>
+                    </button>
+                </div>
             </td>
         </tr>
-    `).join('');
+    `;
+    }).join('');
+}
+
+async function executeAgent(agentId, buttonElement) {
+    if (!confirm(`Voulez-vous exécuter l'agent "${agentId}" maintenant ?`)) {
+        return;
+    }
+
+    const button = buttonElement || (event && event.target.closest('button'));
+    const originalHTML = button ? button.innerHTML : '';
+    if (button) {
+        button.innerHTML = '<i class="fas fa-spinner fa-spin"></i>';
+        button.disabled = true;
+    }
+
+    try {
+        const authKey = localStorage.getItem('websuite_auth');
+        const response = await fetch(buildApiUrl(`/api/agents/${agentId}/execute`), {
+            method: 'POST',
+            headers: { 'X-Auth-Key': authKey }
+        });
+
+        if (!response.ok) {
+            const error = await response.json();
+            throw new Error(error.error || `Erreur ${response.status}`);
+        }
+
+        const result = await response.json();
+        
+        // Recharger les logs
+        await loadAgentLogs(agentId);
+        renderAgentsTable();
+
+        // Afficher le résultat
+        alert(`Agent exécuté avec succès !\n\nTemps d'exécution: ${result.executionTime}ms\n\nRésultat: ${JSON.stringify(result.result, null, 2)}`);
+    } catch (error) {
+        alert(`Erreur lors de l'exécution: ${error.message}`);
+    } finally {
+        if (button) {
+            button.innerHTML = originalHTML;
+            button.disabled = false;
+        }
+    }
+}
+
+async function loadAgentLogs(agentId) {
+    try {
+        const authKey = localStorage.getItem('websuite_auth');
+        const response = await fetch(buildApiUrl(`/api/agents/${agentId}/logs`), {
+            headers: { 'X-Auth-Key': authKey }
+        });
+
+        if (response.ok) {
+            const logsData = await response.json();
+            agentsLogs[agentId] = logsData.logs || [];
+        }
+    } catch (error) {
+        console.error(`Error loading logs for agent ${agentId}:`, error);
+    }
+}
+
+function viewAgentLogs(agentId) {
+    const agent = agentsList.find(a => a.id === agentId);
+    const logs = agentsLogs[agentId] || [];
+
+    // Créer le modal de logs
+    const modal = document.createElement('div');
+    modal.className = 'fixed inset-0 z-50 flex items-center justify-center bg-black/50 backdrop-blur-sm p-4';
+    modal.innerHTML = `
+        <div class="bg-white dark:bg-slate-800 rounded-2xl shadow-2xl w-full max-w-4xl max-h-[90vh] flex flex-col border border-slate-200 dark:border-slate-700">
+            <div class="p-6 border-b border-slate-100 dark:border-slate-700 flex justify-between items-center">
+                <div>
+                    <h2 class="text-xl font-bold dark:text-white flex items-center gap-3">
+                        <i class="fas fa-list-alt text-purple-600"></i>
+                        Logs - ${agent ? agent.name : agentId}
+                    </h2>
+                    <p class="text-sm text-slate-500 dark:text-slate-400 mt-1">${logs.length} exécution(s) enregistrée(s)</p>
+                </div>
+                <button onclick="this.closest('.fixed').remove()" class="text-slate-400 hover:text-slate-600 dark:hover:text-slate-200 transition p-2 hover:bg-slate-100 dark:hover:bg-slate-700 rounded-full">
+                    <i class="fas fa-times text-xl"></i>
+                </button>
+            </div>
+            <div class="flex-1 overflow-y-auto p-6">
+                ${logs.length === 0 ? `
+                    <div class="text-center py-12 text-slate-500">
+                        <i class="fas fa-inbox text-4xl mb-4 opacity-50"></i>
+                        <p>Aucun log disponible pour cet agent.</p>
+                    </div>
+                ` : `
+                    <div class="space-y-4">
+                        ${logs.reverse().map(log => `
+                            <div class="bg-slate-50 dark:bg-slate-900 rounded-lg p-4 border border-slate-200 dark:border-slate-700">
+                                <div class="flex items-center justify-between mb-3">
+                                    <div class="flex items-center gap-3">
+                                        <span class="px-2.5 py-1 rounded-full text-xs font-medium ${log.data.success ? 'bg-emerald-100 text-emerald-700 dark:bg-emerald-900/30 dark:text-emerald-400' : 'bg-red-100 text-red-700 dark:bg-red-900/30 dark:text-red-400'}">
+                                            ${log.data.success ? '<i class="fas fa-check-circle"></i> Succès' : '<i class="fas fa-times-circle"></i> Échec'}
+                                        </span>
+                                        <span class="text-xs text-slate-500">${new Date(log.timestamp).toLocaleString('fr-FR')}</span>
+                                        <span class="text-xs text-slate-400">${log.data.triggeredBy || 'unknown'}</span>
+                                    </div>
+                                    ${log.data.executionTime ? `<span class="text-xs text-slate-500">${log.data.executionTime}ms</span>` : ''}
+                                </div>
+                                <pre class="text-xs bg-slate-900 dark:bg-slate-950 text-slate-100 p-3 rounded overflow-x-auto font-mono">${JSON.stringify(log.data.result || log.data.error || log.data, null, 2)}</pre>
+                            </div>
+                        `).join('')}
+                    </div>
+                `}
+            </div>
+        </div>
+    `;
+
+    document.body.appendChild(modal);
+    modal.querySelector('button').addEventListener('click', () => modal.remove());
+}
+
+function editAgent(agentId) {
+    // Ouvrir l'IDE pour éditer l'agent
+    window.open(`/admin/ide.html?agent=${agentId}`, '_blank');
+}
+
+function createNewAgent() {
+    // Ouvrir l'IDE pour créer un nouvel agent
+    window.open('/admin/ide.html?new-agent=true', '_blank');
 }
 
 
