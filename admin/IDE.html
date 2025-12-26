@@ -297,7 +297,7 @@
 
             <div class="p-6 flex-1 overflow-y-auto">
                 <div class="mb-4">
-                    <label class="block text-sm font-medium text-slate-300 mb-2">
+                    <label id="prompt-label" class="block text-sm font-medium text-slate-300 mb-2">
                         Décrivez la page ou le composant que vous souhaitez créer
                     </label>
                     <textarea id="gemini-prompt-input" rows="6"
@@ -1002,12 +1002,21 @@ export default async function agent(context) {
         function openPromptModal() {
             const modal = document.getElementById('prompt-modal');
             const textarea = document.getElementById('gemini-prompt-input');
+            const label = document.getElementById('prompt-label');
             const errorMsg = document.getElementById('generation-error');
 
             if (modal) {
                 modal.classList.remove('hidden');
                 if (textarea) {
                     textarea.value = '';
+                    // Update placeholder and label based on current mode
+                    if (currentMode === 'agent') {
+                        textarea.placeholder = "Ex: Crée un agent qui récupère les derniers articles du blog RSS et envoie un résumé par email. Utilise env.BLOG_RSS_URL et env.EMAIL_API_KEY.";
+                        if (label) label.textContent = "Décrivez la fonctionnalité de l'agent que vous souhaitez créer";
+                    } else {
+                        textarea.placeholder = "Ex: Crée une landing page moderne pour un café avec une section héro, une galerie de photos et un formulaire de contact. Utilise des couleurs chaudes.";
+                        if (label) label.textContent = "Décrivez la page ou le composant que vous souhaitez créer";
+                    }
                     textarea.focus();
                 }
                 if (errorMsg) errorMsg.classList.add('hidden');
@@ -1059,58 +1068,134 @@ export default async function agent(context) {
             if (errorDiv) errorDiv.classList.add('hidden');
 
             try {
-                // Construct the API request with enriched system instruction
-                const systemInstruction = "You are an expert web developer specialized in creating dynamic themes for StackPages CMS.\n\n" +
-                    "IMPORTANT ARCHITECTURE: 'SUPER TEMPLATE'\n" +
-                    "StackPages uses a unique 'Super Template' system where the backend (Cloudflare Worker) handles Server-Side Rendering (SSR) using standard HTML <template> tags.\n\n" +
-
-                    "CRITICAL RULES:\n" +
-                    "1. **NO Client-Side Rendering**: Do NOT write JavaScript to fetch JSON and build HTML strings. The backend does this for you.\n" +
-                    "2. **Use <template> Tags**: You MUST define the following templates in your HTML:\n" +
-                    "   - <template id='tpl-home'>: The default homepage content.\n" +
-                    "   - <template id='tpl-blog-card'>: HTML structure for a single blog post card.\n" +
-                    "   - <template id='tpl-video-card'>: HTML structure for a single video card.\n" +
-                    "   - <template id='tpl-post-detail'>: Layout for viewing a full blog post.\n" +
-                    "   - <template id='tpl-video-detail'>: Layout for viewing a full video.\n" +
-                    "3. **Use HTMX**: Use HTMX attributes for navigation and dynamic loading.\n" +
-                    "   - <a href='/publications' hx-get='/publications' hx-target='#main-content' hx-push-url='true'>...</a>\n" +
-                    "   - <div hx-get='/api/posts' hx-trigger='load' hx-target='#publications-container'></div>\n" +
-                    "4. **Tailwind CSS**: Use Tailwind CSS for all styling.\n\n" +
-
-                    "TEMPLATE VARIABLES:\n" +
-                    "Inside your <template> tags, use these placeholders which the backend will replace:\n" +
-                    "- Blog Card: {{title}}, {{image}}, {{description}}, {{date}}, {{slug}}, {{author}}\n" +
-                    "- Video Card: {{title}}, {{thumbnail}}, {{date}}, {{link}}\n" +
-                    "- Post Detail: {{title}}, {{image}}, {{content}}, {{date}}, {{author}}\n" +
-                    "- Video Detail: {{title}}, {{embedUrl}}, {{description}}, {{published}}, {{link}}\n\n" +
-
-                    "EXAMPLE STRUCTURE:\n" +
-                    "```html\n" +
-                    "<body>\n" +
-                    "  <main id='main-content'>\n" +
-                    "    <!-- Content will be swapped here -->\n" +
-                    "  </main>\n\n" +
-                    "  <template id='tpl-blog-card'>\n" +
-                    "    <article class='card'>\n" +
-                    "      <img src='{{image}}' alt='{{title}}'>\n" +
-                    "      <h3><a href='/post/{{slug}}' hx-get='/post/{{slug}}' hx-target='#main-content' hx-push-url='true'>{{title}}</a></h3>\n" +
-                    "    </article>\n" +
-                    "  </template>\n" +
-                    "</body>\n" +
-                    "```\n\n" +
-                    "Generate ONLY valid HTML code. Do not include markdown backticks or explanations.";
-
                 // Get current editor content
                 const currentCode = monacoEditor ? monacoEditor.getValue().trim() : '';
+                
+                // Determine system instruction based on current mode
+                let systemInstruction = "";
+                let codeLanguage = "";
+                let codeBlockType = "";
+                
+                if (currentMode === 'agent') {
+                    // AGENT MODE: JavaScript agent function
+                    systemInstruction = "You are an expert JavaScript developer specialized in creating automated agents for WebSuite CMS.\n\n" +
+                        "CRITICAL ARCHITECTURE: AGENT SYSTEM\n" +
+                        "Agents are JavaScript functions that run automatically via CronJob or manually from the admin interface.\n\n" +
+                        
+                        "MANDATORY REQUIREMENTS:\n" +
+                        "1. **Function Signature**: MUST export default async function agent(context)\n" +
+                        "2. **Context Parameter**: The context object contains { env } - environment variables ONLY\n" +
+                        "3. **Environment Variables**: Access variables EXCLUSIVELY via context.env (e.g., env.GITHUB_TOKEN, env.ADMIN_PASSWORD)\n" +
+                        "4. **Return Format**: MUST return an object with:\n" +
+                        "   - success: boolean (true/false)\n" +
+                        "   - message: string (description of the result)\n" +
+                        "   - timestamp: string (ISO 8601 format)\n" +
+                        "   - data: any (optional, additional result data)\n" +
+                        "5. **Error Handling**: MUST use try/catch and return success: false on errors\n" +
+                        "6. **No File System**: Agents CANNOT access file system, only environment variables\n" +
+                        "7. **No External APIs without env**: Use env variables for API keys, tokens, etc.\n\n" +
+                        
+                        "EXAMPLE STRUCTURE:\n" +
+                        "```javascript\n" +
+                        "/**\n" +
+                        " * Agent Description\n" +
+                        " * Schedule: 0 9 * * * (daily at 9 AM)\n" +
+                        " */\n\n" +
+                        "export default async function agent(context) {\n" +
+                        "  const { env } = context;\n" +
+                        "  \n" +
+                        "  try {\n" +
+                        "    // Your logic here\n" +
+                        "    // Access env variables: env.GITHUB_TOKEN, env.ADMIN_PASSWORD, etc.\n" +
+                        "    \n" +
+                        "    return {\n" +
+                        "      success: true,\n" +
+                        "      message: \"Agent executed successfully\",\n" +
+                        "      timestamp: new Date().toISOString(),\n" +
+                        "      data: { /* optional result data */ }\n" +
+                        "    };\n" +
+                        "  } catch (error) {\n" +
+                        "    return {\n" +
+                        "      success: false,\n" +
+                        "      error: error.message,\n" +
+                        "      timestamp: new Date().toISOString()\n" +
+                        "    };\n" +
+                        "  }\n" +
+                        "}\n" +
+                        "```\n\n" +
+                        
+                        "COMMON USE CASES:\n" +
+                        "- Fetch data from APIs using env variables for authentication\n" +
+                        "- Process and transform data\n" +
+                        "- Send notifications via webhooks (using env variables for URLs/keys)\n" +
+                        "- Aggregate data from multiple sources\n" +
+                        "- Schedule automated tasks\n\n" +
+                        
+                        "SECURITY RULES:\n" +
+                        "- NEVER hardcode API keys, tokens, or secrets\n" +
+                        "- ALWAYS use env variables for sensitive data\n" +
+                        "- Validate inputs before processing\n" +
+                        "- Handle errors gracefully\n\n" +
+                        
+                        "Generate ONLY valid JavaScript code. Do not include markdown backticks or explanations.";
+                    
+                    codeLanguage = "javascript";
+                    codeBlockType = "```javascript";
+                } else {
+                    // HTMX MODE: HTML templates
+                    systemInstruction = "You are an expert web developer specialized in creating dynamic themes for StackPages CMS.\n\n" +
+                        "IMPORTANT ARCHITECTURE: 'SUPER TEMPLATE'\n" +
+                        "StackPages uses a unique 'Super Template' system where the backend (Cloudflare Worker) handles Server-Side Rendering (SSR) using standard HTML <template> tags.\n\n" +
+
+                        "CRITICAL RULES:\n" +
+                        "1. **NO Client-Side Rendering**: Do NOT write JavaScript to fetch JSON and build HTML strings. The backend does this for you.\n" +
+                        "2. **Use <template> Tags**: You MUST define the following templates in your HTML:\n" +
+                        "   - <template id='tpl-home'>: The default homepage content.\n" +
+                        "   - <template id='tpl-blog-card'>: HTML structure for a single blog post card.\n" +
+                        "   - <template id='tpl-video-card'>: HTML structure for a single video card.\n" +
+                        "   - <template id='tpl-post-detail'>: Layout for viewing a full blog post.\n" +
+                        "   - <template id='tpl-video-detail'>: Layout for viewing a full video.\n" +
+                        "3. **Use HTMX**: Use HTMX attributes for navigation and dynamic loading.\n" +
+                        "   - <a href='/publications' hx-get='/publications' hx-target='#main-content' hx-push-url='true'>...</a>\n" +
+                        "   - <div hx-get='/api/posts' hx-trigger='load' hx-target='#publications-container'></div>\n" +
+                        "4. **Tailwind CSS**: Use Tailwind CSS for all styling.\n\n" +
+
+                        "TEMPLATE VARIABLES:\n" +
+                        "Inside your <template> tags, use these placeholders which the backend will replace:\n" +
+                        "- Blog Card: {{title}}, {{image}}, {{description}}, {{date}}, {{slug}}, {{author}}\n" +
+                        "- Video Card: {{title}}, {{thumbnail}}, {{date}}, {{link}}\n" +
+                        "- Post Detail: {{title}}, {{image}}, {{content}}, {{date}}, {{author}}\n" +
+                        "- Video Detail: {{title}}, {{embedUrl}}, {{description}}, {{published}}, {{link}}\n\n" +
+
+                        "EXAMPLE STRUCTURE:\n" +
+                        "```html\n" +
+                        "<body>\n" +
+                        "  <main id='main-content'>\n" +
+                        "    <!-- Content will be swapped here -->\n" +
+                        "  </main>\n\n" +
+                        "  <template id='tpl-blog-card'>\n" +
+                        "    <article class='card'>\n" +
+                        "      <img src='{{image}}' alt='{{title}}'>\n" +
+                        "      <h3><a href='/post/{{slug}}' hx-get='/post/{{slug}}' hx-target='#main-content' hx-push-url='true'>{{title}}</a></h3>\n" +
+                        "    </article>\n" +
+                        "  </template>\n" +
+                        "</body>\n" +
+                        "```\n\n" +
+                        "Generate ONLY valid HTML code. Do not include markdown backticks or explanations.";
+                    
+                    codeLanguage = "html";
+                    codeBlockType = "```html";
+                }
 
                 let fullPrompt = "";
 
                 if (currentCode) {
                     // Iterative Mode: Modify existing code
+                    const codeBlock = codeBlockType + "\n" + currentCode + "\n```";
                     fullPrompt = systemInstruction +
-                        "\n\nCURRENT CODE:\n```html\n" + currentCode + "\n```\n\n" +
+                        "\n\nCURRENT CODE:\n" + codeBlock + "\n\n" +
                         "USER REQUEST (Modify the code above):\n" + prompt +
-                        "\n\nINSTRUCTION: Return the FULLY UPDATED HTML code based on the user request. Do not omit any parts unless requested. Maintain the existing structure and logic where possible.";
+                        "\n\nINSTRUCTION: Return the FULLY UPDATED " + codeLanguage.toUpperCase() + " code based on the user request. Do not omit any parts unless requested. Maintain the existing structure and logic where possible.";
                 } else {
                     // Generation Mode: Create from scratch
                     fullPrompt = systemInstruction + "\n\nUser Request: " + prompt;
@@ -1139,8 +1224,8 @@ export default async function agent(context) {
                 // Extract generated text
                 let generatedText = data.candidates?.[0]?.content?.parts?.[0]?.text || '';
 
-                // Clean up markdown if present
-                generatedText = generatedText.replace(/^```html\s*/i, '').replace(/```\s*$/i, '');
+                // Clean up markdown if present (support both html and javascript)
+                generatedText = generatedText.replace(/^```(html|javascript|js)\s*/i, '').replace(/```\s*$/i, '');
 
                 if (generatedText) {
                     // Update editor
