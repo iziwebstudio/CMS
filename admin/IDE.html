@@ -1310,6 +1310,25 @@ async function handleAgent(context) {
                         "- Aggregate data from multiple sources\n" +
                         "- Schedule automated tasks\n\n" +
                         
+                        "GOOGLE APPS SCRIPT (Email/Webhooks):\n" +
+                        "If the agent needs to send emails via Google Apps Script (env.APPSCRIPT_URL):\n" +
+                        "- CRITICAL: Google Apps Script Web Apps require 'redirect: follow' mode for POST requests\n" +
+                        "- The URL must end with '/exec' (not '/dev')\n" +
+                        "- Example usage:\n" +
+                        "  const scriptUrl = env.APPSCRIPT_URL;\n" +
+                        "  const response = await fetch(scriptUrl, {\n" +
+                        "    method: 'POST',\n" +
+                        "    headers: { 'Content-Type': 'application/json' },\n" +
+                        "    redirect: 'follow',\n" +
+                        "    body: JSON.stringify({\n" +
+                        "      form_name: 'Agent Email',\n" +
+                        "      articles: articlesArray,\n" +
+                        "      email: 'recipient@example.com'\n" +
+                        "    })\n" +
+                        "  });\n" +
+                        "  const result = await response.json();\n" +
+                        "  if (result.status !== 'success') throw new Error('Email send failed');\n\n" +
+                        
                         "GOOGLE AI / GEMINI API:\n" +
                         "If the agent needs to use Google Gemini AI API (via env.GOOGLE_AI_KEY):\n" +
                         "- CRITICAL: Use 'gemini-2.5-flash' (same model as the IDE uses - NEVER use 'gemini-pro' or 'gemini-1.5-flash' which are deprecated)\n" +

@@ -111,7 +111,7 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
     try {
       // Ajouter les imports nécessaires (jsonResponse, errorResponse)
       // Ces fonctions sont injectées car new Function() ne supporte pas les imports ES6
-      // Aussi injecter fetch() avec résolution d'URL relative
+      // Aussi injecter fetch() avec résolution d'URL relative et gestion des redirections
       const helperCode = `
         const baseUrl = context.request.baseUrl || 'http://localhost:8000';
         const fetch = (url, options = {}) => {
@@ -120,6 +120,10 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
             url = baseUrl + url;
           } else if (typeof url === 'string' && !url.startsWith('http://') && !url.startsWith('https://')) {
             url = baseUrl + '/' + url;
+          }
+          // Pour Google Apps Script, s'assurer que redirect: 'follow' est activé
+          if (typeof url === 'string' && url.includes('script.google.com/macros')) {
+            options.redirect = options.redirect || 'follow';
           }
           return global.fetch(url, options);
         };
@@ -170,6 +174,10 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
             url = baseUrl + url;
           } else if (typeof url === 'string' && !url.startsWith('http://') && !url.startsWith('https://')) {
             url = baseUrl + '/' + url;
+          }
+          // Pour Google Apps Script, s'assurer que redirect: 'follow' est activé
+          if (typeof url === 'string' && url.includes('script.google.com/macros')) {
+            options.redirect = options.redirect || 'follow';
           }
           return global.fetch(url, options);
         };
