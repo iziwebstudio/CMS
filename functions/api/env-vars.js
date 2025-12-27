@@ -21,22 +21,22 @@ const ENV_VAR_DESCRIPTIONS = {
   'GITHUB_REPO': 'Nom du dépôt GitHub',
   
   // Blog / RSS
-  'BLOG_FEED_URL': 'URL du flux RSS pour récupérer les articles de blog (ex: Substack)',
-  'BLOG_API_URL': 'URL de l\'API pour récupérer les articles de blog',
+  'BLOG_FEED_URL': 'URL du flux RSS pour récupérer les articles de blog (ex: Substack, WordPress, Ghost, Medium) - Format: https://domain.com/feed ou https://username.substack.com/feed',
+  'BLOG_API_URL': 'URL de l\'API pour récupérer les articles de blog (alternative au RSS)',
   'BLOG_API_KEY': 'Clé API optionnelle pour authentifier les requêtes vers BLOG_API_URL',
   'BLOG_POST_COUNT': 'Nombre d\'articles à récupérer par défaut (optionnel, défaut: 10)',
-  'BLOG_RSS_URL': 'Alias pour BLOG_FEED_URL',
+  'BLOG_RSS_URL': 'Alias pour BLOG_FEED_URL (pour compatibilité)',
   
   // YouTube
-  'YOUTUBE_FEED_URL': 'URL du flux RSS YouTube pour récupérer les vidéos d\'une chaîne',
-  'YOUTUBE_API_KEY': 'Clé API YouTube pour les opérations avancées',
-  'YOUTUBE_CHANNEL_ID': 'ID de la chaîne YouTube',
+  'YOUTUBE_FEED_URL': 'URL du flux RSS YouTube pour récupérer les vidéos d\'une chaîne - Format: https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID (trouver CHANNEL_ID sur commentpicker.com/youtube-channel-id.php)',
+  'YOUTUBE_API_KEY': 'Clé API YouTube pour les opérations avancées (optionnel, nécessite YouTube Data API v3)',
+  'YOUTUBE_CHANNEL_ID': 'ID de la chaîne YouTube (optionnel si YOUTUBE_FEED_URL contient déjà le channel_id)',
   
   // Podcast
-  'PODCAST_FEED_URL': 'URL du flux RSS du podcast (ex: Anchor.fm)',
+  'PODCAST_FEED_URL': 'URL du flux RSS du podcast (ex: Anchor.fm, Spotify, Apple Podcasts, RSS.com) - Format: https://anchor.fm/s/PODCAST_ID/podcast/rss',
   
   // Événements
-  'EVENTS_FEED_URL': 'URL du flux RSS des événements (ex: Meetup)',
+  'EVENTS_FEED_URL': 'URL du flux RSS des événements (ex: Meetup, Eventbrite) - Format: https://www.meetup.com/GROUP_NAME/events/rss',
   
   // Services externes
   'FRONTEND_BUILDER_URL': 'URL du service de build frontend (optionnel)',
@@ -53,6 +53,12 @@ const ENV_VAR_DESCRIPTIONS = {
   
   // Google AI / Gemini
   'GOOGLE_AI_KEY': 'Clé API Google AI (Gemini) pour la génération de code dans l\'IDE',
+  
+  // Pexels (Images)
+  'PEXELS_API_KEY': 'Clé API Pexels pour récupérer des images libres de droits (https://www.pexels.com/api/)',
+  
+  // Google Apps Script
+  'APPSCRIPT_URL': 'URL du webhook Google Apps Script pour le traitement des emails et autres intégrations - Format: https://script.google.com/macros/s/SCRIPT_ID/exec (doit être déployé en tant que Web App avec accès "Anyone")',
   
   // Services de génération PDF
   'PDF_GENERATION_SERVICE_URL': 'URL du service de génération de fichiers PDF (optionnel)',

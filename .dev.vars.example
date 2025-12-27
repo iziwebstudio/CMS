@@ -17,12 +17,20 @@ ADMIN_PASSWORD=changeme123
 # - Medium: https://medium.com/feed/@username
 BLOG_FEED_URL=https://example.substack.com/feed
 
-# YouTube : https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
+# YouTube : Flux RSS de votre chaîne YouTube
+# Format: https://www.youtube.com/feeds/videos.xml?channel_id=CHANNEL_ID
 # Pour trouver votre CHANNEL_ID : https://commentpicker.com/youtube-channel-id.php
 YOUTUBE_FEED_URL=https://www.youtube.com/feeds/videos.xml?channel_id=UCxxxxxxxxxxxxxx
 
-# Podcast : URL du flux RSS (Anchor, Spotify, Apple Podcasts, etc.)
+# Podcast : URL du flux RSS (Anchor, Spotify, Apple Podcasts, RSS.com, etc.)
+# Exemples:
+# - Anchor.fm: https://anchor.fm/s/PODCAST_ID/podcast/rss
+# - RSS.com: https://feed.rss.com/votre-podcast
 PODCAST_FEED_URL=https://anchor.fm/s/xxxxxxx/podcast/rss
+
+# Événements : URL du flux RSS des événements (Meetup, Eventbrite, etc.)
+# Exemple Meetup: https://www.meetup.com/GROUP_NAME/events/rss
+EVENTS_FEED_URL=https://www.meetup.com/votre-groupe/events/rss
 
 # --- FRONTEND WEBSTUDIO ---
 # URL de votre projet Webstudio (staging ou production)
@@ -48,6 +56,23 @@ GITHUB_REPO=votre-repo
 # Token secret pour sécuriser l'exécution des agents via CronJob
 # Générer un token aléatoire sécurisé (ex: openssl rand -hex 32)
 CRONJOB_API_KEY=votre_token_secret_ici
+
+# --- GOOGLE AI (GEMINI) ---
+# Clé API Google AI (Gemini) pour la génération de code dans l'IDE
+# Créer une clé : https://aistudio.google.com/app/apikey
+GOOGLE_AI_KEY=votre_cle_google_ai_ici
+
+# --- PEXELS (Images) ---
+# Clé API Pexels pour récupérer des images libres de droits
+# Créer une clé : https://www.pexels.com/api/
+PEXELS_API_KEY=votre_cle_pexels_ici
+
+# --- GOOGLE APPS SCRIPT ---
+# URL du webhook Google Apps Script pour le traitement des emails et autres intégrations
+# Format: https://script.google.com/macros/s/SCRIPT_ID/exec
+# Le script doit être déployé en tant que "Web App" avec accès "Anyone" (ou "Anyone with link")
+# Utilisé principalement pour le traitement automatique des emails
+APPSCRIPT_URL=https://script.google.com/macros/s/VOTRE_SCRIPT_ID/exec
 
 # ====================================================================
 # INSTRUCTIONS

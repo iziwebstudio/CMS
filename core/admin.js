@@ -1596,7 +1596,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
                 color: 'bg-orange-500',
                 description: 'Flux RSS pour récupérer les articles de blog (Substack, WordPress, etc.)',
                 configUrl: null,
-                required: ['BLOG_FEED_URL', 'BLOG_RSS_URL']
+                required: ['BLOG_FEED_URL']
             },
             'YouTube': {
                 icon: 'fab fa-youtube',
@@ -1612,6 +1612,27 @@ window.loadConnectedServices = async function loadConnectedServices() {
                 configUrl: null,
                 required: ['PODCAST_FEED_URL']
             },
+            'Événements RSS': {
+                icon: 'fas fa-calendar-alt',
+                color: 'bg-green-600',
+                description: 'Flux RSS des événements (Meetup, Eventbrite, etc.)',
+                configUrl: null,
+                required: ['EVENTS_FEED_URL']
+            },
+            'Pexels': {
+                icon: 'fas fa-images',
+                color: 'bg-teal-600',
+                description: 'API Pexels pour récupérer des images libres de droits',
+                configUrl: 'https://www.pexels.com/api/',
+                required: ['PEXELS_API_KEY']
+            },
+            'Google Apps Script': {
+                icon: 'fab fa-google',
+                color: 'bg-yellow-600',
+                description: 'Traitement automatique des emails et intégrations via Google Apps Script',
+                configUrl: 'https://script.google.com/',
+                required: ['APPSCRIPT_URL']
+            },
             'PDF Generation': {
                 icon: 'fas fa-file-pdf',
                 color: 'bg-red-700',
@@ -1619,10 +1640,10 @@ window.loadConnectedServices = async function loadConnectedServices() {
                 configUrl: null,
                 required: ['PDF_GENERATION_SERVICE_URL']
             },
-            'Email': {
+            'Email (API)': {
                 icon: 'fas fa-envelope',
                 color: 'bg-blue-500',
-                description: 'Service d\'envoi d\'email',
+                description: 'Service d\'envoi d\'email via API externe',
                 configUrl: null,
                 required: ['EMAIL_API_KEY', 'EMAIL_SERVICE_URL']
             }
