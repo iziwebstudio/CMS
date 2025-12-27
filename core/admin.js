@@ -1542,13 +1542,37 @@ window.loadConnectedServices = async function loadConnectedServices() {
         </div>
     `;
 
+    // Timeout de sécurité (10 secondes)
+    const timeoutId = setTimeout(() => {
+        console.error('[loadConnectedServices] Timeout after 10 seconds');
+        const timeoutContainer = document.getElementById('services-list');
+        if (timeoutContainer && timeoutContainer.innerHTML.includes('fa-spinner')) {
+            timeoutContainer.innerHTML = `
+                <div class="text-center p-8 text-orange-500">
+                    <i class="fas fa-clock text-3xl mb-4"></i>
+                    <p class="font-bold mb-2">Chargement trop long</p>
+                    <p class="text-sm mt-2">Le chargement des services prend plus de temps que prévu.</p>
+                    <button onclick="window.loadConnectedServices()" 
+                        class="mt-4 px-4 py-2 bg-orange-500 hover:bg-orange-600 text-white rounded-lg text-sm font-medium transition">
+                        Réessayer
+                    </button>
+                </div>
+            `;
+        }
+    }, 10000);
+
     try {
         const authKey = localStorage.getItem('websuite_auth');
         if (!authKey) {
             throw new Error('Non authentifié. Veuillez vous reconnecter.');
         }
         
-        const apiUrl = buildApiUrl('/api/env-vars');
+        // Vérifier que buildApiUrl est disponible
+        if (typeof buildApiUrl === 'undefined' && typeof window.buildApiUrl === 'function') {
+            window.buildApiUrl = buildApiUrl;
+        }
+        const buildUrl = typeof window.buildApiUrl === 'function' ? window.buildApiUrl : buildApiUrl;
+        const apiUrl = buildUrl('/api/env-vars');
         console.log('[Services Modal] Fetching from:', apiUrl);
         
         const response = await fetch(apiUrl, {
@@ -1686,21 +1710,50 @@ window.loadConnectedServices = async function loadConnectedServices() {
         });
 
         // Rendre la liste dans la modal
+        console.log('[loadConnectedServices] Rendering modal with:', {
+            connected: connectedServices.length,
+            available: availableServices.length
+        });
+        
+        // Annuler le timeout car on a réussi
+        clearTimeout(timeoutId);
+        
         if (typeof window.renderServicesModal === 'function') {
-            window.renderServicesModal(connectedServices, availableServices);
+            try {
+                window.renderServicesModal(connectedServices, availableServices);
+                console.log('[loadConnectedServices] Modal rendered successfully');
+            } catch (renderError) {
+                console.error('[loadConnectedServices] Error rendering modal:', renderError);
+                throw renderError;
+            }
         } else {
             console.error('[loadConnectedServices] renderServicesModal function not found!');
+            // Fallback: afficher directement dans le container
+            const container = document.getElementById('services-list');
+            if (container) {
+                container.innerHTML = `
+                    <div class="text-center p-8 text-yellow-600">
+                        <i class="fas fa-exclamation-triangle text-3xl mb-4"></i>
+                        <p>Fonction de rendu non disponible</p>
+                        <p class="text-sm mt-2">Services trouvés: ${connectedServices.length} connectés, ${availableServices.length} disponibles</p>
+                    </div>
+                `;
+            }
         }
 
     } catch (error) {
-        console.error('Erreur lors du chargement des services:', error);
+        // Annuler le timeout en cas d'erreur aussi
+        clearTimeout(timeoutId);
+        console.error('[loadConnectedServices] Error:', error);
+        console.error('[loadConnectedServices] Error stack:', error.stack);
         const container = document.getElementById('services-list');
         if (container) {
             container.innerHTML = `
                 <div class="text-center p-8 text-red-500">
                     <i class="fas fa-exclamation-circle text-3xl mb-4"></i>
-                    <p>Erreur lors du chargement des services connectés</p>
-                    <p class="text-sm mt-2">${error.message}</p>
+                    <p class="font-bold mb-2">Erreur lors du chargement des services connectés</p>
+                    <p class="text-sm mt-2">${error.message || 'Erreur inconnue'}</p>
+                    <p class="text-xs mt-4 text-slate-500">Vérifiez la console pour plus de détails</p>
                 </div>
             `;
         }
@@ -1708,10 +1761,19 @@ window.loadConnectedServices = async function loadConnectedServices() {
 }
 
 window.renderServicesModal = function renderServicesModal(connectedServices, availableServices) {
-    const container = document.getElementById('services-list');
-    if (!container) return;
+    try {
+        console.log('[renderServicesModal] Called with:', {
+            connected: connectedServices.length,
+            available: availableServices.length
+        });
+        
+        const container = document.getElementById('services-list');
+        if (!container) {
+            console.error('[renderServicesModal] Container #services-list not found!');
+            return;
+        }
 
-    let html = '';
+        let html = '';
 
     // Services connectés
     if (connectedServices.length > 0) {
@@ -1808,6 +1870,22 @@ window.renderServicesModal = function renderServicesModal(connectedServices, ava
     }
 
     container.innerHTML = html || '<div class="text-center p-8 text-slate-500">Aucun service configuré</div>';
+    console.log('[renderServicesModal] Modal content rendered successfully');
+    } catch (error) {
+        console.error('[renderServicesModal] Error rendering modal:', error);
+        console.error('[renderServicesModal] Error stack:', error.stack);
+        const container = document.getElementById('services-list');
+        if (container) {
+            container.innerHTML = `
+                <div class="text-center p-8 text-red-500">
+                    <i class="fas fa-exclamation-circle text-3xl mb-4"></i>
+                    <p class="font-bold mb-2">Erreur lors du rendu des services</p>
+                    <p class="text-sm mt-2">${error.message || 'Erreur inconnue'}</p>
+                    <p class="text-xs mt-4 text-slate-500">Vérifiez la console pour plus de détails</p>
+                </div>
+            `;
+        }
+    }
 }
 
 
