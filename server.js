@@ -306,8 +306,21 @@ async function handleApiRoute(pathname, request) {
     
     // Route variables d'environnement : /api/env-vars
     if (apiPath === 'env-vars' && request.method === 'GET') {
-      const handler = await import('./functions/api/env-vars.js');
-      return await handler.onRequestGet?.({ request, env });
+      try {
+        const handler = await import('./functions/api/env-vars.js');
+        if (handler.onRequestGet) {
+          return await handler.onRequestGet({ request, env });
+        } else {
+          console.error('[env-vars] Handler imported but onRequestGet not found');
+          return new Response('Handler method not found', { status: 500 });
+        }
+      } catch (importError) {
+        console.error(`[env-vars] Error importing handler:`, importError);
+        return new Response(`Import Error: ${importError.message}`, { 
+          status: 500,
+          headers: { 'Content-Type': 'text/plain' }
+        });
+      }
     }
     
   } catch (error) {

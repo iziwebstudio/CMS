@@ -5,7 +5,8 @@
 // La configuration (flux RSS, etc.) est gérée par les env vars du worker
 
 // Helper function to build API URL (modeagnostique)
-function buildApiUrl(endpoint) {
+// Rendre buildApiUrl accessible globalement pour le fallback
+window.buildApiUrl = function buildApiUrl(endpoint) {
     const baseUrl = localStorage.getItem('api_base_url');
     // Si une URL de base est définie (worker distant), on l'utilise
     if (baseUrl) {

@@ -1703,7 +1703,22 @@
                     throw new Error('Non authentifié. Veuillez vous reconnecter.');
                 }
                 
-                const response = await fetch('/api/env-vars', {
+                // Utiliser buildApiUrl si disponible, sinon utiliser l'URL directe
+                let apiUrl = '/api/env-vars';
+                if (typeof window.buildApiUrl === 'function') {
+                    apiUrl = window.buildApiUrl('/api/env-vars');
+                } else {
+                    // Essayer de construire l'URL de base si elle est en localStorage
+                    const baseUrl = localStorage.getItem('api_base_url');
+                    if (baseUrl) {
+                        const cleanBase = baseUrl.replace(/\/$/, '');
+                        apiUrl = `${cleanBase}/api/env-vars`;
+                    }
+                }
+                
+                console.log('[loadServicesDirectly] Fetching from:', apiUrl);
+                
+                const response = await fetch(apiUrl, {
                     headers: { 'X-Auth-Key': authKey }
                 });
                 
