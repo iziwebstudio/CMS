@@ -122,10 +122,25 @@ async function handleExecute(context) {
     
   } catch (error) {
     // Logger l'erreur
+    // Éviter la double sérialisation JSON si le message contient déjà du JSON
+    let errorMessage = error.message;
+    try {
+      // Si le message semble être du JSON déjà stringifié, essayer de le parser
+      if (errorMessage.startsWith('{') || errorMessage.includes('"error"')) {
+        const parsed = JSON.parse(errorMessage);
+        if (parsed.error) {
+          errorMessage = parsed.error;
+        }
+      }
+    } catch (e) {
+      // Ce n'est pas du JSON, utiliser le message tel quel
+    }
+    
     const errorLog = {
       agentId: id,
       success: false,
-      error: error.message,
+      error: errorMessage,
+      stack: error.stack,
       timestamp: new Date().toISOString()
     };
     
@@ -133,6 +148,7 @@ async function handleExecute(context) {
       console.error(`Failed to save error log for agent ${id}:`, err);
     });
     
-    return errorResponse(`Erreur d'exécution: ${error.message}`, 500);
+    // Retourner une erreur propre sans double sérialisation
+    return errorResponse(`Erreur lors de l'exécution de l'agent: ${errorMessage}`, 500);
   }
 }

@@ -47,16 +47,37 @@ curl -L https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/webfonts/fa-so
 
 ## Structure finale
 
-Après l'installation, vous devriez avoir :
+## Téléchargement des icônes SVG
+
+Pour télécharger uniquement les icônes SVG des services (33 icônes) :
+
+```bash
+./download-icons.sh
+```
+
+## Structure finale
+
+Après l'installation complète, vous devriez avoir :
 
 ```
 ProdBeta/
 ├── static/
 │   ├── js/
 │   │   ├── tailwindcss.js
-│   │   └── htmx.min.js
+│   │   ├── htmx.min.js
+│   │   ├── monaco-editor/vs/...
+│   │   └── prism/
 │   ├── css/
-│   │   └── all.min.css
+│   │   ├── all.min.css
+│   │   └── prism-tomorrow.min.css
+│   ├── fonts/
+│   │   ├── inter.css
+│   │   └── inter-*.woff2
+│   ├── icons/
+│   │   ├── github-icon-2.svg
+│   │   ├── gemini-icon-logo.svg
+│   │   ├── youtube-icon-8.svg
+│   │   └── ... (33 icônes au total)
 │   └── webfonts/
 │       ├── fa-brands-400.woff2
 │       ├── fa-regular-400.woff2
@@ -72,5 +93,11 @@ Une fois les assets téléchargés, redémarrez le serveur :
 bun server.js
 ```
 
-Les fichiers HTML pointent maintenant vers `/static/js/tailwindcss.js` et `/static/css/all.min.css` au lieu des CDN externes.
+Les fichiers HTML de l'admin pointent maintenant vers les assets locaux :
+- `/static/js/tailwindcss.js` au lieu de `https://cdn.tailwindcss.com`
+- `/static/css/all.min.css` au lieu de `https://cdnjs.cloudflare.com/ajax/libs/font-awesome/...`
+- `/static/fonts/inter.css` au lieu de `https://fonts.googleapis.com/...`
+- `/static/icons/*.svg` au lieu des CDN pour les icônes de services
+
+Tous les assets sont maintenant disponibles localement, permettant un fonctionnement complet en mode offline.
 

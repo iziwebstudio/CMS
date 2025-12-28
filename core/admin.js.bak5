@@ -1924,7 +1924,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
             },
             'Airtable': {
                 icon: 'fas fa-table',
-                iconSvg: getLocalIcon('https://companieslogo.com/img/orig/airtable-5e5cc25f.svg'),
+                iconSvg: 'https://companieslogo.com/img/orig/airtable-5e5cc25f.svg',
                 color: 'bg-orange-500',
                 description: 'Base de données collaborative Airtable',
                 configUrl: 'https://airtable.com/create/tokens',

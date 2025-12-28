@@ -65,8 +65,18 @@ const ENV_VAR_DESCRIPTIONS = {
   // Pexels (Images)
   'PEXELS_API_KEY': 'Clé API Pexels pour récupérer des images libres de droits (https://www.pexels.com/api/)',
   
-  // Google Apps Script
-  'APPSCRIPT_URL': 'URL du webhook Google Apps Script pour le traitement des emails et autres intégrations Google (Gmail, Drive, Docs, Sheets, Calendar, Meet, Forms) - Format: https://script.google.com/macros/s/SCRIPT_ID/exec (doit être déployé en tant que Web App avec accès "Anyone")',
+  // Google Apps Script - Services Google (approche décentralisée)
+  // Chaque service Google nécessite son propre Apps Script déployé
+  // APPSCRIPT_URL est réservé pour d'autres utilisations (pas pour les services Google listés)
+  // Avantages: Flexibilité, isolation, maintenabilité améliorée
+  'APPSCRIPT_URL': 'URL du webhook Google Apps Script général (réservé pour d\'autres intégrations, pas pour les services Google listés) - Format: https://script.google.com/macros/s/SCRIPT_ID/exec (doit être déployé en tant que Web App avec accès "Anyone")',
+  'APPSCRIPT_GMAIL_URL': 'URL du webhook Google Apps Script spécifique pour Gmail - Envoi et gestion d\'emails - REQUIS pour utiliser Gmail - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_DRIVE_URL': 'URL du webhook Google Apps Script spécifique pour Google Drive - Upload, download et gestion de fichiers - REQUIS pour utiliser Google Drive - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_DOCS_URL': 'URL du webhook Google Apps Script spécifique pour Google Docs - Création et édition de documents - REQUIS pour utiliser Google Docs - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_SHEETS_URL': 'URL du webhook Google Apps Script spécifique pour Google Sheets - Lecture et écriture de feuilles de calcul - REQUIS pour utiliser Google Sheets - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_CALENDAR_URL': 'URL du webhook Google Apps Script spécifique pour Google Calendar - Création et gestion d\'événements - REQUIS pour utiliser Google Calendar - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_MEET_URL': 'URL du webhook Google Apps Script spécifique pour Google Meet - Création de réunions - REQUIS pour utiliser Google Meet - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
+  'APPSCRIPT_FORMS_URL': 'URL du webhook Google Apps Script spécifique pour Google Forms - Création et gestion de formulaires - REQUIS pour utiliser Google Forms - Format: https://script.google.com/macros/s/SCRIPT_ID/exec',
   
   // AI & LLM
   'MICROSOFT_COPILOT_API_KEY': 'Clé API Microsoft Copilot pour l\'intelligence artificielle',
@@ -166,6 +176,9 @@ function getDescription(varName) {
   if (varName.startsWith('GITHUB_') || varName.startsWith('GITLAB_')) {
     return 'Variable liée à GitHub ou GitLab';
   }
+  if (varName.startsWith('APPSCRIPT_')) {
+    return 'URL d\'un webhook Google Apps Script pour intégration avec services Google';
+  }
   if (varName.startsWith('META_')) {
     return 'Variable liée au SEO, métadonnées ou Meta/Facebook Ads';
   }
@@ -206,8 +219,17 @@ export async function onRequestGet(context) {
     // Récupérer tous les noms de variables d'environnement
     const envVarNames = Object.keys(env).sort();
     
-    // Créer un tableau avec noms et descriptions
-    const variables = envVarNames.map(varName => ({
+    // Filtrer uniquement les variables qui ont une valeur non vide
+    // Une variable est considérée comme "définie" si elle existe ET a une valeur non vide
+    const definedVarNames = envVarNames.filter(varName => {
+      const value = env[varName];
+      // Vérifier que la valeur existe, n'est pas null, n'est pas undefined, et n'est pas une chaîne vide
+      return value !== null && value !== undefined && value !== '';
+    });
+    
+    // Créer un tableau avec noms et descriptions (uniquement pour les variables définies)
+    // Note: On ne retourne PAS les valeurs pour des raisons de sécurité
+    const variables = definedVarNames.map(varName => ({
       name: varName,
       description: getDescription(varName)
     }));
@@ -215,7 +237,8 @@ export async function onRequestGet(context) {
     return jsonResponse({
       success: true,
       variables: variables,
-      count: variables.length
+      count: variables.length,
+      total: envVarNames.length // Nombre total de variables (définies + non définies)
     });
 
   } catch (error) {

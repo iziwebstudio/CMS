@@ -68,11 +68,35 @@ GOOGLE_AI_KEY=votre_cle_google_ai_ici
 PEXELS_API_KEY=votre_cle_pexels_ici
 
 # --- GOOGLE APPS SCRIPT ---
-# URL du webhook Google Apps Script pour le traitement des emails et autres intégrations
+# URLs des webhooks Google Apps Script pour chaque service Google
+# Chaque script doit être déployé en tant que "Web App" avec accès "Anyone" (ou "Anyone with link")
 # Format: https://script.google.com/macros/s/SCRIPT_ID/exec
-# Le script doit être déployé en tant que "Web App" avec accès "Anyone" (ou "Anyone with link")
-# Utilisé pour: Gmail, Google Drive, Google Docs, Google Sheets, Google Calendar, Google Meet, Google Forms
+# Chaque service Google nécessite sa propre URL spécifique (pas de fallback)
+# Avantages: Permet d'avoir des scripts séparés par service, meilleure isolation et maintenabilité
+
+# Script général (utilisé pour d'autres intégrations, pas pour les services Google listés ci-dessous)
 APPSCRIPT_URL=https://script.google.com/macros/s/VOTRE_SCRIPT_ID/exec
+
+# Gmail - Envoi et gestion d'emails
+APPSCRIPT_GMAIL_URL=https://script.google.com/macros/s/VOTRE_GMAIL_SCRIPT_ID/exec
+
+# Google Drive - Upload, download, gestion de fichiers
+APPSCRIPT_DRIVE_URL=https://script.google.com/macros/s/VOTRE_DRIVE_SCRIPT_ID/exec
+
+# Google Docs - Création et édition de documents
+APPSCRIPT_DOCS_URL=https://script.google.com/macros/s/VOTRE_DOCS_SCRIPT_ID/exec
+
+# Google Sheets - Lecture et écriture de feuilles de calcul
+APPSCRIPT_SHEETS_URL=https://script.google.com/macros/s/VOTRE_SHEETS_SCRIPT_ID/exec
+
+# Google Calendar - Création et gestion d'événements
+APPSCRIPT_CALENDAR_URL=https://script.google.com/macros/s/VOTRE_CALENDAR_SCRIPT_ID/exec
+
+# Google Meet - Création de réunions
+APPSCRIPT_MEET_URL=https://script.google.com/macros/s/VOTRE_MEET_SCRIPT_ID/exec
+
+# Google Forms - Création et gestion de formulaires
+APPSCRIPT_FORMS_URL=https://script.google.com/macros/s/VOTRE_FORMS_SCRIPT_ID/exec
 
 # --- INTÉGRATIONS AI & LLM ---
 # Microsoft Copilot - Clé API Microsoft Copilot

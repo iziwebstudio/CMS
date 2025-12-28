@@ -114,7 +114,7 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
       // Aussi injecter fetch() avec résolution d'URL relative et gestion des redirections
       const helperCode = `
         const baseUrl = context.request.baseUrl || 'http://localhost:8000';
-        const fetch = (url, options = {}) => {
+        const fetch = async (url, options = {}) => {
           // Si l'URL est relative, la convertir en URL absolue
           if (typeof url === 'string' && url.startsWith('/')) {
             url = baseUrl + url;
@@ -124,8 +124,34 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
           // Pour Google Apps Script, s'assurer que redirect: 'follow' est activé
           if (typeof url === 'string' && url.includes('script.google.com/macros')) {
             options.redirect = options.redirect || 'follow';
+            // Ajouter des en-têtes pour forcer JSON
+            if (!options.headers) options.headers = {};
+            options.headers['Content-Type'] = 'application/json';
           }
-          return global.fetch(url, options);
+          const response = await global.fetch(url, options);
+          
+          // Vérifier si c'est une réponse Google Apps Script qui retourne du HTML
+          if (typeof url === 'string' && url.includes('script.google.com/macros')) {
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('text/html') || contentType.includes('application/xhtml')) {
+              // Cloner la réponse pour lire le texte sans consommer le body original
+              const clonedResponse = response.clone();
+              const text = await clonedResponse.text();
+              // Limiter la longueur du texte pour éviter des messages d'erreur trop longs
+              const preview = text.substring(0, 200);
+              throw new Error('Google Apps Script returned HTML instead of JSON. This usually means the script is not deployed correctly or the URL is wrong. Response preview: ' + preview.replace(/\\n/g, ' '));
+            }
+            // Vérifier que le contenu est bien du JSON
+            if (!contentType.includes('application/json') && !contentType.includes('text/plain')) {
+              // Cloner la réponse pour lire le texte sans consommer le body original
+              const clonedResponse = response.clone();
+              const text = await clonedResponse.text();
+              const preview = text.substring(0, 200);
+              throw new Error('Google Apps Script returned unexpected content type: ' + contentType + '. Response preview: ' + preview.replace(/\\n/g, ' '));
+            }
+          }
+          
+          return response;
         };
         function jsonResponse(data) {
           return new Response(JSON.stringify(data), {
@@ -168,7 +194,7 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
       // Ajouter les helpers pour l'ancien format aussi
       const helperCode = `
         const baseUrl = context.request.baseUrl || 'http://localhost:8000';
-        const fetch = (url, options = {}) => {
+        const fetch = async (url, options = {}) => {
           // Si l'URL est relative, la convertir en URL absolue
           if (typeof url === 'string' && url.startsWith('/')) {
             url = baseUrl + url;
@@ -178,8 +204,34 @@ export async function executeAgent(agentCode, env, requestUrl = null) {
           // Pour Google Apps Script, s'assurer que redirect: 'follow' est activé
           if (typeof url === 'string' && url.includes('script.google.com/macros')) {
             options.redirect = options.redirect || 'follow';
+            // Ajouter des en-têtes pour forcer JSON
+            if (!options.headers) options.headers = {};
+            options.headers['Content-Type'] = 'application/json';
           }
-          return global.fetch(url, options);
+          const response = await global.fetch(url, options);
+          
+          // Vérifier si c'est une réponse Google Apps Script qui retourne du HTML
+          if (typeof url === 'string' && url.includes('script.google.com/macros')) {
+            const contentType = response.headers.get('content-type') || '';
+            if (contentType.includes('text/html') || contentType.includes('application/xhtml')) {
+              // Cloner la réponse pour lire le texte sans consommer le body original
+              const clonedResponse = response.clone();
+              const text = await clonedResponse.text();
+              // Limiter la longueur du texte pour éviter des messages d'erreur trop longs
+              const preview = text.substring(0, 200);
+              throw new Error('Google Apps Script returned HTML instead of JSON. This usually means the script is not deployed correctly or the URL is wrong. Response preview: ' + preview.replace(/\\n/g, ' '));
+            }
+            // Vérifier que le contenu est bien du JSON
+            if (!contentType.includes('application/json') && !contentType.includes('text/plain')) {
+              // Cloner la réponse pour lire le texte sans consommer le body original
+              const clonedResponse = response.clone();
+              const text = await clonedResponse.text();
+              const preview = text.substring(0, 200);
+              throw new Error('Google Apps Script returned unexpected content type: ' + contentType + '. Response preview: ' + preview.replace(/\\n/g, ' '));
+            }
+          }
+          
+          return response;
         };
       `;
       

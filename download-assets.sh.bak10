@@ -132,7 +132,7 @@ cat << 'EOF'
   src: url('/static/fonts/inter-700.woff2') format('woff2');
 }
 EOF
-} > inter.css 2>/dev/null || echo "⚠️  Impossible d'écrire inter.css, vérifiez les permissions"
+} > inter.css 2>/dev/null || {
 echo "   ✅ CSS Inter créé"
 cd ../..
 

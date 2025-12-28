@@ -28,8 +28,7 @@ En résumé :
 
 1. **Cloner le projet**
    ```bash
-   git clone https://github.com/VOTRE_USERNAME/StackPagesCMS.git
-   cd StackPagesCMS/ProdBeta
+   git clone https://github.com/websuite-cc/CMS.git
    ```
 
 2. **Déployer sur votre plateforme edge préférée**
@@ -161,10 +160,10 @@ MIT License - Voir [LICENSE](LICENSE) pour plus de détails.
 
 ## 📞 Support
 
-- 📧 **Email** : cms@iziweb.page
+- 📧 **Email** : community@websuite.cc
 - 💬 **Discord** : [Rejoindre la communauté](#)
-- 📖 **Documentation** : https://cms.iziweb.page
-- 🐛 **Issues** : [GitHub Issues](https://github.com/iziweb-studio/CMS/issues)
+- 📖 **Documentation** : https://docs.websuite.cc
+- 🐛 **Issues** : [GitHub Issues](https://github.com/websuite-cc/CMS/issues)
 
 ---
 

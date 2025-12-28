@@ -1696,7 +1696,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
             },
             'Google Apps Script': {
                 icon: 'fab fa-google',
-                iconSvg: getLocalIcon('https://cdn.simpleicons.org/googleappsscript'),
+                iconSvg: 'https://cdn.simpleicons.org/googleappsscript',
                 color: 'bg-yellow-600',
                 description: 'Traitement automatique des emails et intégrations via Google Apps Script',
                 configUrl: 'https://script.google.com/',
@@ -1809,7 +1809,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
             },
             'StreamYard': {
                 icon: 'fas fa-video',
-                iconSvg: getLocalIcon('https://static.wikia.nocookie.net/logopedia/images/c/ca/StreamYard_2021_%28Icon%29.svg'),
+                iconSvg: 'https://static.wikia.nocookie.net/logopedia/images/c/ca/StreamYard_2021_%28Icon%29.svg',
                 color: 'bg-purple-600',
                 description: 'Streaming et diffusion en direct',
                 configUrl: 'https://streamyard.com',
@@ -1900,7 +1900,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
             // Development & Data
             'Supabase': {
                 icon: 'fas fa-database',
-                iconSvg: getLocalIcon('https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg'),
+                iconSvg: 'https://www.vectorlogo.zone/logos/supabase/supabase-icon.svg',
                 color: 'bg-green-600',
                 description: 'Base de données et backend as a service',
                 configUrl: 'https://app.supabase.com/project/_/settings/api',
@@ -1924,7 +1924,7 @@ window.loadConnectedServices = async function loadConnectedServices() {
             },
             'Airtable': {
                 icon: 'fas fa-table',
-                iconSvg: getLocalIcon('https://companieslogo.com/img/orig/airtable-5e5cc25f.svg'),
+                iconSvg: 'https://companieslogo.com/img/orig/airtable-5e5cc25f.svg',
                 color: 'bg-orange-500',
                 description: 'Base de données collaborative Airtable',
                 configUrl: 'https://airtable.com/create/tokens',
